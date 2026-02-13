@@ -102,7 +102,6 @@ let ticking = false;
 
 function animateHero() {
   ticking = false;
-
   if (!hero || prefersReduced) return;
 
   const targets = computeTargets();
@@ -187,12 +186,26 @@ if (hero && !prefersReduced) {
 
   if (!hasCharts || !window.Chart) return;
 
+  const COLORS = {
+    dark: "#114632",
+    accent: "#239F71",
+    mid: "#73B09A",
+    light: "#ADDDCB",
+    slate: "#4D6B60",
+    mint: "#E3FCF5",
+    grid: "rgba(0,0,0,.08)",
+    men: "rgba(17,70,50,.22)"
+  };
+
   const pct = (n) => (Math.round(n * 100) / 100).toLocaleString("es-ES") + "%";
   const num = (n) => Number(n).toLocaleString("es-ES");
 
   Chart.defaults.font.family = "system-ui, -apple-system, Segoe UI, Roboto, Arial";
-  Chart.defaults.plugins.legend.labels.boxWidth = 10;
   Chart.defaults.animation.duration = 900;
+  Chart.defaults.color = COLORS.dark;
+  Chart.defaults.borderColor = COLORS.grid;
+  Chart.defaults.plugins.legend.labels.boxWidth = 10;
+  Chart.defaults.plugins.legend.labels.color = COLORS.dark;
 
   new Chart(document.getElementById("chartReuniones"), {
     type: "doughnut",
@@ -201,6 +214,7 @@ if (hero && !prefersReduced) {
       datasets: [
         {
           data: reuniones.map((d) => d.value),
+          backgroundColor: [COLORS.accent, COLORS.mid, COLORS.light, COLORS.slate, COLORS.mint],
           borderWidth: 0,
           hoverOffset: 10,
           cutout: "62%"
@@ -232,6 +246,7 @@ if (hero && !prefersReduced) {
         {
           label: "Seguidores",
           data: redes.seguidores,
+          backgroundColor: COLORS.accent,
           borderWidth: 0,
           borderRadius: 10
         }
@@ -240,14 +255,11 @@ if (hero && !prefersReduced) {
     options: {
       responsive: true,
       plugins: {
-        tooltip: {
-          callbacks: {
-            label: (item) => ` ${item.dataset.label}: ${num(item.raw)}`
-          }
-        }
+        tooltip: { callbacks: { label: (item) => ` ${item.dataset.label}: ${num(item.raw)}` } }
       },
       scales: {
-        y: { beginAtZero: true }
+        y: { beginAtZero: true, grid: { color: COLORS.grid } },
+        x: { grid: { display: false } }
       }
     }
   });
@@ -273,19 +285,17 @@ if (hero && !prefersReduced) {
     data: {
       labels: generoActividades.map((d) => d.label),
       datasets: [
-        { label: "Mujeres (%)", data: generoActividades.map((d) => d.mujeres), stack: "s", borderWidth: 0, borderRadius: 8 },
-        { label: "Hombres (%)", data: generoActividades.map((d) => d.hombres), stack: "s", borderWidth: 0, borderRadius: 8 }
+        { label: "Mujeres (%)", data: generoActividades.map((d) => d.mujeres), stack: "s", borderWidth: 0, borderRadius: 8, backgroundColor: COLORS.accent },
+        { label: "Hombres (%)", data: generoActividades.map((d) => d.hombres), stack: "s", borderWidth: 0, borderRadius: 8, backgroundColor: COLORS.men }
       ]
     },
     options: {
       responsive: true,
       indexAxis: "y",
-      plugins: {
-        tooltip: { callbacks: { label: (item) => ` ${item.dataset.label}: ${pct(item.raw)}` } }
-      },
+      plugins: { tooltip: { callbacks: { label: (item) => ` ${item.dataset.label}: ${pct(item.raw)}` } } },
       scales: {
-        x: { min: 0, max: 100, ticks: { callback: (v) => v + "%" } },
-        y: { ticks: { autoSkip: false } }
+        x: { min: 0, max: 100, ticks: { callback: (v) => v + "%" }, grid: { color: COLORS.grid } },
+        y: { ticks: { autoSkip: false }, grid: { display: false } }
       }
     }
   });
@@ -294,15 +304,18 @@ if (hero && !prefersReduced) {
     type: "bar",
     data: {
       labels: consultasTemas.map((d) => d.label),
-      datasets: [{ label: "Consultas", data: consultasTemas.map((d) => d.total), borderWidth: 0, borderRadius: 10 }]
+      datasets: [
+        { label: "Consultas", data: consultasTemas.map((d) => d.total), borderWidth: 0, borderRadius: 10, backgroundColor: COLORS.mid }
+      ]
     },
     options: {
       responsive: true,
       indexAxis: "y",
-      plugins: {
-        tooltip: { callbacks: { label: (item) => ` ${item.dataset.label}: ${num(item.raw)}` } }
-      },
-      scales: { x: { beginAtZero: true } }
+      plugins: { tooltip: { callbacks: { label: (item) => ` ${item.dataset.label}: ${num(item.raw)}` } } },
+      scales: {
+        x: { beginAtZero: true, grid: { color: COLORS.grid } },
+        y: { grid: { display: false } }
+      }
     }
   });
 
@@ -311,20 +324,19 @@ if (hero && !prefersReduced) {
     data: {
       labels: consultasTemas.map((d) => d.label),
       datasets: [
-        { label: "Mujeres (%)", data: consultasTemas.map((d) => d.mujeres), stack: "g", borderWidth: 0, borderRadius: 8 },
-        { label: "Hombres (%)", data: consultasTemas.map((d) => d.hombres), stack: "g", borderWidth: 0, borderRadius: 8 }
+        { label: "Mujeres (%)", data: consultasTemas.map((d) => d.mujeres), stack: "g", borderWidth: 0, borderRadius: 8, backgroundColor: COLORS.accent },
+        { label: "Hombres (%)", data: consultasTemas.map((d) => d.hombres), stack: "g", borderWidth: 0, borderRadius: 8, backgroundColor: COLORS.men }
       ]
     },
     options: {
       responsive: true,
       indexAxis: "y",
-      plugins: {
-        tooltip: { callbacks: { label: (item) => ` ${item.dataset.label}: ${pct(item.raw)}` } }
-      },
+      plugins: { tooltip: { callbacks: { label: (item) => ` ${item.dataset.label}: ${pct(item.raw)}` } } },
       scales: {
-        x: { min: 0, max: 100, ticks: { callback: (v) => v + "%" } },
-        y: { ticks: { autoSkip: false } }
+        x: { min: 0, max: 100, ticks: { callback: (v) => v + "%" }, grid: { color: COLORS.grid } },
+        y: { ticks: { autoSkip: false }, grid: { display: false } }
       }
     }
   });
 })();
+
