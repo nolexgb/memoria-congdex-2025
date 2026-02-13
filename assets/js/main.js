@@ -339,4 +339,3 @@ if (hero && !prefersReduced) {
     }
   });
 })();
-
