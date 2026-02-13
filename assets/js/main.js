@@ -3,12 +3,9 @@ const reveals = document.querySelectorAll(".reveal");
 if (reveals.length) {
   const io = new IntersectionObserver(entries => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-      }
+      if (entry.isIntersecting) entry.target.classList.add("visible");
     });
   });
-
   reveals.forEach(el => io.observe(el));
 }
 
@@ -24,29 +21,22 @@ if (progressBar) {
 
 document.querySelectorAll("[data-count]").forEach(el => {
   let done = false;
-
   const obs = new IntersectionObserver(entries => {
     if (done) return;
-
     if (entries[0].isIntersecting) {
       done = true;
-
       const target = Number(el.dataset.count);
       let n = 0;
-
       const interval = setInterval(() => {
         n += target / 30;
-
         if (n >= target) {
           n = target;
           clearInterval(interval);
         }
-
         el.textContent = Math.floor(n).toLocaleString();
       }, 20);
     }
   });
-
   obs.observe(el);
 });
 
@@ -57,7 +47,6 @@ document.querySelectorAll(".barFill").forEach(bar => {
       bar.style.transform = "scaleX(" + (bar.dataset.value / 100) + ")";
     }
   });
-
   obs.observe(bar);
 });
 
@@ -69,9 +58,6 @@ if (backTop) {
   });
 
   backTop.addEventListener("click", () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 }
