@@ -33,7 +33,7 @@ document.querySelectorAll("[data-count]").forEach(el => {
           n = target;
           clearInterval(interval);
         }
-        el.textContent = Math.floor(n).toLocaleString();
+        el.textContent = Math.floor(n).toLocaleString("es-ES");
       }, 20);
     }
   });
@@ -63,7 +63,6 @@ if (backTop) {
 }
 
 const hero = document.getElementById("hero");
-
 const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 let currentY = 0;
@@ -101,7 +100,7 @@ function computeTargets() {
 
 let ticking = false;
 
-function animate() {
+function animateHero() {
   ticking = false;
 
   if (!hero || prefersReduced) return;
@@ -122,20 +121,210 @@ function animate() {
     Math.abs(targets.targetS - currentS) > 0.0005 ||
     Math.abs(targets.targetDim - currentDim) > 0.002
   ) {
-    requestAnimationFrame(animate);
+    requestAnimationFrame(animateHero);
   }
 }
 
-function requestTick() {
+function requestHeroTick() {
   if (ticking) return;
   ticking = true;
-  requestAnimationFrame(animate);
+  requestAnimationFrame(animateHero);
 }
 
 if (hero && !prefersReduced) {
   setHeroVars(0, 1, 0);
-
-  window.addEventListener("scroll", requestTick, { passive: true });
-  window.addEventListener("resize", requestTick);
-  requestTick();
+  window.addEventListener("scroll", requestHeroTick, { passive: true });
+  window.addEventListener("resize", requestHeroTick);
+  requestHeroTick();
 }
+
+(() => {
+  const reuniones = [
+    { label: "JD / Grupos de trabajo", value: 11 },
+    { label: "Vocalías Consejo Asesor", value: 6 },
+    { label: "Grupo de Educación", value: 11 },
+    { label: "Comisión Incidencia Política", value: 5 },
+    { label: "Grupo Voluntariado", value: 3 }
+  ];
+
+  const redes = {
+    labels: ["X / Twitter", "Facebook", "Instagram", "YouTube"],
+    seguidores: [1782, 2529, 1197, 88],
+    publicaciones: [200, 187, 310, 4],
+    interacciones: [459, 3041, 1908, 493]
+  };
+
+  const generoActividades = [
+    { label: "Asamblea", mujeres: 73.53, hombres: 26.47 },
+    { label: "Reuniones ONGs (2)", mujeres: 76.06, hombres: 23.94 },
+    { label: "Junta Directiva", mujeres: 66.56, hombres: 33.44 },
+    { label: "Vocalías Consejo Asesor", mujeres: 68.02, hombres: 31.98 },
+    { label: "Grupo Educación", mujeres: 74.02, hombres: 25.98 },
+    { label: "Incidencia política", mujeres: 65, hombres: 35 },
+    { label: "Voluntariado", mujeres: 86.67, hombres: 13.33 },
+    { label: "Formaciones", mujeres: 79.71, hombres: 20.29 },
+    { label: "30 años (institucional)", mujeres: 71.21, hombres: 28.79 },
+    { label: "30 años (encuentro ONGs)", mujeres: 76.67, hombres: 23.23 },
+    { label: "Coord. estatal / Red CCAA", mujeres: 74.67, hombres: 25.33 }
+  ];
+
+  const consultasTemas = [
+    { label: "Normativas", total: 63, mujeres: 90.48, hombres: 9.52 },
+    { label: "Cuestiones administrativas", total: 6, mujeres: 66.67, hombres: 33.33 },
+    { label: "Inf. ciudadana / otras ONGs", total: 13, mujeres: 69.23, hombres: 30.77 },
+    { label: "Instituciones", total: 10, mujeres: 70, hombres: 30 },
+    { label: "Coord. autonómicas", total: 3, mujeres: 100, hombres: 0 },
+    { label: "Acogida ONGs CONGDEX", total: 13, mujeres: 100, hombres: 0 },
+    { label: "Otras", total: 13, mujeres: 84.62, hombres: 15.38 }
+  ];
+
+  const hasCharts =
+    document.getElementById("chartReuniones") &&
+    document.getElementById("chartRedes") &&
+    document.getElementById("chartGenero") &&
+    document.getElementById("chartConsultasTemas") &&
+    document.getElementById("chartConsultasGenero");
+
+  if (!hasCharts || !window.Chart) return;
+
+  const pct = (n) => (Math.round(n * 100) / 100).toLocaleString("es-ES") + "%";
+  const num = (n) => Number(n).toLocaleString("es-ES");
+
+  Chart.defaults.font.family = "system-ui, -apple-system, Segoe UI, Roboto, Arial";
+  Chart.defaults.plugins.legend.labels.boxWidth = 10;
+  Chart.defaults.animation.duration = 900;
+
+  new Chart(document.getElementById("chartReuniones"), {
+    type: "doughnut",
+    data: {
+      labels: reuniones.map((d) => d.label),
+      datasets: [
+        {
+          data: reuniones.map((d) => d.value),
+          borderWidth: 0,
+          hoverOffset: 10,
+          cutout: "62%"
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: (item) => {
+              const total = item.dataset.data.reduce((a, b) => a + b, 0);
+              const v = item.raw;
+              const p = (v / total) * 100;
+              return ` ${item.label}: ${v} (${pct(p)})`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  const redesChart = new Chart(document.getElementById("chartRedes"), {
+    type: "bar",
+    data: {
+      labels: redes.labels,
+      datasets: [
+        {
+          label: "Seguidores",
+          data: redes.seguidores,
+          borderWidth: 0,
+          borderRadius: 10
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: (item) => ` ${item.dataset.label}: ${num(item.raw)}`
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+  const updateRedes = (m) => {
+    const pretty =
+      m === "seguidores" ? "Seguidores" : m === "publicaciones" ? "Publicaciones" : "Interacciones";
+    redesChart.data.datasets[0].label = pretty;
+    redesChart.data.datasets[0].data = redes[m];
+    redesChart.update();
+  };
+
+  document.querySelectorAll(".tab").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach((b) => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      updateRedes(btn.dataset.m);
+    });
+  });
+
+  new Chart(document.getElementById("chartGenero"), {
+    type: "bar",
+    data: {
+      labels: generoActividades.map((d) => d.label),
+      datasets: [
+        { label: "Mujeres (%)", data: generoActividades.map((d) => d.mujeres), stack: "s", borderWidth: 0, borderRadius: 8 },
+        { label: "Hombres (%)", data: generoActividades.map((d) => d.hombres), stack: "s", borderWidth: 0, borderRadius: 8 }
+      ]
+    },
+    options: {
+      responsive: true,
+      indexAxis: "y",
+      plugins: {
+        tooltip: { callbacks: { label: (item) => ` ${item.dataset.label}: ${pct(item.raw)}` } }
+      },
+      scales: {
+        x: { min: 0, max: 100, ticks: { callback: (v) => v + "%" } },
+        y: { ticks: { autoSkip: false } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById("chartConsultasTemas"), {
+    type: "bar",
+    data: {
+      labels: consultasTemas.map((d) => d.label),
+      datasets: [{ label: "Consultas", data: consultasTemas.map((d) => d.total), borderWidth: 0, borderRadius: 10 }]
+    },
+    options: {
+      responsive: true,
+      indexAxis: "y",
+      plugins: {
+        tooltip: { callbacks: { label: (item) => ` ${item.dataset.label}: ${num(item.raw)}` } }
+      },
+      scales: { x: { beginAtZero: true } }
+    }
+  });
+
+  new Chart(document.getElementById("chartConsultasGenero"), {
+    type: "bar",
+    data: {
+      labels: consultasTemas.map((d) => d.label),
+      datasets: [
+        { label: "Mujeres (%)", data: consultasTemas.map((d) => d.mujeres), stack: "g", borderWidth: 0, borderRadius: 8 },
+        { label: "Hombres (%)", data: consultasTemas.map((d) => d.hombres), stack: "g", borderWidth: 0, borderRadius: 8 }
+      ]
+    },
+    options: {
+      responsive: true,
+      indexAxis: "y",
+      plugins: {
+        tooltip: { callbacks: { label: (item) => ` ${item.dataset.label}: ${pct(item.raw)}` } }
+      },
+      scales: {
+        x: { min: 0, max: 100, ticks: { callback: (v) => v + "%" } },
+        y: { ticks: { autoSkip: false } }
+      }
+    }
+  });
+})();
