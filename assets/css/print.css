@@ -1,13 +1,88 @@
-body{
-background:#fff;
-color:#000;
+*{
+  box-sizing:border-box;
 }
 
+html,body{
+  background:#ffffff !important;
+  color:#000000 !important;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height:1.5;
+}
+
+/* Ocultar elementos interactivos */
+.topbar,
 .progress,
-#backTop{
-display:none;
+#backTop,
+.nav{
+  display:none !important;
 }
 
-section{
-page-break-before:always;
+/* Hero limpio para impresión */
+.hero{
+  min-height:auto !important;
+  border:none !important;
+}
+
+.hero__media{
+  display:none !important;
+}
+
+.hero__panel{
+  margin:0 !important;
+  width:100% !important;
+}
+
+.hero__panelInner{
+  background:#ffffff !important;
+  color:#000000 !important;
+  padding:0 !important;
+  box-shadow:none !important;
+}
+
+.hero h1{
+  font-size:28pt !important;
+  line-height:1.2 !important;
+}
+
+.hero p{
+  font-size:12pt !important;
+}
+
+/* Secciones */
+.chapter{
+  padding:20px 0 !important;
+  page-break-inside:avoid;
+  border:none !important;
+  background:#ffffff !important;
+}
+
+h2{
+  font-size:18pt !important;
+  margin-bottom:8pt !important;
+}
+
+.num{
+  font-size:24pt !important;
+  font-weight:bold;
+}
+
+/* Barras como líneas simples */
+.barFill{
+  transform:none !important;
+  height:6pt !important;
+  background:#000 !important;
+}
+
+.barFill::after{
+  display:none !important;
+}
+
+/* Evitar cortes feos */
+h1,h2,p{
+  page-break-inside:avoid;
+}
+
+/* Márgenes de impresión */
+@page{
+  margin:2cm;
 }
