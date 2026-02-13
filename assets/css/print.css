@@ -1,6 +1,4 @@
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 html,body{
   background:#ffffff !important;
@@ -9,23 +7,21 @@ html,body{
   line-height:1.5;
 }
 
-/* Ocultar elementos interactivos */
 .topbar,
 .progress,
 #backTop,
-.nav{
+.nav,
+.tabs,
+.card__actions{
   display:none !important;
 }
 
-/* Hero limpio para impresión */
 .hero{
   min-height:auto !important;
   border:none !important;
 }
 
-.hero__media{
-  display:none !important;
-}
+.hero__media{display:none !important}
 
 .hero__panel{
   margin:0 !important;
@@ -39,50 +35,20 @@ html,body{
   box-shadow:none !important;
 }
 
-.hero h1{
-  font-size:28pt !important;
-  line-height:1.2 !important;
-}
+.hero h1{font-size:28pt !important;line-height:1.2 !important}
+.hero p{font-size:12pt !important}
 
-.hero p{
-  font-size:12pt !important;
-}
+.chapter{padding:20px 0 !important;page-break-inside:avoid;border:none !important;background:#ffffff !important}
+h2{font-size:18pt !important;margin-bottom:8pt !important}
+.num{font-size:24pt !important;font-weight:bold}
 
-/* Secciones */
-.chapter{
-  padding:20px 0 !important;
-  page-break-inside:avoid;
-  border:none !important;
-  background:#ffffff !important;
-}
+.cifras{padding:0 !important;max-width:100% !important}
+.cifras__grid{display:block !important}
+.card{page-break-inside:avoid;border:1px solid #ddd !important;background:#fff !important}
+.kpis{display:grid !important;grid-template-columns:repeat(2,1fr) !important}
+.kpi{background:#fff !important;border:1px solid #ddd !important}
+.kpi strong{color:#000 !important}
 
-h2{
-  font-size:18pt !important;
-  margin-bottom:8pt !important;
-}
+canvas{max-width:100% !important}
 
-.num{
-  font-size:24pt !important;
-  font-weight:bold;
-}
-
-/* Barras como líneas simples */
-.barFill{
-  transform:none !important;
-  height:6pt !important;
-  background:#000 !important;
-}
-
-.barFill::after{
-  display:none !important;
-}
-
-/* Evitar cortes feos */
-h1,h2,p{
-  page-break-inside:avoid;
-}
-
-/* Márgenes de impresión */
-@page{
-  margin:2cm;
-}
+@page{margin:2cm}
