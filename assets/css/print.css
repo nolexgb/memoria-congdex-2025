@@ -1,1 +1,13 @@
+body{
+background:#fff;
+color:#000;
+}
 
+.progress,
+#backTop{
+display:none;
+}
+
+section{
+page-break-before:always;
+}
