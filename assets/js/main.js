@@ -1,47 +1,104 @@
-const reveals=document.querySelectorAll(".reveal")
-const io=new IntersectionObserver(e=>{
-e.forEach(x=>{
-if(x.isIntersecting){
-x.target.classList.add("visible")
+// ============================
+// REVEAL ANIMATION
+// ============================
+const reveals = document.querySelectorAll(".reveal");
+
+if (reveals.length) {
+  const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+      }
+    });
+  });
+
+  reveals.forEach(el => revealObserver.observe(el));
 }
-})
-})
-reveals.forEach(r=>io.observe(r))
 
-window.addEventListener("scroll",()=>{
-const h=document.documentElement
-const p=h.scrollTop/(h.scrollHeight-h.clientHeight)
-document.getElementById("progressBar").style.width=p*100+"%"
-})
 
-document.querySelectorAll("[data-count]").forEach(el=>{
-let done=false
-new IntersectionObserver(e=>{
-if(done)return
-if(e[0].isIntersecting){
-done=true
-let t=Number(el.dataset.count)
-let n=0
-const i=setInterval(()=>{
-n+=t/30
-if(n>=t){n=t;clearInterval(i)}
-el.textContent=Math.floor(n).toLocaleString()
-},20)
+// ============================
+// PROGRESS BAR
+// ============================
+const progressBar = document.getElementById("progressBar");
+
+if (progressBar) {
+  window.addEventListener("scroll", () => {
+    const h = document.documentElement;
+    const progress = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    progressBar.style.width = (progress * 100) + "%";
+  });
 }
-}).observe(el)
-})
 
-document.querySelectorAll(".barFill").forEach(bar=>{
-new IntersectionObserver(e=>{
-if(e[0].isIntersecting){
-bar.style.transition="transform .7s"
-bar.style.transform="scaleX("+(bar.dataset.value/100)+")"
+
+// ============================
+// COUNT ANIMATION
+// ============================
+document.querySelectorAll("[data-count]").forEach(el => {
+
+  let started = false;
+
+  const counterObserver = new IntersectionObserver(entries => {
+
+    if (started) return;
+
+    if (entries[0].isIntersecting) {
+
+      started = true;
+
+      const target = Number(el.dataset.count);
+      let current = 0;
+
+      const interval = setInterval(() => {
+
+        current += target / 30;
+
+        if (current >= target) {
+          current = target;
+          clearInterval(interval);
+        }
+
+        el.textContent = Math.floor(current).toLocaleString();
+
+      }, 20);
+    }
+  });
+
+  counterObserver.observe(el);
+});
+
+
+// ============================
+// BAR ANIMATION
+// ============================
+document.querySelectorAll(".barFill").forEach(bar => {
+
+  const barObserver = new IntersectionObserver(entries => {
+
+    if (entries[0].isIntersecting) {
+      bar.style.transition = "transform .7s ease";
+      bar.style.transform = "scaleX(" + (bar.dataset.value / 100) + ")";
+    }
+  });
+
+  barObserver.observe(bar);
+});
+
+
+// ============================
+// BACK TO TOP BUTTON
+// ============================
+const backTop = document.getElementById("backTop");
+
+if (backTop) {
+
+  window.addEventListener("scroll", () => {
+    backTop.style.display = window.scrollY > 500 ? "block" : "none";
+  });
+
+  backTop.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
 }
-}).observe(bar)
-})
-
-const back=document.getElementById("backTop")
-window.addEventListener("scroll",()=>{
-back.style.display=window.scrollY>500?"block":"none"
-})
-back.onclick=()=>window.scrollTo({top:0,behavior:"smooth"})
