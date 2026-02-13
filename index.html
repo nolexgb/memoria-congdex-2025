@@ -18,6 +18,7 @@
     <nav class="nav">
       <ul>
         <li><a href="#capitulo-1">Cap 1</a></li>
+        <li><a href="#cifras">Cifras</a></li>
         <li><a href="#capitulo-2">Cap 2</a></li>
         <li><a href="#capitulo-3">Cap 3</a></li>
         <li><a href="#capitulo-4">Cap 4</a></li>
@@ -43,6 +44,61 @@
   <div class="container">
     <h2>Contexto y visión</h2>
     <div data-count="125000" class="num">0</div>
+  </div>
+</section>
+
+<section id="cifras" class="cifras reveal">
+  <header class="cifras__head">
+    <h2>La Coordinadora en cifras</h2>
+    <p>Resumen interactivo de actividad, comunicación y participación.</p>
+  </header>
+
+  <div class="cifras__grid">
+    <article class="card">
+      <h3>Reuniones por órgano</h3>
+      <canvas id="chartReuniones"></canvas>
+    </article>
+
+    <article class="card">
+      <h3>Comunicación externa</h3>
+      <div class="tabs" role="tablist" aria-label="Métricas redes">
+        <button class="tab is-active" data-m="seguidores" role="tab" type="button">Seguidores</button>
+        <button class="tab" data-m="publicaciones" role="tab" type="button">Publicaciones</button>
+        <button class="tab" data-m="interacciones" role="tab" type="button">Interacciones</button>
+      </div>
+      <canvas id="chartRedes"></canvas>
+      <small class="hint">YouTube: “Interacciones” refleja reproducciones. Spotify y web se muestran en KPIs.</small>
+    </article>
+
+    <article class="card">
+      <h3>Participación por género</h3>
+      <canvas id="chartGenero"></canvas>
+    </article>
+
+    <article class="card">
+      <h3>Asistencias técnicas</h3>
+      <div class="split">
+        <div>
+          <h4>Consultas por temática</h4>
+          <canvas id="chartConsultasTemas"></canvas>
+        </div>
+        <div>
+          <h4>Género por temática</h4>
+          <canvas id="chartConsultasGenero"></canvas>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div class="kpis" aria-label="Indicadores clave">
+    <div class="kpi"><strong>38</strong><span>Circulares internas</span></div>
+    <div class="kpi"><strong>8.439</strong><span>Aperturas registradas</span></div>
+    <div class="kpi"><strong>60,19%</strong><span>Promedio aperturas</span></div>
+    <div class="kpi"><strong>41</strong><span>Publicaciones web</span></div>
+    <div class="kpi"><strong>26</strong><span>Eventos web</span></div>
+    <div class="kpi"><strong>12</strong><span>Ofertas empleo</span></div>
+    <div class="kpi"><strong>12.670</strong><span>Visitas web</span></div>
+    <div class="kpi"><strong>11.420</strong><span>Visitantes web</span></div>
   </div>
 </section>
 
@@ -75,6 +131,7 @@
 
 <button id="backTop" aria-label="Volver arriba">↑</button>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
 <script src="assets/js/main.js" defer></script>
 </body>
 </html>
