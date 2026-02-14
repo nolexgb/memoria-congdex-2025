@@ -141,7 +141,7 @@ if (hero && !prefersReduced) {
   };
 
   const reuniones = [
-    { label: "JD / Grupos de trabajo", value: 11 },
+    { label: "Junta Directiva / Equipo Técnico", value: 11 },
     { label: "Vocalías Consejo Asesor", value: 6 },
     { label: "Grupo de Educación", value: 11 },
     { label: "Comisión Incidencia Política", value: 5 },
@@ -236,7 +236,6 @@ if (hero && !prefersReduced) {
   }
 
   const charts = {};
-
   const totalReuniones = reuniones.reduce((a, b) => a + b.value, 0);
 
   charts.chartReuniones = new Chart(elReuniones, {
@@ -413,23 +412,8 @@ if (hero && !prefersReduced) {
     a.click();
   }
 
-  function resetChart(chartKey) {
-    const chart = charts[chartKey];
-    if (!chart) return;
-    if (chart.config.type === "doughnut") {
-      const n = chart.data.labels.length;
-      for (let i = 0; i < n; i++) chart.setDataVisibility(i, true);
-    }
-    chart.reset();
-    chart.update();
-  }
-
   document.querySelectorAll("[data-dl]").forEach(btn => {
     btn.addEventListener("click", () => downloadChart(btn.dataset.dl));
-  });
-
-  document.querySelectorAll("[data-reset]").forEach(btn => {
-    btn.addEventListener("click", () => resetChart(btn.dataset.reset));
   });
 
   let resizeTO = null;
