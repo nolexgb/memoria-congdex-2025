@@ -195,3 +195,50 @@ canvas{width:100%!important;height:auto!important}
   .hero__media{transform:none;filter:none}
   .hero::after{display:none}
 }
+/* =======================
+   PRÓLOGO EDITORIAL
+======================= */
+
+.prologo{
+  margin-top: clamp(18px,3vw,30px);
+  background: rgba(240,242,244,.95);
+  border:1px solid rgba(0,0,0,.10);
+  padding: clamp(18px,2.6vw,26px);
+  color:#121212;
+  box-shadow:0 16px 46px rgba(0,0,0,.12);
+  backdrop-filter: blur(8px);
+  max-width:760px;
+}
+
+.prologo__title{
+  margin:0 0 12px;
+  font-size:clamp(14px,1.5vw,18px);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  font-weight:900;
+}
+
+.prologo p{
+  margin:0 0 12px;
+  font-size:clamp(14px,1.2vw,16px);
+  line-height:1.75;
+  font-weight:600;
+}
+
+.prologo strong{
+  font-weight:900;
+}
+
+/* Estilo editorial en desktop */
+@media(min-width:1100px){
+  .prologo{
+    max-width:860px;
+  }
+  .prologo p{
+    column-count:2;
+    column-gap:28px;
+  }
+  .prologo__title{
+    column-span:all;
+  }
+}
