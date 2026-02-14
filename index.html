@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Memoria CONGDEX 2025</title>
+
 <link rel="stylesheet" href="assets/css/styles.css">
 <link rel="stylesheet" href="assets/css/print.css" media="print">
 </head>
@@ -13,158 +14,88 @@
 <div class="progress"><div id="progressBar"></div></div>
 
 <header class="topbar">
-  <div class="container topbar__inner">
-    <a class="brand">Memoria CONGDEX 2025</a>
-    <nav class="nav">
-      <ul>
-        <li><a href="#capitulo-1">Cap 1</a></li>
-        <li><a href="#cifras">Cifras</a></li>
-        <li><a href="#capitulo-2">Cap 2</a></li>
-        <li><a href="#capitulo-3">Cap 3</a></li>
-        <li><a href="#capitulo-4">Cap 4</a></li>
-        <li><a href="#capitulo-5">Cap 5</a></li>
-      </ul>
-    </nav>
-  </div>
+<div class="container topbar__inner">
+<a class="brand">Memoria CONGDEX 2025</a>
+
+<nav class="nav">
+<ul>
+<li><a href="#capitulo-1">Cap 1</a></li>
+<li><a href="#cifras">Cifras</a></li>
+<li><a href="#capitulo-2">Cap 2</a></li>
+<li><a href="#capitulo-3">Cap 3</a></li>
+<li><a href="#capitulo-4">Cap 4</a></li>
+<li><a href="#capitulo-5">Cap 5</a></li>
+</ul>
+</nav>
+</div>
 </header>
 
 <main>
 
 <section class="hero reveal" id="hero">
   <div class="hero__media" aria-hidden="true"></div>
+
   <div class="hero__panel">
     <div class="hero__panelInner">
       <h1>Memoria CONGDEX 2025</h1>
-      <p>30 AÑOS - Lo común como resistencia</p>
+      <p>Reporte editorial interactivo estilo Habitat.</p>
+
+      <!-- PRÓLOGO -->
+      <aside class="prologo" aria-label="Prólogo">
+        <h2 class="prologo__title">LA COOPERACIÓN, ADN DE EXTREMADURA</h2>
+
+        <p><strong>En 1995, hace ya 30 años, se constituyó la Coordinadora Extremeña de ONGD.</strong> Ese mismo año, se creó el Consejo Asesor de Cooperación al Desarrollo y fueron publicadas las primeras ayudas oficiales para proyectos de desarrollo.</p>
+
+        <p><strong>Este 2025 hemos celebrado tres décadas de trayectoria</strong> en la defensa de los derechos humanos, la justicia global y la cooperación internacional para el desarrollo. Lo que comenzó entonces como un espacio de encuentro entre personas y organizaciones convencidas de que la cooperación debía consolidarse como una política pública, se ha convertido hoy en una sólida y reconocida red que agrupa a organizaciones que trabajan en el territorio extremeño y, también, en América, Asia y África.</p>
+
+        <p><strong>En estos 30 años, la Coordinadora ha realizado una labor</strong> que ha ido creciendo en compromiso y visibilidad. Hemos acompañado el nacimiento y consolidación de la cooperación extremeña como política social, hemos defendido la coherencia de políticas e impulsado el trabajo conjunto de la sociedad civil con las instituciones.</p>
+
+        <p><strong>Pero más allá de estos datos, desde CONGDEX</strong>, siempre hemos querido transmitir y consolidar la idea de que la cooperación es ADN de nuestra comunidad. La cooperación es idioma, cultura y raíz de nuestra región.</p>
+
+        <p><strong>Una red que se hace más fuerte</strong> frente a la deshumanización, la guerra, el odio, la injusticia, el fascismo y el racismo.</p>
+
+        <p><strong>Porque somos así</strong>, porque no sólo nos duele “lo nuestro”, porque queremos mirar más allá del umbral de nuestra casa.</p>
+      </aside>
     </div>
   </div>
 </section>
 
 <section id="capitulo-1" class="chapter reveal">
-  <div class="container">
-    <h2>Contexto y visión</h2>
-    <div data-count="125000" class="num">0</div>
-  </div>
-</section>
-
-<section id="cifras" class="cifras reveal">
-  <header class="cifras__head">
-    <h2>LA COORDINADORA EN CIFRAS</h2>
-      </header>
-
-  <div class="cifras__grid">
-    <article class="card">
-      <div class="card__top">
-        <h3>Reuniones por Grupos de Trabajo</h3>
-        <div class="card__actions">
-          <button class="btn" type="button" data-dl="chartReuniones">Descargar</button>
-        </div>
-      </div>
-      <div class="chartBox">
-        <canvas id="chartReuniones"></canvas>
-      </div>
-    </article>
-
-    <article class="card">
-      <div class="card__top">
-        <h3>Comunicación externa</h3>
-        <div class="card__actions">
-          <button class="btn" type="button" data-dl="chartRedes">Descargar</button>
-        </div>
-      </div>
-
-      <div class="tabs" role="tablist" aria-label="Métricas redes">
-        <button class="tab is-active" id="tab-seguidores" data-m="seguidores" role="tab" type="button" aria-selected="true" tabindex="0" aria-controls="panel-redes">Seguidores</button>
-        <button class="tab" id="tab-publicaciones" data-m="publicaciones" role="tab" type="button" aria-selected="false" tabindex="-1" aria-controls="panel-redes">Publicaciones</button>
-        <button class="tab" id="tab-interacciones" data-m="interacciones" role="tab" type="button" aria-selected="false" tabindex="-1" aria-controls="panel-redes">Interacciones</button>
-      </div>
-
-      <div id="panel-redes" role="tabpanel" aria-labelledby="tab-seguidores" class="chartBox">
-        <canvas id="chartRedes"></canvas>
-      </div>
-    </article>
-
-    <article class="card">
-      <div class="card__top">
-        <h3>Participación por género</h3>
-        <div class="card__actions">
-          <button class="btn" type="button" data-dl="chartGenero">Descargar</button>
-        </div>
-      </div>
-      <div class="chartBox chartBox--tall">
-        <canvas id="chartGenero"></canvas>
-      </div>
-    </article>
-
-    <article class="card">
-      <div class="card__top">
-        <h3>Asistencias técnicas</h3>
-        <div class="card__actions">
-          <button class="btn" type="button" data-dl="chartConsultasTemas">Descargar</button>
-        </div>
-      </div>
-
-      <div class="split">
-        <div>
-          <h4>Consultas por temática</h4>
-          <div class="chartBox">
-            <canvas id="chartConsultasTemas"></canvas>
-          </div>
-        </div>
-        <div>
-          <h4>Género por temática</h4>
-          <div class="chartBox">
-            <canvas id="chartConsultasGenero"></canvas>
-          </div>
-        </div>
-      </div>
-    </article>
-  </div>
-
-  <div class="kpis" aria-label="Indicadores clave">
-    <div class="kpi"><strong>38</strong><span>Circulares internas</span></div>
-    <div class="kpi"><strong>8.439</strong><span>Aperturas registradas</span></div>
-    <div class="kpi"><strong>60,19%</strong><span>Promedio aperturas</span></div>
-    <div class="kpi"><strong>41</strong><span>Publicaciones web</span></div>
-    <div class="kpi"><strong>26</strong><span>Eventos web</span></div>
-    <div class="kpi"><strong>12</strong><span>Ofertas empleo</span></div>
-    <div class="kpi"><strong>12.670</strong><span>Visitas web</span></div>
-    <div class="kpi"><strong>11.420</strong><span>Visitantes web</span></div>
-  </div>
+<div class="container">
+<h2>Contexto y visión</h2>
+<div data-count="125000" class="num">0</div>
+</div>
 </section>
 
 <section id="capitulo-2" class="chapter reveal">
-  <div class="container">
-    <h2>Programas e impacto</h2>
-    <div class="barFill" data-value="78"></div>
-  </div>
+<div class="container">
+<h2>Programas e impacto</h2>
+<div class="barFill" data-value="78"></div>
+</div>
 </section>
 
 <section id="capitulo-3" class="chapter reveal">
-  <div class="container">
-    <h2>Historias</h2>
-  </div>
+<div class="container">
+<h2>Historias</h2>
+</div>
 </section>
 
 <section id="capitulo-4" class="chapter reveal">
-  <div class="container">
-    <h2>Resultados</h2>
-  </div>
+<div class="container">
+<h2>Resultados</h2>
+</div>
 </section>
 
 <section id="capitulo-5" class="chapter reveal">
-  <div class="container">
-    <h2>Futuro</h2>
-  </div>
+<div class="container">
+<h2>Futuro</h2>
+</div>
 </section>
 
 </main>
 
-<button id="backTop" aria-label="Volver arriba">↑</button>
+<button id="backTop">↑</button>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
 <script src="assets/js/main.js" defer></script>
 </body>
 </html>
-
-
