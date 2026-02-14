@@ -2,6 +2,7 @@ const prefersReduced=window.matchMedia&&window.matchMedia("(prefers-reduced-moti
 function pctES(n){return(Math.round(n*100)/100).toLocaleString("es-ES")+"%"}
 function numES(n){return Number(n).toLocaleString("es-ES")}
 function getCSSVar(n,f){const v=getComputedStyle(document.documentElement).getPropertyValue(n).trim();return v||f}
+const clamp=(n,min,max)=>Math.max(min,Math.min(max,n))
 
 const reveals=document.querySelectorAll(".reveal")
 if(reveals.length){
@@ -24,21 +25,37 @@ if(backTop){
   backTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}))
 }
 
+function animateCount(el,target){
+  let n=0
+  const steps=30
+  const inc=target/steps
+  const i=setInterval(()=>{
+    n+=inc
+    if(n>=target){n=target;clearInterval(i)}
+    el.textContent=Math.floor(n).toLocaleString("es-ES")
+  },20)
+}
+
 document.querySelectorAll("[data-count]").forEach(el=>{
   let done=false
   new IntersectionObserver(e=>{
     if(done)return
     if(e[0].isIntersecting){
       done=true
-      const t=Number(el.dataset.count)
-      let n=0
-      const i=setInterval(()=>{
-        n+=t/30
-        if(n>=t){n=t;clearInterval(i)}
-        el.textContent=Math.floor(n).toLocaleString("es-ES")
-      },20)
+      animateCount(el,Number(el.dataset.count))
     }
   },{threshold:.35}).observe(el)
+})
+
+document.querySelectorAll("[data-target]").forEach(el=>{
+  let done=false
+  new IntersectionObserver(e=>{
+    if(done)return
+    if(e[0].isIntersecting){
+      done=true
+      animateCount(el,Number(el.dataset.target))
+    }
+  },{threshold:.45}).observe(el)
 })
 
 document.querySelectorAll(".barFill").forEach(bar=>{
@@ -51,8 +68,6 @@ document.querySelectorAll(".barFill").forEach(bar=>{
 })
 
 const zoomSections=[...document.querySelectorAll("[data-zoom]")]
-const clamp=(n,min,max)=>Math.max(min,Math.min(max,n))
-
 function applyZoom(){
   if(prefersReduced)return
   const vh=window.innerHeight
@@ -66,7 +81,6 @@ function applyZoom(){
     img.style.transform=`translate3d(0,${y}px,0) scale(${scale})`
   })
 }
-
 if(zoomSections.length&&!prefersReduced){
   applyZoom()
   window.addEventListener("scroll",applyZoom,{passive:true})
