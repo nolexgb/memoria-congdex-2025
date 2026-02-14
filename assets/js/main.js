@@ -18,6 +18,12 @@ if(progressBar){
   },{passive:true})
 }
 
+const backTop=document.getElementById("backTop")
+if(backTop){
+  window.addEventListener("scroll",()=>{backTop.style.display=window.scrollY>500?"block":"none"},{passive:true})
+  backTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}))
+}
+
 document.querySelectorAll("[data-count]").forEach(el=>{
   let done=false
   new IntersectionObserver(e=>{
@@ -32,7 +38,7 @@ document.querySelectorAll("[data-count]").forEach(el=>{
         el.textContent=Math.floor(n).toLocaleString("es-ES")
       },20)
     }
-  }).observe(el)
+  },{threshold:.35}).observe(el)
 })
 
 document.querySelectorAll(".barFill").forEach(bar=>{
@@ -41,13 +47,30 @@ document.querySelectorAll(".barFill").forEach(bar=>{
       bar.style.transition="transform .8s cubic-bezier(.2,.8,.2,1)"
       bar.style.transform="scaleX("+(bar.dataset.value/100)+")"
     }
-  }).observe(bar)
+  },{threshold:.35}).observe(bar)
 })
 
-const backTop=document.getElementById("backTop")
-if(backTop){
-  window.addEventListener("scroll",()=>{backTop.style.display=window.scrollY>500?"block":"none"},{passive:true})
-  backTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}))
+const zoomSections=[...document.querySelectorAll("[data-zoom]")]
+const clamp=(n,min,max)=>Math.max(min,Math.min(max,n))
+
+function applyZoom(){
+  if(prefersReduced)return
+  const vh=window.innerHeight
+  zoomSections.forEach(sec=>{
+    const img=sec.querySelector(".hero__img,.impact__img")
+    if(!img)return
+    const r=sec.getBoundingClientRect()
+    const prog=clamp(1-((r.top+vh)/(vh+r.height)),0,1)
+    const scale=1.08+prog*0.10
+    const y=(prog-0.5)*-24
+    img.style.transform=`translate3d(0,${y}px,0) scale(${scale})`
+  })
+}
+
+if(zoomSections.length&&!prefersReduced){
+  applyZoom()
+  window.addEventListener("scroll",applyZoom,{passive:true})
+  window.addEventListener("resize",applyZoom)
 }
 
 (()=>{
