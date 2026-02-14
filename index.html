@@ -17,6 +17,7 @@
       <nav class="nav" aria-label="Secciones">
         <ul>
           <li><a href="#prologo">Prólogo</a></li>
+          <li><a href="#destacados">Destacados</a></li>
           <li><a href="#capitulo-1">Cap 1</a></li>
           <li><a href="#cifras">Cifras</a></li>
           <li><a href="#capitulo-2">Cap 2</a></li>
@@ -29,12 +30,14 @@
   </header>
 
   <main>
-    <section class="hero reveal" id="hero">
-      <div class="hero__media" aria-hidden="true"></div>
+    <section class="hero reveal" id="hero" data-zoom>
+      <div class="hero__media" aria-hidden="true">
+        <div class="hero__img"></div>
+      </div>
       <div class="hero__panel">
         <div class="hero__panelInner">
           <h1>Memoria CONGDEX 2025</h1>
-          <p>30 Años - Lo común como resistencia/p>
+          <p>Reporte editorial interactivo estilo Habitat.</p>
         </div>
       </div>
     </section>
@@ -62,6 +65,34 @@
             <p><strong>Porque somos así,</strong> porque no sólo nos duele “lo nuestro”, porque queremos y sabemos mirar más allá del umbral de nuestra casa. La mayor y mejor inversión de esta tierra son sus gentes y su compromiso con la solidaridad, la equidad y la justicia social en cualquier parte del mundo; ese es nuestro legado y el que dejaremos a las y los que vengan detrás.</p>
           </div>
         </aside>
+      </div>
+    </section>
+
+    <!-- NUEVO: BLOQUE DESTACADOS TIPO HABITAT -->
+    <section id="destacados" class="impact reveal" data-zoom>
+      <div class="impact__media" aria-hidden="true">
+        <div class="impact__img"></div>
+      </div>
+
+      <div class="impact__center">
+        <div class="impact__kicker">DATOS DESTACADOS · MEMORIA 2025</div>
+        <div class="impact__big" data-count="125000">0</div>
+        <div class="impact__sub">personas alcanzadas en acciones de sensibilización, participación y trabajo en red.</div>
+      </div>
+
+      <div class="impact__bar" role="group" aria-label="Grandes cifras">
+        <div class="impact__stat">
+          <div class="impact__value" data-count="12670">0</div>
+          <div class="impact__label">Visitas web</div>
+        </div>
+        <div class="impact__stat">
+          <div class="impact__value" data-count="11420">0</div>
+          <div class="impact__label">Visitantes web</div>
+        </div>
+        <div class="impact__stat">
+          <div class="impact__value" data-count="8439">0</div>
+          <div class="impact__label">Aperturas registradas</div>
+        </div>
       </div>
     </section>
 
@@ -100,9 +131,9 @@
           </div>
 
           <div class="tabs" role="tablist" aria-label="Métricas redes">
-            <button class="tab is-active" data-m="seguidores" role="tab" type="button" aria-selected="true" tabindex="0">Seguidores</button>
-            <button class="tab" data-m="publicaciones" role="tab" type="button" aria-selected="false" tabindex="-1">Publicaciones</button>
-            <button class="tab" data-m="interacciones" role="tab" type="button" aria-selected="false" tabindex="-1">Interacciones</button>
+            <button class="tab is-active" data-m="seguidores" role="tab" type="button">Seguidores</button>
+            <button class="tab" data-m="publicaciones" role="tab" type="button">Publicaciones</button>
+            <button class="tab" data-m="interacciones" role="tab" type="button">Interacciones</button>
           </div>
 
           <div class="chartBox">
@@ -191,4 +222,3 @@
   <script src="assets/js/main.js" defer></script>
 </body>
 </html>
-
