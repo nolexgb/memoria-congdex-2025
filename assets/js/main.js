@@ -1,10 +1,11 @@
 (() => {
+  const prefersReduced =
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   const reveals = document.querySelectorAll(".reveal");
   if (reveals.length) {
     const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) e.target.classList.add("visible");
-      });
+      entries.forEach((e) => e.isIntersecting && e.target.classList.add("visible"));
     });
     reveals.forEach((r) => io.observe(r));
   }
@@ -14,7 +15,8 @@
 
   const onScrollGlobal = () => {
     const h = document.documentElement;
-    const p = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    const denom = h.scrollHeight - h.clientHeight;
+    const p = denom > 0 ? h.scrollTop / denom : 0;
     if (progressBar) progressBar.style.width = p * 100 + "%";
     if (back) back.style.display = window.scrollY > 500 ? "block" : "none";
   };
@@ -154,7 +156,7 @@
     const num = (n) => Number(n).toLocaleString("es-ES");
 
     Chart.defaults.font.family = "system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    Chart.defaults.animation.duration = 700;
+    Chart.defaults.animation.duration = prefersReduced ? 0 : 700;
     Chart.defaults.plugins.legend.labels.boxWidth = 10;
     Chart.defaults.responsive = true;
 
@@ -237,7 +239,7 @@
       });
     });
 
-    const generoChart = new Chart(document.getElementById("chartGenero"), {
+    new Chart(document.getElementById("chartGenero"), {
       type: "bar",
       data: {
         labels: generoActividades.map((d) => d.label),
@@ -277,7 +279,7 @@
       }
     });
 
-    const consultasGeneroChart = new Chart(document.getElementById("chartConsultasGenero"), {
+    new Chart(document.getElementById("chartConsultasGenero"), {
       type: "bar",
       data: {
         labels: consultasTemas.map((d) => d.label),
@@ -303,9 +305,7 @@
     const chartMap = {
       chartReuniones: reunionesChart,
       chartRedes: redesChart,
-      chartGenero: generoChart,
-      chartConsultasTemas: consultasTemasChart,
-      chartConsultasGenero: consultasGeneroChart
+      chartConsultasTemas: consultasTemasChart
     };
 
     document.querySelectorAll("[data-dl]").forEach((btn) => {
@@ -325,21 +325,14 @@
     const story = document.getElementById("kpiStory");
     if (!story) return;
 
-    const left = story.querySelector(".kpi2__left");
-    if (left) {
-      left.style.position = "relative";
-      left.style.top = "auto";
-      left.style.alignSelf = "start";
-    }
-
     const DATA = {
-      circulares: { chip: "", label: "Circulares internas", value: 38, sub: "Alcance interno consolidado", prog: .62 },
-      aperturas: { chip: "", label: "Aperturas registradas", value: 8439, type: "number", sub: "Interacción con envíos internos", prog: .78 },
-      promedio: { chip: "", label: "Promedio aperturas", value: 60.19, type: "percent", decimals: 2, sub: "Porcentaje medio de apertura", prog: .60 },
-      publicaciones: { chip: "", label: "Publicaciones web", value: 41, type: "number", sub: "Contenido publicado", prog: .58 },
-      eventos: { chip: "", label: "Eventos web", value: 26, type: "number", sub: "Actividades y entradas online", prog: .52 },
-      empleo: { chip: "", label: "Ofertas de empleo", value: 12, type: "number", sub: "Oportunidades publicadas", prog: .44 },
-      visitas: { chip: "", label: "Visitas web", value: 12670, type: "number", sub: "Tráfico total del sitio", prog: .72 }
+      circulares: { chip: "", label: "Circulares internas", value: 38, sub: "Alcance interno consolidado", prog: 0.62 },
+      aperturas: { chip: "", label: "Aperturas registradas", value: 8439, type: "number", sub: "Interacción con envíos internos", prog: 0.78 },
+      promedio: { chip: "", label: "Promedio aperturas", value: 60.19, type: "percent", decimals: 2, sub: "Porcentaje medio de apertura", prog: 0.6 },
+      publicaciones: { chip: "", label: "Publicaciones web", value: 41, type: "number", sub: "Contenido publicado", prog: 0.58 },
+      eventos: { chip: "", label: "Eventos web", value: 26, type: "number", sub: "Actividades y entradas online", prog: 0.52 },
+      empleo: { chip: "", label: "Ofertas de empleo", value: 12, type: "number", sub: "Oportunidades publicadas", prog: 0.44 },
+      visitas: { chip: "", label: "Visitas web", value: 12670, type: "number", sub: "Tráfico total del sitio", prog: 0.72 }
     };
 
     const elChip = document.getElementById("kpiChip");
@@ -349,7 +342,6 @@
     const elBar = document.getElementById("kpiBar");
     const elMetaR = document.getElementById("kpiMetaR");
     const kpiCard = document.getElementById("kpiCard");
-
     if (!elChip || !elLabel || !elValue || !elSub || !elBar || !elMetaR || !kpiCard) return;
 
     const cards = [...document.querySelectorAll(".stepCard")];
@@ -368,6 +360,11 @@
     const easeOutExpo = (x) => (x === 1 ? 1 : 1 - Math.pow(2, -10 * x));
 
     const animateCounter = (from, to, d) => {
+      if (prefersReduced) {
+        elValue.textContent = formatValue(d, to);
+        return;
+      }
+
       const start = performance.now();
       const delta = Math.abs(to - from);
       const dur = Math.max(520, Math.min(1200, 520 + delta * 7));
@@ -394,17 +391,14 @@
       cards.forEach((c) => c.classList.toggle("is-active", c.dataset.key === key));
 
       elChip.textContent = d.chip || "";
-      if (!elChip.textContent.trim()) {
-        const chipWrap = elChip.closest(".chip");
-        if (chipWrap) chipWrap.style.display = "none";
-      }
+      const chipWrap = elChip.closest(".chip");
+      if (chipWrap) chipWrap.style.display = elChip.textContent.trim() ? "" : "none";
 
       elLabel.textContent = d.label;
       elSub.textContent = d.sub;
 
       const idx = keys.indexOf(key) + 1;
-      elMetaR.textContent =
-        String(idx).padStart(2, "0") + "/" + String(keys.length).padStart(2, "0");
+      elMetaR.textContent = String(idx).padStart(2, "0") + "/" + String(keys.length).padStart(2, "0");
 
       const prog = Math.max(0, Math.min(1, d.prog ?? 0.5));
       elBar.style.width = (prog * 100).toFixed(0) + "%";
@@ -454,10 +448,15 @@
       const gifY = (p - 0.5) * 34;
       const gifR = (p - 0.5) * 1.6;
 
-      kpiCard.style.transform =
-        `perspective(900px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(${transY}px)`;
-      kpiCard.style.setProperty("--parY", `${gifY.toFixed(1)}px`);
-      kpiCard.style.setProperty("--parR", `${gifR.toFixed(2)}deg`);
+      if (!prefersReduced) {
+        kpiCard.style.transform = `perspective(900px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(${transY}px)`;
+        kpiCard.style.setProperty("--parY", `${gifY.toFixed(1)}px`);
+        kpiCard.style.setProperty("--parR", `${gifR.toFixed(2)}deg`);
+      } else {
+        kpiCard.style.transform = "";
+        kpiCard.style.setProperty("--parY", `0px`);
+        kpiCard.style.setProperty("--parR", `0deg`);
+      }
     };
 
     const onScroll = () => {
@@ -477,37 +476,8 @@
   const root = document.getElementById("timeline");
   if (!root) return;
 
-  const killByText = (needle) => {
-    const els = [...root.querySelectorAll("*")];
-    els.forEach((el) => {
-      const t = (el.textContent || "").trim();
-      if (!t) return;
-      if (t.toLowerCase().includes(needle.toLowerCase())) el.remove();
-    });
-  };
-
-  killByText("Efecto");
-  killByText("Tip:");
-  killByText("tipo mapa");
-
-  const layout = root.querySelector(".layout") || root.querySelector(".tl-layout");
-  if (layout) {
-    layout.style.display = "grid";
-    layout.style.gridTemplateColumns = "1fr";
-    layout.style.gap = "18px";
-    layout.style.alignItems = "start";
-  }
-
-  const detail = root.querySelector(".detail");
-  if (detail) {
-    detail.style.position = "relative";
-    detail.style.top = "auto";
-  }
-
-  const timelinePanel = root.querySelector(".timeline");
-  if (timelinePanel) {
-    timelinePanel.style.width = "100%";
-  }
+  const prefersReduced =
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const EVENTS = [
     { id:"1995a", year:"1995", tag:"Hito", title:"Constitución CONGDEX",
@@ -562,7 +532,6 @@
   const tlYear = $("#tlYear");
   const tlTitle = $("#tlTitle");
   const tlDesc = $("#tlDesc");
-
   const tlBar = $("#tlBar");
   const tlMetaR = $("#tlMetaR");
 
@@ -574,6 +543,8 @@
 
   if (!track || !trackWrap || !prevBtn || !nextBtn) return;
 
+  if (!trackWrap.hasAttribute("tabindex")) trackWrap.tabIndex = 0;
+
   const startYearOf = (ev) => parseInt(String(ev.year).split("–")[0], 10);
   const endYearOf = (ev) => {
     const s = String(ev.year);
@@ -584,10 +555,9 @@
   const yearsStart = EVENTS.map(startYearOf);
   const minYear = Math.min(...yearsStart);
   const maxYear = Math.max(...EVENTS.map(endYearOf));
-
   if (rangeHint) rangeHint.textContent = `Rango: ${minYear}–${maxYear}`;
 
-  const pos01 = (ev) => (startYearOf(ev) - minYear) / (maxYear - minYear);
+  const pos01 = (ev) => (startYearOf(ev) - minYear) / Math.max(1, (maxYear - minYear));
 
   const escapeHtml = (str) =>
     String(str)
@@ -597,61 +567,67 @@
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#039;");
 
-  const yearCounts = {};
-  function yearJitterPx(ev) {
-    const y = startYearOf(ev);
-    yearCounts[y] = (yearCounts[y] || 0) + 1;
-    const k = yearCounts[y] - 1;
-    const offsets = [0, -14, 14, -28, 28, -42, 42];
-    return offsets[Math.min(k, offsets.length - 1)];
-  }
+  const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
-  function renderNodes() {
-    const frag = document.createDocumentFragment();
+  const animateScrollLeft = (to, dur = 520) => {
+    if (prefersReduced) {
+      trackWrap.scrollLeft = to;
+      return;
+    }
+    const from = trackWrap.scrollLeft;
+    const delta = to - from;
+    if (Math.abs(delta) < 1) return;
 
-    EVENTS.forEach((ev, i) => {
-      const node = document.createElement("div");
-      node.className = "tl-node";
-      node.dataset.id = ev.id;
-      node.dataset.index = String(i);
+    const start = performance.now();
+    const d = Math.max(260, Math.min(900, dur));
 
-      const leftPct = pos01(ev) * 100;
-      const jitter = yearJitterPx(ev);
-      node.style.left = leftPct + "%";
-      node.style.transform = `translateX(calc(-50% + ${jitter}px)) translateY(${(i % 3) * 10}px)`;
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / d);
+      const p = easeOutCubic(t);
+      trackWrap.scrollLeft = from + delta * p;
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
 
-      const tooltip = document.createElement("div");
-      tooltip.className = "tl-tooltip";
-      tooltip.innerHTML = `
-        <div class="tl-tYear">${escapeHtml(ev.year)}</div>
-        <div class="tl-tTitle">${escapeHtml(ev.title)}</div>
-        <div class="tl-tDesc">${escapeHtml(ev.desc)}</div>
-      `;
+  const getCenterScrollForNode = (nodeEl) => {
+    const wrapRect = trackWrap.getBoundingClientRect();
+    const nodeRect = nodeEl.getBoundingClientRect();
+    const centerWrap = wrapRect.left + wrapRect.width / 2;
+    const centerNode = nodeRect.left + nodeRect.width / 2;
+    return trackWrap.scrollLeft + (centerNode - centerWrap);
+  };
 
-      const pin = document.createElement("div");
-      pin.className = "tl-pin";
+  const pickClosestIndexToCenter = () => {
+    const wrapRect = trackWrap.getBoundingClientRect();
+    const centerX = wrapRect.left + wrapRect.width / 2;
 
-      const pill = document.createElement("button");
-      pill.className = "tl-pill";
-      pill.type = "button";
-      pill.textContent = ev.year;
-      pill.setAttribute("aria-label", `${ev.year}: ${ev.title}`);
-      pill.addEventListener("click", () => setActive(i, { center: true }));
+    let bestI = activeIndex;
+    let bestDist = Infinity;
 
-      node.appendChild(tooltip);
-      node.appendChild(pin);
-      node.appendChild(pill);
-      frag.appendChild(node);
+    track.querySelectorAll(".tl-node").forEach((nEl) => {
+      const r = nEl.getBoundingClientRect();
+      const x = r.left + r.width / 2;
+      const dist = Math.abs(x - centerX);
+      const idx = parseInt(nEl.dataset.index, 10);
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestI = idx;
+      }
     });
 
-    track.appendChild(frag);
+    return bestI;
+  };
 
-    track.style.minWidth = "1400px";
-  }
+  const ensureTrackWidth = () => {
+    const min = 1200;
+    const extra = Math.min(1200, EVENTS.length * 60);
+    track.style.minWidth = `${min + extra}px`;
+  };
 
   let activeIndex = 0;
 
-  function setActive(i, opts = { center: false }) {
+  const setActive = (i, opts = { center: false, pushHash: true }) => {
     const n = EVENTS.length;
     activeIndex = ((i % n) + n) % n;
 
@@ -673,84 +649,199 @@
         String(activeIndex + 1).padStart(2, "0") + "/" + String(EVENTS.length).padStart(2, "0");
     }
 
-    history.replaceState(null, "", "#" + ev.id);
+    if (opts.pushHash) history.replaceState(null, "", "#" + ev.id);
 
     if (opts.center && node) {
-      const wrapRect = trackWrap.getBoundingClientRect();
-      const nodeRect = node.getBoundingClientRect();
-      const current = trackWrap.scrollLeft;
-      const delta =
-        (nodeRect.left + nodeRect.width / 2) - (wrapRect.left + wrapRect.width / 2);
-      trackWrap.scrollLeft = current + delta;
+      const target = getCenterScrollForNode(node);
+      animateScrollLeft(target, 560);
     }
-  }
+  };
 
-  prevBtn.addEventListener("click", () => setActive(activeIndex - 1, { center: true }));
-  nextBtn.addEventListener("click", () => setActive(activeIndex + 1, { center: true }));
+  const build = () => {
+    ensureTrackWidth();
+
+    const frag = document.createDocumentFragment();
+    const localYearCounts = {};
+
+    EVENTS.forEach((ev, i) => {
+      const node = document.createElement("div");
+      node.className = "tl-node";
+      node.dataset.id = ev.id;
+      node.dataset.index = String(i);
+
+      const leftPct = pos01(ev) * 100;
+
+      const y = startYearOf(ev);
+      localYearCounts[y] = (localYearCounts[y] || 0) + 1;
+      const k = localYearCounts[y] - 1;
+      const offsets = [0, -14, 14, -28, 28, -42, 42];
+      const jitter = offsets[Math.min(k, offsets.length - 1)];
+
+      node.style.left = leftPct + "%";
+      node.style.transform = `translateX(calc(-50% + ${jitter}px)) translateY(${(i % 3) * 10}px)`;
+
+      const tooltip = document.createElement("div");
+      tooltip.className = "tl-tooltip";
+      tooltip.innerHTML = `
+        <div class="tl-tYear">${escapeHtml(ev.year)}</div>
+        <div class="tl-tTitle">${escapeHtml(ev.title)}</div>
+        <div class="tl-tDesc">${escapeHtml(ev.desc)}</div>
+      `;
+
+      const pin = document.createElement("div");
+      pin.className = "tl-pin";
+
+      const pill = document.createElement("button");
+      pill.className = "tl-pill";
+      pill.type = "button";
+      pill.textContent = ev.year;
+      pill.setAttribute("aria-label", `${ev.year}: ${ev.title}`);
+      pill.addEventListener("click", () => setActive(i, { center: true, pushHash: true }));
+
+      node.appendChild(tooltip);
+      node.appendChild(pin);
+      node.appendChild(pill);
+
+      frag.appendChild(node);
+    });
+
+    track.appendChild(frag);
+  };
+
+  prevBtn.addEventListener("click", () => setActive(activeIndex - 1, { center: true, pushHash: true }));
+  nextBtn.addEventListener("click", () => setActive(activeIndex + 1, { center: true, pushHash: true }));
+
+  trackWrap.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      setActive(activeIndex - 1, { center: true, pushHash: true });
+    }
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      setActive(activeIndex + 1, { center: true, pushHash: true });
+    }
+  });
 
   let raf = null;
-  trackWrap.addEventListener(
-    "scroll",
-    () => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = null;
+  let snapTimer = null;
+  let isInertia = false;
 
-        const wrapRect = trackWrap.getBoundingClientRect();
-        const centerX = wrapRect.left + wrapRect.width / 2;
-
-        let bestI = activeIndex;
-        let bestDist = Infinity;
-
-        track.querySelectorAll(".tl-node").forEach((nEl) => {
-          const r = nEl.getBoundingClientRect();
-          const x = r.left + r.width / 2;
-          const dist = Math.abs(x - centerX);
-          const idx = parseInt(nEl.dataset.index, 10);
-          if (dist < bestDist) {
-            bestDist = dist;
-            bestI = idx;
-          }
-        });
-
-        if (bestI !== activeIndex) setActive(bestI, { center: false });
-      });
-    },
-    { passive: true }
-  );
-
-  renderNodes();
-
-  const hash = (location.hash || "").replace("#", "");
-  const idx = hash ? EVENTS.findIndex((e) => e.id === hash) : 0;
-  setActive(idx >= 0 ? idx : 0, { center: true });
-})();
-
-(() => {
-  const el = document.getElementById("timeline");
-  if (!el) return;
-
-  let raf = null;
-
-  const update = () => {
-    raf = null;
-    const r = el.getBoundingClientRect();
-    const vh = window.innerHeight;
-
-    const visible = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
-    const z = 1 + visible * 0.08;
-    const y = (0.5 - visible) * 22;
-
-    el.style.setProperty("--tlZoom", z.toFixed(3));
-    el.style.setProperty("--tlY", `${y.toFixed(1)}px`);
+  const snapToClosest = () => {
+    const bestI = pickClosestIndexToCenter();
+    const node = track.querySelector(`.tl-node[data-index="${bestI}"]`);
+    if (node) animateScrollLeft(getCenterScrollForNode(node), 520);
   };
 
   const onScroll = () => {
     if (raf) return;
-    raf = requestAnimationFrame(update);
+    raf = requestAnimationFrame(() => {
+      raf = null;
+      const bestI = pickClosestIndexToCenter();
+      if (bestI !== activeIndex) setActive(bestI, { center: false, pushHash: false });
+    });
+
+    if (isInertia) return;
+
+    if (snapTimer) clearTimeout(snapTimer);
+    snapTimer = setTimeout(snapToClosest, 140);
   };
 
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", onScroll);
-  update();
+  trackWrap.addEventListener("scroll", onScroll, { passive: true });
+
+  build();
+
+  // ===== MAPA FLUIDO: drag + inercia + micro-parallax (integrado) =====
+  let dragging = false;
+  let px = 0;
+  let vx = 0;
+  let rafIn = null;
+  let rafPar = null;
+
+  const pins = () => [...track.querySelectorAll(".tl-pin")];
+
+  const par = (v) => {
+    if (prefersReduced) return;
+    if (rafPar) return;
+    rafPar = requestAnimationFrame(() => {
+      rafPar = null;
+      const y = Math.max(-18, Math.min(18, v * 0.12));
+      pins().forEach((p) => (p.style.transform = `translateY(${y.toFixed(1)}px)`));
+    });
+  };
+
+  const stopPar = () => pins().forEach((p) => (p.style.transform = ""));
+
+  const stepIn = () => {
+    vx *= 0.92;
+    if (Math.abs(vx) < 0.15) {
+      rafIn = null;
+      isInertia = false;
+      stopPar();
+      snapToClosest();
+      return;
+    }
+    trackWrap.scrollLeft -= vx;
+    par(vx);
+    rafIn = requestAnimationFrame(stepIn);
+  };
+
+  trackWrap.style.touchAction = "pan-x";
+
+  trackWrap.addEventListener("pointerdown", (e) => {
+    dragging = true;
+    px = e.clientX;
+    vx = 0;
+    isInertia = true;
+    if (snapTimer) clearTimeout(snapTimer);
+    if (rafIn) {
+      cancelAnimationFrame(rafIn);
+      rafIn = null;
+    }
+    trackWrap.setPointerCapture(e.pointerId);
+  });
+
+  trackWrap.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - px;
+    px = e.clientX;
+    trackWrap.scrollLeft -= dx;
+    vx = dx;
+    par(vx);
+  });
+
+  const endDrag = () => {
+    dragging = false;
+    if (prefersReduced) {
+      isInertia = false;
+      stopPar();
+      snapToClosest();
+      return;
+    }
+    rafIn = requestAnimationFrame(stepIn);
+  };
+
+  trackWrap.addEventListener("pointerup", endDrag);
+  trackWrap.addEventListener("pointercancel", () => {
+    dragging = false;
+    isInertia = false;
+    stopPar();
+    snapToClosest();
+  });
+  // ================================================================
+
+  const hash = (location.hash || "").replace("#", "");
+  const idx = hash ? EVENTS.findIndex((e) => e.id === hash) : 0;
+  setActive(idx >= 0 ? idx : 0, { center: true, pushHash: false });
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      const any = entries.some((e) => e.isIntersecting);
+      if (!any) return;
+
+      const node = track.querySelector(`.tl-node[data-index="${activeIndex}"]`);
+      if (node) animateScrollLeft(getCenterScrollForNode(node), 520);
+    },
+    { threshold: [0.25] }
+  );
+  io.observe(root);
 })();
