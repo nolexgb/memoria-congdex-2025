@@ -4,8 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Memoria CONGDEX 2025</title>
+
   <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="stylesheet" href="assets/css/print.css" media="print">
+  <link rel="preconnect" href="https://www.mattiasmackler.com" crossorigin>
 </head>
 
 <body>
@@ -14,11 +16,11 @@
   <header class="topbar">
     <div class="container topbar__inner">
       <a class="brand" href="#hero">Memoria CONGDEX 2025</a>
+
       <nav class="nav" aria-label="Secciones">
         <ul>
           <li><a href="#prologo">Prólogo</a></li>
           <li><a href="#destacados">Destacados</a></li>
-          <li><a href="#impacto-digital">Impacto Digital</a></li>
           <li><a href="#capitulo-1">Cap 1</a></li>
           <li><a href="#cifras">Cifras</a></li>
           <li><a href="#capitulo-2">Cap 2</a></li>
@@ -35,10 +37,11 @@
       <div class="hero__media" aria-hidden="true">
         <div class="hero__img"></div>
       </div>
+
       <div class="hero__panel">
         <div class="hero__panelInner">
           <h1>Memoria CONGDEX 2025</h1>
-          <p>30 años - Lo común como resistencia</p>
+          <p>30 años — Lo común como resistencia</p>
         </div>
       </div>
     </section>
@@ -90,41 +93,6 @@
       </div>
     </section>
 
-    <!-- IMPACTO DIGITAL (WRAPPED) -->
-    <section class="impacto-wrapped" id="impacto-digital">
-      <div class="wrapped-slide">
-        <h2>IMPACTO DIGITAL</h2>
-        <p class="wrapped-sub">Así se movió la comunicación de CONGDEX en 2025</p>
-      </div>
-
-      <div class="wrapped-slide">
-        <div class="wrapped-number" data-target="38">0</div>
-        <p>Circulares internas enviadas</p>
-      </div>
-
-      <div class="wrapped-slide">
-        <div class="wrapped-number" data-target="8439">0</div>
-        <p>Aperturas registradas</p>
-        <span class="wrapped-highlight">60,19% promedio de apertura</span>
-      </div>
-
-      <div class="wrapped-slide">
-        <div class="wrapped-number" data-target="41">0</div>
-        <p>Publicaciones web</p>
-      </div>
-
-      <div class="wrapped-slide dual">
-        <div>
-          <div class="wrapped-number" data-target="12670">0</div>
-          <p>Visitas web</p>
-        </div>
-        <div>
-          <div class="wrapped-number" data-target="11420">0</div>
-          <p>Visitantes únicos</p>
-        </div>
-      </div>
-    </section>
-
     <section id="capitulo-1" class="chapter reveal">
       <div class="container">
         <h2>Contexto y visión</h2>
@@ -132,19 +100,17 @@
       </div>
     </section>
 
-    <section id="cifras" class="cifras reveal">
-      <header class="cifras__head">
+    <section id="cifras" class="cifras">
+      <header class="cifras__head reveal">
         <h2>La Coordinadora en cifras</h2>
         <p>Resumen interactivo de actividad, comunicación y participación.</p>
       </header>
 
-      <div class="cifras__grid">
+      <div class="cifras__grid reveal">
         <article class="card">
           <div class="card__top">
             <h3>Reuniones por Grupo de Trabajo</h3>
-            <div class="card__actions">
-              <button class="btn" type="button" data-dl="chartReuniones">Descargar</button>
-            </div>
+            <button class="btn" type="button" data-dl="chartReuniones">Descargar</button>
           </div>
           <div class="chartBox">
             <canvas id="chartReuniones"></canvas>
@@ -154,9 +120,7 @@
         <article class="card">
           <div class="card__top">
             <h3>Comunicación externa</h3>
-            <div class="card__actions">
-              <button class="btn" type="button" data-dl="chartRedes">Descargar</button>
-            </div>
+            <button class="btn" type="button" data-dl="chartRedes">Descargar</button>
           </div>
 
           <div class="tabs" role="tablist" aria-label="Métricas redes">
@@ -173,9 +137,7 @@
         <article class="card">
           <div class="card__top">
             <h3>Participación por género</h3>
-            <div class="card__actions">
-              <button class="btn" type="button" data-dl="chartGenero">Descargar</button>
-            </div>
+            <button class="btn" type="button" data-dl="chartGenero">Descargar</button>
           </div>
           <div class="chartBox chartBox--tall">
             <canvas id="chartGenero"></canvas>
@@ -185,9 +147,7 @@
         <article class="card">
           <div class="card__top">
             <h3>Asistencias técnicas</h3>
-            <div class="card__actions">
-              <button class="btn" type="button" data-dl="chartConsultasTemas">Descargar</button>
-            </div>
+            <button class="btn" type="button" data-dl="chartConsultasTemas">Descargar</button>
           </div>
 
           <div class="split">
@@ -197,6 +157,7 @@
                 <canvas id="chartConsultasTemas"></canvas>
               </div>
             </div>
+
             <div>
               <h4>Género por temática</h4>
               <div class="chartBox">
@@ -207,7 +168,81 @@
         </article>
       </div>
 
-      <div class="kpis" aria-label="Indicadores clave">
+      <section class="kpi2 reveal" id="kpiStory" aria-label="Impacto digital scrollytelling">
+        <aside class="kpi2__left">
+          <div class="kpiCard" id="kpiCard">
+            <div class="kpiCard__media">
+              <img
+                src="https://www.mattiasmackler.com/wp-content/uploads/2016/04/StoryID_130-1-loop-Black-Tan_v2.gif"
+                alt="Loop circular"
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+
+            <div class="kpiCard__glass" aria-hidden="true"></div>
+
+            <div class="kpiCard__content">
+              <div class="chip"><span class="dot"></span><span id="kpiChip">Comunicaciones</span></div>
+              <div class="kpiCard__label" id="kpiLabel">Circulares internas</div>
+              <div class="kpiCard__value" id="kpiValue">38</div>
+              <div class="kpiCard__sub" id="kpiSub">Alcance interno consolidado</div>
+
+              <div class="meta">
+                <span>Progreso</span>
+                <div class="bar"><span id="kpiBar"></span></div>
+                <span id="kpiMetaR">01/07</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <div class="kpi2__right" id="steps">
+          <article class="stepCard is-active" data-key="circulares">
+            <h3>Circulares internas</h3>
+            <p>Volumen total de circulares internas.</p>
+            <div class="hint">scroll o clic</div>
+          </article>
+
+          <article class="stepCard" data-key="aperturas">
+            <h3>Aperturas registradas</h3>
+            <p>Interacción con los envíos internos.</p>
+            <div class="hint">scroll o clic</div>
+          </article>
+
+          <article class="stepCard" data-key="promedio">
+            <h3>Promedio aperturas</h3>
+            <p>Porcentaje medio de apertura.</p>
+            <div class="hint">scroll o clic</div>
+          </article>
+
+          <article class="stepCard" data-key="publicaciones">
+            <h3>Publicaciones web</h3>
+            <p>Contenido publicado en la web.</p>
+            <div class="hint">scroll o clic</div>
+          </article>
+
+          <article class="stepCard" data-key="eventos">
+            <h3>Eventos web</h3>
+            <p>Actividades y entradas online.</p>
+            <div class="hint">scroll o clic</div>
+          </article>
+
+          <article class="stepCard" data-key="empleo">
+            <h3>Ofertas de empleo</h3>
+            <p>Oportunidades publicadas.</p>
+            <div class="hint">scroll o clic</div>
+          </article>
+
+          <article class="stepCard" data-key="visitas">
+            <h3>Visitas web</h3>
+            <p>Tráfico total del sitio.</p>
+            <div class="hint">scroll o clic</div>
+          </article>
+        </div>
+      </section>
+
+      <div class="kpis reveal" aria-label="Indicadores clave">
         <div class="kpi"><strong>38</strong><span>Circulares internas</span></div>
         <div class="kpi"><strong>8.439</strong><span>Aperturas registradas</span></div>
         <div class="kpi"><strong>60,19%</strong><span>Promedio aperturas</span></div>
@@ -251,4 +286,3 @@
   <script src="assets/js/main.js" defer></script>
 </body>
 </html>
-
