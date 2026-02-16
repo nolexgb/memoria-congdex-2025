@@ -269,6 +269,7 @@ h2{
   box-shadow:0 10px 26px rgba(0,0,0,.10);
 }
 
+/* ===== KPI / Scrollytelling panel ===== */
 .kpi2{
   margin-top:28px;
   display:grid;
@@ -444,6 +445,9 @@ h2{
   .stepCard{transition:none!important}
 }
 
+/* ======================
+   TIMELINE (clases tl-*)
+   ====================== */
 .tl-wrap{
   max-width:1200px;
   margin:0 auto;
@@ -776,7 +780,11 @@ h2{
   .tl-trackWrap{ scroll-behavior:auto; }
   .tl-pin,.tl-pill,.tl-tooltip{ transition:none; }
 }
-/* ===== TIMELINE: fondo cinematográfico tipo Habitat ===== */
+
+/* =========================================================
+   (Mantengo tu bloque anterior #timeline “cinematográfico”
+   por compatibilidad, pero lo anulamos después con OVERRIDE)
+   ========================================================= */
 #timeline{
   position: relative;
   overflow: clip;
@@ -787,20 +795,17 @@ h2{
   isolation: isolate;
 }
 
-/* Fondo (imagen) */
 #timeline::before{
   content:"";
   position:absolute;
   inset:0;
-  background:
-    url("../img/timeline-bg.jpg") center / cover no-repeat;
+  background: url("../img/timeline-bg.jpg") center / cover no-repeat;
   transform: scale(var(--tlZoom, 1)) translateY(var(--tlY, 0px));
   will-change: transform;
   z-index: -2;
   filter: saturate(1.05) contrast(1.05) brightness(.92);
 }
 
-/* Overlay cinematográfico */
 #timeline::after{
   content:"";
   position:absolute;
@@ -812,17 +817,12 @@ h2{
   z-index: -1;
 }
 
-/* Ajustes de texto sobre fondo */
 #timeline .tl-h2,
 #timeline .tl-sub{
   color: rgba(255,255,255,.92);
 }
+#timeline .tl-sub{ color: rgba(255,255,255,.78); }
 
-#timeline .tl-sub{
-  color: rgba(255,255,255,.78);
-}
-
-/* Paneles sobre el fondo (glass limpio) */
 #timeline .tl-detail,
 #timeline .tl-timeline{
   background: rgba(255,255,255,.72);
@@ -831,24 +831,18 @@ h2{
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* Cabecera timeline */
 #timeline .tl-timeline__top{
   background: rgba(255,255,255,.58);
   border-bottom: 1px solid rgba(14,43,31,.10);
 }
 
-/* Mejor contraste del hint dentro del glass */
-#timeline .tl-hint{
-  color: rgba(14,43,31,.72);
-}
+#timeline .tl-hint{ color: rgba(14,43,31,.72); }
 
-/* Suaviza el borde exterior (como tarjeta editorial) */
 #timeline{
   box-shadow: 0 24px 90px rgba(0,0,0,.18);
   border: 1px solid rgba(255,255,255,.22);
 }
 
-/* Mobile: menos radio y margen */
 @media (max-width: 920px){
   #timeline{
     border-radius: 16px;
@@ -856,10 +850,99 @@ h2{
   }
 }
 
-/* Reduced motion: sin zoom animado */
 @media (prefers-reduced-motion: reduce){
-  #timeline::before{
-    transform: none !important;
-  }
+  #timeline::before{ transform: none !important; }
+}
+
+/* =========================================================
+   OVERRIDE FINAL: fondo solicitado #27F598
+   (Este bloque es el que manda)
+   ========================================================= */
+#timeline{
+  background: linear-gradient(
+    180deg,
+    #27F598 0%,
+    rgba(39,245,152,0.82) 52%,
+    rgba(39,245,152,0.62) 100%
+  );
+  border-radius: 22px;
+  box-shadow: 0 24px 90px rgba(0,0,0,.18);
+  border: 1px solid rgba(255,255,255,.30);
+}
+
+/* Apaga el fondo de imagen y overlay anteriores */
+#timeline::before,
+#timeline::after{
+  content: none !important;
+}
+
+/* Texto sobre el verde */
+#timeline .tl-h2{ color:#083A26; }
+#timeline .tl-sub{ color: rgba(8,58,38,.85); }
+
+/* Paneles tipo glass encima del verde */
+#timeline .tl-detail,
+#timeline .tl-timeline{
+  background: rgba(255,255,255,.78);
+  border: 1px solid rgba(255,255,255,.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Cabecera */
+#timeline .tl-timeline__top{
+  background: rgba(255,255,255,.58);
+  border-bottom: 1px solid rgba(8,58,38,.12);
+}
+#timeline .tl-hint{ color: rgba(8,58,38,.78); }
+
+/* Timeline más respirado y legible */
+#timeline .tl-track{ min-width: 1040px; padding: 26px 12px 46px; }
+#timeline .tl-line{
+  top: 58px;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    rgba(8,58,38,.18),
+    rgba(8,58,38,.45),
+    rgba(8,58,38,.18)
+  );
+}
+#timeline .tl-node{ top: 24px; gap: 10px; }
+#timeline .tl-pin{
+  width: 16px;
+  height: 16px;
+  border: 3px solid rgba(8,58,38,.65);
+  box-shadow: 0 14px 36px rgba(0,0,0,.14);
+}
+#timeline .tl-pill{
+  background: rgba(255,255,255,.75);
+  border: 1px solid rgba(8,58,38,.16);
+  color: rgba(8,58,38,.92);
+  font-weight: 800;
+}
+#timeline .tl-node.is-active .tl-pin{
+  background: rgba(39,245,152,.25);
+  border-color: rgba(8,58,38,1);
+  transform: scale(1.18);
+}
+#timeline .tl-node.is-active .tl-pill{
+  background: rgba(39,245,152,.25);
+  border-color: rgba(8,58,38,.28);
+  color: rgba(8,58,38,1);
+}
+
+/* Tooltip */
+#timeline .tl-tooltip{
+  width: min(340px, 78vw);
+  border-radius: 18px;
+  background: rgba(255,255,255,.94);
+  border: 1px solid rgba(8,58,38,.14);
+}
+
+/* Mobile */
+@media (max-width: 920px){
+  #timeline{ border-radius: 16px; margin: 18px 12px; }
+  #timeline .tl-track{ min-width: 920px; }
 }
 
