@@ -282,8 +282,8 @@ h2{
 }
 
 .kpi2__left{
-  position:sticky;
-  top:18px;
+  position:relative;
+  top:auto;
   align-self:start;
 }
 
