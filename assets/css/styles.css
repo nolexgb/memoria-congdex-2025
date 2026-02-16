@@ -6,6 +6,7 @@
   --muted:rgba(16,16,16,.70);
   --line:rgba(0,0,0,.08);
   --card:#f3f4f6;
+  --kpiH:500px;
 }
 
 *{box-sizing:border-box}
@@ -269,7 +270,6 @@ h2{
   box-shadow:0 10px 26px rgba(0,0,0,.10);
 }
 
-/* ===== KPI / Scrollytelling panel ===== */
 .kpi2{
   margin-top:28px;
   display:grid;
@@ -292,7 +292,7 @@ h2{
   position:relative;
   border-radius:24px;
   overflow:hidden;
-  min-height:500px;
+  min-height:var(--kpiH);
   box-shadow:0 22px 70px rgba(0,0,0,.18);
   transform-style:preserve-3d;
   will-change:transform;
@@ -421,7 +421,12 @@ h2{
   transition:width .65s cubic-bezier(.2,.8,.2,1);
 }
 
-.kpi2__right{display:grid;gap:14px}
+.kpi2__right{
+  height:var(--kpiH);
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
 
 .stepCard{
   background:rgba(255,255,255,.92);
@@ -432,6 +437,12 @@ h2{
   cursor:pointer;
   min-height:132px;
   transition:transform .25s ease, border-color .25s ease, background .25s ease;
+}
+.kpi2__right .stepCard{
+  flex:1 1 0;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
 }
 .stepCard:hover{transform:translateY(-2px)}
 .stepCard.is-active{border-color:rgba(15,23,42,.28);background:#fff}
@@ -444,7 +455,7 @@ h2{
   .kpiCard,.kpiCard__media img,.kpiCard__value,.bar>span{transition:none!important}
   .stepCard{transition:none!important}
 }
-/* KPI STORY: sticky que acompaña y no se queda “clavado” */
+
 #kpiStory{
   position: relative;
 }
@@ -459,9 +470,6 @@ h2{
   }
 }
 
-/* ======================
-   TIMELINE (clases tl-*)
-   ====================== */
 .tl-wrap{
   max-width:1200px;
   margin:0 auto;
@@ -795,10 +803,6 @@ h2{
   .tl-pin,.tl-pill,.tl-tooltip{ transition:none; }
 }
 
-/* =========================================================
-   (Mantengo tu bloque anterior #timeline “cinematográfico”
-   por compatibilidad, pero lo anulamos después con OVERRIDE)
-   ========================================================= */
 #timeline{
   position: relative;
   overflow: clip;
@@ -809,69 +813,6 @@ h2{
   isolation: isolate;
 }
 
-#timeline::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: url("../img/timeline-bg.jpg") center / cover no-repeat;
-  transform: scale(var(--tlZoom, 1)) translateY(var(--tlY, 0px));
-  will-change: transform;
-  z-index: -2;
-  filter: saturate(1.05) contrast(1.05) brightness(.92);
-}
-
-#timeline::after{
-  content:"";
-  position:absolute;
-  inset:-1px;
-  background:
-    radial-gradient(900px 560px at 15% 10%, rgba(255,255,255,.12), rgba(255,255,255,0) 58%),
-    radial-gradient(900px 620px at 70% 120%, rgba(0,0,0,.40), rgba(0,0,0,0) 60%),
-    linear-gradient(180deg, rgba(8,18,14,.60), rgba(8,18,14,.30) 34%, rgba(8,18,14,.62));
-  z-index: -1;
-}
-
-#timeline .tl-h2,
-#timeline .tl-sub{
-  color: rgba(255,255,255,.92);
-}
-#timeline .tl-sub{ color: rgba(255,255,255,.78); }
-
-#timeline .tl-detail,
-#timeline .tl-timeline{
-  background: rgba(255,255,255,.72);
-  border: 1px solid rgba(255,255,255,.45);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-#timeline .tl-timeline__top{
-  background: rgba(255,255,255,.58);
-  border-bottom: 1px solid rgba(14,43,31,.10);
-}
-
-#timeline .tl-hint{ color: rgba(14,43,31,.72); }
-
-#timeline{
-  box-shadow: 0 24px 90px rgba(0,0,0,.18);
-  border: 1px solid rgba(255,255,255,.22);
-}
-
-@media (max-width: 920px){
-  #timeline{
-    border-radius: 16px;
-    margin: 18px 12px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce){
-  #timeline::before{ transform: none !important; }
-}
-
-/* =========================================================
-   OVERRIDE FINAL: fondo solicitado #27F598
-   (Este bloque es el que manda)
-   ========================================================= */
 #timeline{
   background: linear-gradient(
     180deg,
@@ -884,17 +825,14 @@ h2{
   border: 1px solid rgba(255,255,255,.30);
 }
 
-/* Apaga el fondo de imagen y overlay anteriores */
 #timeline::before,
 #timeline::after{
   content: none !important;
 }
 
-/* Texto sobre el verde */
 #timeline .tl-h2{ color:#083A26; }
 #timeline .tl-sub{ color: rgba(8,58,38,.85); }
 
-/* Paneles tipo glass encima del verde */
 #timeline .tl-detail,
 #timeline .tl-timeline{
   background: rgba(255,255,255,.78);
@@ -903,14 +841,12 @@ h2{
   -webkit-backdrop-filter: blur(14px);
 }
 
-/* Cabecera */
 #timeline .tl-timeline__top{
   background: rgba(255,255,255,.58);
   border-bottom: 1px solid rgba(8,58,38,.12);
 }
 #timeline .tl-hint{ color: rgba(8,58,38,.78); }
 
-/* Timeline más respirado y legible */
 #timeline .tl-track{ min-width: 1040px; padding: 26px 12px 46px; }
 #timeline .tl-line{
   top: 58px;
@@ -946,7 +882,6 @@ h2{
   color: rgba(8,58,38,1);
 }
 
-/* Tooltip */
 #timeline .tl-tooltip{
   width: min(340px, 78vw);
   border-radius: 18px;
@@ -954,8 +889,8 @@ h2{
   border: 1px solid rgba(8,58,38,.14);
 }
 
-/* Mobile */
 @media (max-width: 920px){
   #timeline{ border-radius: 16px; margin: 18px 12px; }
   #timeline .tl-track{ min-width: 920px; }
 }
+
