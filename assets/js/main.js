@@ -466,3 +466,225 @@
     update3D();
   })();
 })();
+(() => {
+  const root = document.getElementById("timeline");
+  if (!root) return;
+
+  const EVENTS = [
+    { id:"1995a", year:"1995", tag:"Hito", title:"Constitución CONGDEX",
+      desc:"Se consolida una red de ONGD en Extremadura, referencia para la interlocución con actores e instituciones políticas extremeñas para la defensa de las políticas de cooperación para el desarrollo." },
+
+    { id:"1995b", year:"1995", tag:"Marco", title:"Decreto ayudas tercer mundo · Consejo asesor cooperación",
+      desc:"CONGDEX impulsa primeras ayudas autonómicas para financiar proyectos de cooperación para el desarrollo.\nParticipa en el Consejo Asesor de Cooperación al Desarrollo (vocalías ocupadas por ONGD miembros)." },
+
+    { id:"2003", year:"2003", tag:"Ley", title:"Aprobación Ley 1/2003 (27 feb)",
+      desc:"CONGDEX participa en la construcción de la primera ley autonómica que consolida la cooperación para el desarrollo como política pública autonómica con rango legal.\nDefine principios, prioridades y áreas preferentes." },
+
+    { id:"2004-2007", year:"2004–2007", tag:"Plan", title:"Plan General Cooperación Extremeña 2004–2008",
+      desc:"CONGDEX participa en la elaboración del primer plan general de cooperación.\nPrioridades: lucha contra la pobreza, promoción de derechos humanos, igualdad de género, sostenibilidad ambiental y coherencia de políticas.\nImpulsa participación activa de sociedad civil." },
+
+    { id:"2006", year:"2006", tag:"Educación", title:"Grupo Educación para el Desarrollo",
+      desc:"ONGD de CONGDEX crean el grupo de educación para el desarrollo para coordinar acciones en materia de educación en Extremadura (encuentros, formaciones, campañas de comunicación y sensibilización)." },
+
+    { id:"2007", year:"2007", tag:"Campaña", title:"Campaña Pobreza Cero",
+      desc:"Primera vez que se ejecuta en Extremadura la campaña anual a nivel estatal y global impulsada por la sociedad civil para erradicar la pobreza y la desigualdad." },
+
+    { id:"2008a", year:"2008", tag:"Institucional", title:"Creación AEXCID",
+      desc:"Se institucionaliza desde la Junta de Extremadura la gestión de programas de cooperación, con competencias, coordinación con ONGD, agentes sociales, etc.\nImportante para profesionalizar y estructurar la cooperación." },
+
+    { id:"2008-2011", year:"2008–2011", tag:"Plan", title:"Plan General Cooperación Extremeña 2008–2011",
+      desc:"CONGDEX participa en la elaboración del plan general.\nPrioridades: lucha contra la pobreza, defensa de derechos humanos, equidad de género, protección del medio ambiente, entre otras." },
+
+    { id:"2008b", year:"2008", tag:"Red", title:"Ingreso en Coordinadora Estatal y Red CCAA",
+      desc:"CONGDEX pasa a formar parte del nivel estatal para el fortalecimiento del trabajo en alianza con la Coordinadora Estatal de ONGD y coordinadoras autonómicas.\nDefensa de políticas de cooperación." },
+
+    { id:"2010a", year:"2010", tag:"Incidencia", title:"Grupo Incidencia Política",
+      desc:"ONGD de CONGDEX crean el grupo de incidencia política para participar del debate, análisis y propuestas de mejora de políticas de cooperación y seguimiento de la ayuda oficial para el desarrollo (encuentros, formaciones, informes, campañas)." },
+
+    { id:"2010b", year:"2010", tag:"Local", title:"Ingreso en Consejos Locales de Cooperación",
+      desc:"CONGDEX ocupa una vocalía en el Consejo Local de Cooperación de Badajoz y Cáceres para seguimiento y mejora de la política de cooperación municipal." },
+
+    { id:"2012-2016", year:"2012–2016", tag:"Estrategia", title:"I Planificación Estratégica CONGDEX 2012–2016",
+      desc:"CONGDEX establece líneas prioritarias, el fortalecimiento interno de la red, el fortalecimiento del trabajo en alianza con otras redes y la mejora de la incidencia social y política." },
+
+    { id:"2013", year:"2013", tag:"Encuentro", title:"XI Encuentro anual de Coordinadoras Autonómicas de ONGD",
+      desc:"CONGDEX organiza este encuentro anual de 17 coordinadoras autonómicas y Coordinadora Estatal para dar seguimiento a políticas de cooperación del territorio español." },
+
+    { id:"2014-2017", year:"2014–2017", tag:"Plan", title:"Plan General Cooperación Extremeña 2014–2017",
+      desc:"CONGDEX participa en la elaboración del plan general, proponiendo mejoras en gestión, agilidad administrativa, transparencia, mayor impacto en beneficiarios y mejora de calidad de vida." },
+
+    { id:"2016", year:"2016", tag:"Grupo", title:"Grupo Movilidad Humana",
+      desc:"ONGD de CONGDEX crean el grupo de movilidad humana para acciones conjuntas en defensa de derechos de personas migrantes y refugiadas (formaciones, campañas de comunicación y sensibilización)." },
+
+    { id:"2018a", year:"2018", tag:"Reconocimiento", title:"Premio Extremadura Global",
+      desc:"Reconocimiento de la Junta de Extremadura a CONGDEX por su trabajo a favor de la solidaridad, la justicia social, la educación para la ciudadanía global y la defensa de los derechos humanos." },
+
+    { id:"2018-2021", year:"2018–2021", tag:"Plan", title:"Plan General Cooperación Extremeña 2018–2021",
+      desc:"CONGDEX participa en la elaboración del plan general y afianza ámbitos estratégicos: normativa, instrumentos de gestión, diálogo entre actores y criterios prioritarios." },
+
+    { id:"2019-2022", year:"2019–2022", tag:"Estrategia", title:"II Planificación Estratégica CONGDEX 2019–2022",
+      desc:"CONGDEX refuerza líneas prioritarias basadas en el fortalecimiento interno de la red, las causas globales y el trabajo en alianza, la incidencia y coherencia de políticas y la transformación social." },
+
+    { id:"2019", year:"2019", tag:"Grupo", title:"Grupo Voluntariado",
+      desc:"ONGD de CONGDEX crean el grupo de voluntariado para el fomento del voluntariado transformador y el fortalecimiento de políticas de mejora del voluntariado en Extremadura (formaciones, campañas)." },
+
+    { id:"2020", year:"2020", tag:"Género", title:"Grupo de Género y Feminismos",
+      desc:"ONGD de CONGDEX crean el grupo con el objetivo de realizar acciones conjuntas hacia una CONGDEX feminista (estudios, diagnósticos, campañas de comunicación)." },
+
+    { id:"2023", year:"2023", tag:"Ley", title:"Ley 3/2023 (29 marzo) Cooperación y Solidaridad Internacional",
+      desc:"CONGDEX acompaña el proceso de elaboración de esta nueva ley (sustituye a la de 2003). Introduce compromisos y objetivos en cooperación internacional." },
+
+    { id:"2024-2028", year:"2024–2028", tag:"Estrategia", title:"III Planificación Estratégica CONGDEX 2024–2028",
+      desc:"CONGDEX establece nuevas líneas prioritarias en desarrollo interno, alianzas y relaciones, incidencia, comunicación interna/externa y ciudadanía global." }
+  ];
+
+  const $ = (sel, r = root) => r.querySelector(sel);
+
+  const tlTag = $("#tlTag");
+  const tlYear = $("#tlYear");
+  const tlTitle = $("#tlTitle");
+  const tlDesc = $("#tlDesc");
+
+  const tlBar = $("#tlBar");
+  const tlMetaR = $("#tlMetaR");
+
+  const track = $("#tlTrack");
+  const trackWrap = $("#tlTrackWrap");
+  const prevBtn = $("#tlPrevBtn");
+  const nextBtn = $("#tlNextBtn");
+  const rangeHint = $("#tlRangeHint");
+
+  const startYearOf = (ev) => parseInt(String(ev.year).split("–")[0], 10);
+  const endYearOf = (ev) => {
+    const s = String(ev.year);
+    const parts = s.split("–");
+    return parts.length > 1 ? parseInt(parts[1], 10) : parseInt(parts[0], 10);
+  };
+
+  const yearsStart = EVENTS.map(startYearOf);
+  const minYear = Math.min(...yearsStart);
+  const maxYear = Math.max(...EVENTS.map(endYearOf));
+
+  rangeHint.textContent = `Rango: ${minYear}–${maxYear}`;
+
+  const pos01 = (ev) => (startYearOf(ev) - minYear) / (maxYear - minYear);
+
+  const escapeHtml = (str) =>
+    String(str)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+  function renderNodes() {
+    const frag = document.createDocumentFragment();
+
+    EVENTS.forEach((ev, i) => {
+      const node = document.createElement("div");
+      node.className = "tl-node";
+      node.dataset.id = ev.id;
+      node.dataset.index = String(i);
+
+      node.style.left = (pos01(ev) * 100) + "%";
+
+      const tooltip = document.createElement("div");
+      tooltip.className = "tl-tooltip";
+      tooltip.innerHTML = `
+        <div class="tl-tYear">${escapeHtml(ev.year)}</div>
+        <div class="tl-tTitle">${escapeHtml(ev.title)}</div>
+        <div class="tl-tDesc">${escapeHtml(ev.desc)}</div>
+      `;
+
+      const pin = document.createElement("div");
+      pin.className = "tl-pin";
+
+      const pill = document.createElement("button");
+      pill.className = "tl-pill";
+      pill.type = "button";
+      pill.textContent = ev.year;
+      pill.setAttribute("aria-label", `${ev.year}: ${ev.title}`);
+
+      pill.addEventListener("click", () => setActive(i, { center: true }));
+
+      node.appendChild(tooltip);
+      node.appendChild(pin);
+      node.appendChild(pill);
+      frag.appendChild(node);
+    });
+
+    track.appendChild(frag);
+  }
+
+  let activeIndex = 0;
+
+  function setActive(i, opts = { center: false }) {
+    activeIndex = Math.max(0, Math.min(EVENTS.length - 1, i));
+    const ev = EVENTS[activeIndex];
+
+    track.querySelectorAll(".tl-node").forEach((n) => n.classList.remove("is-active"));
+    const node = track.querySelector(`.tl-node[data-index="${activeIndex}"]`);
+    if (node) node.classList.add("is-active");
+
+    tlTag.textContent = ev.tag || "Hito";
+    tlYear.textContent = ev.year;
+    tlTitle.textContent = ev.title;
+    tlDesc.textContent = ev.desc;
+
+    const prog = ((activeIndex + 1) / EVENTS.length) * 100;
+    tlBar.style.width = prog.toFixed(0) + "%";
+    tlMetaR.textContent =
+      String(activeIndex + 1).padStart(2, "0") + "/" + String(EVENTS.length).padStart(2, "0");
+
+    history.replaceState(null, "", "#" + ev.id);
+
+    if (opts.center && node) {
+      const wrapRect = trackWrap.getBoundingClientRect();
+      const nodeRect = node.getBoundingClientRect();
+      const current = trackWrap.scrollLeft;
+      const delta =
+        (nodeRect.left + nodeRect.width / 2) - (wrapRect.left + wrapRect.width / 2);
+      trackWrap.scrollLeft = current + delta;
+    }
+  }
+
+  prevBtn.addEventListener("click", () => setActive(activeIndex - 1, { center: true }));
+  nextBtn.addEventListener("click", () => setActive(activeIndex + 1, { center: true }));
+
+  let raf = null;
+  trackWrap.addEventListener(
+    "scroll",
+    () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = null;
+
+        const wrapRect = trackWrap.getBoundingClientRect();
+        const centerX = wrapRect.left + wrapRect.width / 2;
+
+        let bestI = activeIndex;
+        let bestDist = Infinity;
+
+        track.querySelectorAll(".tl-node").forEach((n) => {
+          const r = n.getBoundingClientRect();
+          const x = r.left + r.width / 2;
+          const dist = Math.abs(x - centerX);
+          const idx = parseInt(n.dataset.index, 10);
+          if (dist < bestDist) {
+            bestDist = dist;
+            bestI = idx;
+          }
+        });
+
+        if (bestI !== activeIndex) setActive(bestI, { center: false });
+      });
+    },
+    { passive: true }
+  );
+
+  renderNodes();
+
+  const hash = (location.hash || "").replace("#", "");
+  const idx = hash ? EVENTS.findIndex((e) => e.id === hash) : 0;
+  setActive(idx >= 0 ? idx : 0, { center: true });
+})();
