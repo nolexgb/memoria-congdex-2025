@@ -444,6 +444,20 @@ h2{
   .kpiCard,.kpiCard__media img,.kpiCard__value,.bar>span{transition:none!important}
   .stepCard{transition:none!important}
 }
+/* KPI STORY: sticky que acompaña y no se queda “clavado” */
+#kpiStory{
+  position: relative;
+}
+
+#kpiStory .kpi2__left{
+  top: 84px;
+}
+
+@media (max-width: 900px){
+  #kpiStory .kpi2__left{
+    top: 0;
+  }
+}
 
 /* ======================
    TIMELINE (clases tl-*)
