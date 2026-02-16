@@ -252,5 +252,621 @@
         ...commonOptions,
         indexAxis: "y",
         scales: {
-          x: { min: 0, max: 100, ticks: { callback
+          x: { min: 0, max: 100, ticks: { callback: (v) => v + "%" } },
+          y: { ticks: { autoSkip: false } }
+        },
+        plugins: {
+          ...commonOptions.plugins,
+          tooltip: { callbacks: { label: (item) => ` ${item.dataset.label}: ${pct(item.raw)}` } }
+        }
+      }
+    });
 
+    const consultasTemasChart = new Chart(document.getElementById("chartConsultasTemas"), {
+      type: "bar",
+      data: {
+        labels: consultasTemas.map((d) => d.label),
+        datasets: [{ label: "Consultas", data: consultasTemas.map((d) => d.total), borderWidth: 0, borderRadius: 10, backgroundColor: palette.g2 }]
+      },
+      options: {
+        ...commonOptions,
+        indexAxis: "y",
+        scales: { x: { beginAtZero: true } },
+        plugins: {
+          ...commonOptions.plugins,
+          tooltip: { callbacks: { label: (item) => ` ${item.dataset.label}: ${num(item.raw)}` } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById("chartConsultasGenero"), {
+      type: "bar",
+      data: {
+        labels: consultasTemas.map((d) => d.label),
+        datasets: [
+          { label: "Mujeres (%)", data: consultasTemas.map((d) => d.mujeres), stack: "g", borderWidth: 0, borderRadius: 8, backgroundColor: palette.g1 },
+          { label: "Hombres (%)", data: consultasTemas.map((d) => d.hombres), stack: "g", borderWidth: 0, borderRadius: 8, backgroundColor: palette.g0 }
+        ]
+      },
+      options: {
+        ...commonOptions,
+        indexAxis: "y",
+        scales: {
+          x: { min: 0, max: 100, ticks: { callback: (v) => v + "%" } },
+          y: { ticks: { autoSkip: false } }
+        },
+        plugins: {
+          ...commonOptions.plugins,
+          tooltip: { callbacks: { label: (item) => ` ${item.dataset.label}: ${pct(item.raw)}` } }
+        }
+      }
+    });
+
+    const chartMap = {
+      chartReuniones: reunionesChart,
+      chartRedes: redesChart,
+      chartConsultasTemas: consultasTemasChart
+    };
+
+    document.querySelectorAll("[data-dl]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-dl");
+        const ch = chartMap[id];
+        if (!ch) return;
+        const a = document.createElement("a");
+        a.href = ch.toBase64Image();
+        a.download = `${id}.png`;
+        a.click();
+      });
+    });
+  }
+
+  (() => {
+    const story = document.getElementById("kpiStory");
+    if (!story) return;
+
+    const DATA = {
+      circulares: { chip: "", label: "Circulares internas", value: 38, sub: "Alcance interno consolidado", prog: 0.62 },
+      aperturas: { chip: "", label: "Aperturas registradas", value: 8439, type: "number", sub: "Interacción con envíos internos", prog: 0.78 },
+      promedio: { chip: "", label: "Promedio aperturas", value: 60.19, type: "percent", decimals: 2, sub: "Porcentaje medio de apertura", prog: 0.6 },
+      publicaciones: { chip: "", label: "Publicaciones web", value: 41, type: "number", sub: "Contenido publicado", prog: 0.58 },
+      eventos: { chip: "", label: "Eventos web", value: 26, type: "number", sub: "Actividades y entradas online", prog: 0.52 },
+      empleo: { chip: "", label: "Ofertas de empleo", value: 12, type: "number", sub: "Oportunidades publicadas", prog: 0.44 },
+      visitas: { chip: "", label: "Visitas web", value: 12670, type: "number", sub: "Tráfico total del sitio", prog: 0.72 }
+    };
+
+    const elChip = document.getElementById("kpiChip");
+    const elLabel = document.getElementById("kpiLabel");
+    const elValue = document.getElementById("kpiValue");
+    const elSub = document.getElementById("kpiSub");
+    const elBar = document.getElementById("kpiBar");
+    const elMetaR = document.getElementById("kpiMetaR");
+    const kpiCard = document.getElementById("kpiCard");
+    if (!elChip || !elLabel || !elValue || !elSub || !elBar || !elMetaR || !kpiCard) return;
+
+    const cards = [...document.querySelectorAll(".stepCard")];
+    const keys = cards.map((c) => c.dataset.key).filter(Boolean);
+    if (!keys.length) return;
+
+    const nf = new Intl.NumberFormat("es-ES");
+    const formatValue = (d, v) => {
+      if (d.type === "percent") {
+        const dec = d.decimals ?? 2;
+        return v.toFixed(dec).replace(".", ",") + "%";
+      }
+      return nf.format(Math.round(v));
+    };
+
+    const ensureRightClean = () => {
+      cards.forEach((c) => {
+        const p = c.querySelector("p");
+        if (p) p.remove();
+        const h = c.querySelector(".hint");
+        if (h) h.remove();
+
+        const h3 = c.querySelector("h3");
+        if (!h3) return;
+
+        let badge = c.querySelector(".stepVal");
+        if (!badge) {
+          badge = document.createElement("span");
+          badge.className = "stepVal";
+          h3.appendChild(badge);
+        }
+      });
+    };
+
+    ensureRightClean();
+
+    const easeOutExpo = (x) => (x === 1 ? 1 : 1 - Math.pow(2, -10 * x));
+
+    const animateCounter = (from, to, d) => {
+      if (prefersReduced) {
+        elValue.textContent = formatValue(d, to);
+        return;
+      }
+
+      const start = performance.now();
+      const delta = Math.abs(to - from);
+      const dur = Math.max(520, Math.min(1200, 520 + delta * 7));
+
+      elValue.classList.add("switching");
+      setTimeout(() => elValue.classList.remove("switching"), 220);
+
+      const frame = (now) => {
+        const t = Math.min(1, (now - start) / dur);
+        const p = easeOutExpo(t);
+        const v = from + (to - from) * p;
+        elValue.textContent = formatValue(d, v);
+        if (t < 1) requestAnimationFrame(frame);
+      };
+      requestAnimationFrame(frame);
+    };
+
+    let currentKey = keys[0];
+
+    const setActive = (key) => {
+      const d = DATA[key];
+      if (!d) return;
+
+      cards.forEach((c) => {
+        const is = c.dataset.key === key;
+        c.classList.toggle("is-active", is);
+        const badge = c.querySelector(".stepVal");
+        if (badge) badge.textContent = is ? ` ${formatValue(d, d.value)}` : "";
+      });
+
+      elChip.textContent = d.chip || "";
+      const chipWrap = elChip.closest(".chip");
+      if (chipWrap) chipWrap.style.display = elChip.textContent.trim() ? "" : "none";
+
+      elLabel.textContent = d.label;
+      elSub.textContent = d.sub;
+
+      const idx = keys.indexOf(key) + 1;
+      elMetaR.textContent = String(idx).padStart(2, "0") + "/" + String(keys.length).padStart(2, "0");
+
+      const prog = Math.max(0, Math.min(1, d.prog ?? 0.5));
+      elBar.style.width = (prog * 100).toFixed(0) + "%";
+
+      const prev = DATA[currentKey] || d;
+      animateCounter(prev.value, d.value, d);
+
+      currentKey = key;
+    };
+
+    cards.forEach((card) => {
+      card.addEventListener("click", () => {
+        setActive(card.dataset.key);
+      });
+    });
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        let best = null;
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          if (!best || e.intersectionRatio > best.intersectionRatio) best = e;
+        }
+        if (best) setActive(best.target.dataset.key);
+      },
+      { threshold: [0.45, 0.6, 0.75] }
+    );
+
+    cards.forEach((c) => io.observe(c));
+
+    let raf = null;
+
+    const update3D = () => {
+      raf = null;
+      const rect = story.getBoundingClientRect();
+      const vh = window.innerHeight;
+
+      const total = rect.height - vh;
+      const scrolled = Math.min(Math.max(-rect.top, 0), Math.max(total, 1));
+      const p = total > 0 ? scrolled / total : 0;
+
+      const tiltX = (p - 0.5) * 6;
+      const tiltY = (0.5 - p) * 6;
+      const transY = (p - 0.5) * 18;
+
+      const gifY = (p - 0.5) * 34;
+      const gifR = (p - 0.5) * 1.6;
+
+      if (!prefersReduced) {
+        kpiCard.style.transform = `perspective(900px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(${transY}px)`;
+        kpiCard.style.setProperty("--parY", `${gifY.toFixed(1)}px`);
+        kpiCard.style.setProperty("--parR", `${gifR.toFixed(2)}deg`);
+      } else {
+        kpiCard.style.transform = "";
+        kpiCard.style.setProperty("--parY", `0px`);
+        kpiCard.style.setProperty("--parR", `0deg`);
+      }
+    };
+
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(update3D);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    setActive(currentKey);
+    update3D();
+  })();
+})();
+
+(() => {
+  const root = document.getElementById("timeline");
+  if (!root) return;
+
+  const prefersReduced =
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const EVENTS = [
+    { id:"1995a", year:"1995", tag:"Hito", title:"Constitución CONGDEX",
+      desc:"Se consolida una red de ONGD en Extremadura, referencia para la interlocución con actores e instituciones políticas extremeñas para la defensa de las políticas de cooperación para el desarrollo." },
+    { id:"1995b", year:"1995", tag:"Marco", title:"Decreto ayudas tercer mundo · Consejo asesor cooperación",
+      desc:"CONGDEX impulsa primeras ayudas autonómicas para financiar proyectos de cooperación para el desarrollo.\nParticipa en el Consejo Asesor de Cooperación al Desarrollo (vocalías ocupadas por ONGD miembros)." },
+    { id:"2003", year:"2003", tag:"Ley", title:"Aprobación Ley 1/2003 (27 feb)",
+      desc:"CONGDEX participa en la construcción de la primera ley autonómica que consolida la cooperación para el desarrollo como política pública autonómica con rango legal.\nDefine principios, prioridades y áreas preferentes." },
+    { id:"2004-2007", year:"2004–2007", tag:"Plan", title:"Plan General Cooperación Extremeña 2004–2008",
+      desc:"CONGDEX participa en la elaboración del primer plan general de cooperación.\nPrioridades: lucha contra la pobreza, promoción de derechos humanos, igualdad de género, sostenibilidad ambiental y coherencia de políticas.\nImpulsa participación activa de sociedad civil." },
+    { id:"2006", year:"2006", tag:"Educación", title:"Grupo Educación para el Desarrollo",
+      desc:"ONGD de CONGDEX crean el grupo de educación para el desarrollo para coordinar acciones en materia de educación en Extremadura (encuentros, formaciones, campañas de comunicación y sensibilización)." },
+    { id:"2007", year:"2007", tag:"Campaña", title:"Campaña Pobreza Cero",
+      desc:"Primera vez que se ejecuta en Extremadura la campaña anual a nivel estatal y global impulsada por la sociedad civil para erradicar la pobreza y la desigualdad." },
+    { id:"2008a", year:"2008", tag:"Institucional", title:"Creación AEXCID",
+      desc:"Se institucionaliza desde la Junta de Extremadura la gestión de programas de cooperación, con competencias, coordinación con ONGD, agentes sociales, etc.\nImportante para profesionalizar y estructurar la cooperación." },
+    { id:"2008-2011", year:"2008–2011", tag:"Plan", title:"Plan General Cooperación Extremeña 2008–2011",
+      desc:"CONGDEX participa en la elaboración del plan general.\nPrioridades: lucha contra la pobreza, defensa de derechos humanos, equidad de género, protección del medio ambiente, entre otras." },
+    { id:"2008b", year:"2008", tag:"Red", title:"Ingreso en Coordinadora Estatal y Red CCAA",
+      desc:"CONGDEX pasa a formar parte del nivel estatal para el fortalecimiento del trabajo en alianza con la Coordinadora Estatal de ONGD y coordinadoras autonómicas.\nDefensa de políticas de cooperación." },
+    { id:"2010a", year:"2010", tag:"Incidencia", title:"Grupo Incidencia Política",
+      desc:"ONGD de CONGDEX crean el grupo de incidencia política para participar del debate, análisis y propuestas de mejora de políticas de cooperación y seguimiento de la ayuda oficial para el desarrollo (encuentros, formaciones, informes, campañas)." },
+    { id:"2010b", year:"2010", tag:"Local", title:"Ingreso en Consejos Locales de Cooperación",
+      desc:"CONGDEX ocupa una vocalía en el Consejo Local de Cooperación de Badajoz y Cáceres para seguimiento y mejora de la política de cooperación municipal." },
+    { id:"2012-2016", year:"2012–2016", tag:"Estrategia", title:"I Planificación Estratégica CONGDEX 2012–2016",
+      desc:"CONGDEX establece líneas prioritarias, el fortalecimiento interno de la red, el fortalecimiento del trabajo en alianza con otras redes y la mejora de la incidencia social y política." },
+    { id:"2013", year:"2013", tag:"Encuentro", title:"XI Encuentro anual de Coordinadoras Autonómicas de ONGD",
+      desc:"CONGDEX organiza este encuentro anual de 17 coordinadoras autonómicas y Coordinadora Estatal para dar seguimiento a políticas de cooperación del territorio español." },
+    { id:"2014-2017", year:"2014–2017", tag:"Plan", title:"Plan General Cooperación Extremeña 2014–2017",
+      desc:"CONGDEX participa en la elaboración del plan general, proponiendo mejoras en gestión, agilidad administrativa, transparencia, mayor impacto en beneficiarios y mejora de calidad de vida." },
+    { id:"2016", year:"2016", tag:"Grupo", title:"Grupo Movilidad Humana",
+      desc:"ONGD de CONGDEX crean el grupo de movilidad humana para acciones conjuntas en defensa de derechos de personas migrantes y refugiadas (formaciones, campañas de comunicación y sensibilización)." },
+    { id:"2018a", year:"2018", tag:"Reconocimiento", title:"Premio Extremadura Global",
+      desc:"Reconocimiento de la Junta de Extremadura a CONGDEX por su trabajo a favor de la solidaridad, la justicia social, la educación para la ciudadanía global y la defensa de los derechos humanos." },
+    { id:"2018-2021", year:"2018–2021", tag:"Plan", title:"Plan General Cooperación Extremeña 2018–2021",
+      desc:"CONGDEX participa en la elaboración del plan general y afianza ámbitos estratégicos: normativa, instrumentos de gestión, diálogo entre actores y criterios prioritarios." },
+    { id:"2019-2022", year:"2019–2022", tag:"Estrategia", title:"II Planificación Estratégica CONGDEX 2019–2022",
+      desc:"CONGDEX refuerza líneas prioritarias basadas en el fortalecimiento interno de la red, las causas globales y el trabajo en alianza, la incidencia y coherencia de políticas y la transformación social." },
+    { id:"2019", year:"2019", tag:"Grupo", title:"Grupo Voluntariado",
+      desc:"ONGD de CONGDEX crean el grupo de voluntariado para el fomento del voluntariado transformador y el fortalecimiento de políticas de mejora del voluntariado en Extremadura (formaciones, campañas)." },
+    { id:"2020", year:"2020", tag:"Género", title:"Grupo de Género y Feminismos",
+      desc:"ONGD de CONGDEX crean el grupo con el objetivo de realizar acciones conjuntas hacia una CONGDEX feminista (estudios, diagnósticos, campañas de comunicación)." },
+    { id:"2023", year:"2023", tag:"Ley", title:"Ley 3/2023 (29 marzo) Cooperación y Solidaridad Internacional",
+      desc:"CONGDEX acompaña el proceso de elaboración de esta nueva ley (sustituye a la de 2003). Introduce compromisos y objetivos en cooperación internacional." },
+    { id:"2024-2028", year:"2024–2028", tag:"Estrategia", title:"III Planificación Estratégica CONGDEX 2024–2028",
+      desc:"CONGDEX establece nuevas líneas prioritarias en desarrollo interno, alianzas y relaciones, incidencia, comunicación interna/externa y ciudadanía global." }
+  ];
+
+  const $ = (sel, r = root) => r.querySelector(sel);
+
+  const tlTag = $("#tlTag");
+  const tlYear = $("#tlYear");
+  const tlTitle = $("#tlTitle");
+  const tlDesc = $("#tlDesc");
+  const tlBar = $("#tlBar");
+  const tlMetaR = $("#tlMetaR");
+
+  const track = $("#tlTrack");
+  const trackWrap = $("#tlTrackWrap");
+  const prevBtn = $("#tlPrevBtn");
+  const nextBtn = $("#tlNextBtn");
+  const rangeHint = $("#tlRangeHint");
+
+  if (!track || !trackWrap || !prevBtn || !nextBtn) return;
+
+  if (!trackWrap.hasAttribute("tabindex")) trackWrap.tabIndex = 0;
+
+  const startYearOf = (ev) => parseInt(String(ev.year).split("–")[0], 10);
+  const endYearOf = (ev) => {
+    const s = String(ev.year);
+    const parts = s.split("–");
+    return parts.length > 1 ? parseInt(parts[1], 10) : parseInt(parts[0], 10);
+  };
+
+  const yearsStart = EVENTS.map(startYearOf);
+  const minYear = Math.min(...yearsStart);
+  const maxYear = Math.max(...EVENTS.map(endYearOf));
+  if (rangeHint) rangeHint.textContent = `Rango: ${minYear}–${maxYear}`;
+
+  const pos01 = (ev) => (startYearOf(ev) - minYear) / Math.max(1, (maxYear - minYear));
+
+  const escapeHtml = (str) =>
+    String(str)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+  const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+  const animateScrollLeft = (to, dur = 520) => {
+    if (prefersReduced) {
+      trackWrap.scrollLeft = to;
+      return;
+    }
+    const from = trackWrap.scrollLeft;
+    const delta = to - from;
+    if (Math.abs(delta) < 1) return;
+
+    const start = performance.now();
+    const d = Math.max(260, Math.min(900, dur));
+
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / d);
+      const p = easeOutCubic(t);
+      trackWrap.scrollLeft = from + delta * p;
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+
+  const getCenterScrollForNode = (nodeEl) => {
+    const wrapRect = trackWrap.getBoundingClientRect();
+    const nodeRect = nodeEl.getBoundingClientRect();
+    const centerWrap = wrapRect.left + wrapRect.width / 2;
+    const centerNode = nodeRect.left + nodeRect.width / 2;
+    return trackWrap.scrollLeft + (centerNode - centerWrap);
+  };
+
+  const pickClosestIndexToCenter = () => {
+    const wrapRect = trackWrap.getBoundingClientRect();
+    const centerX = wrapRect.left + wrapRect.width / 2;
+
+    let bestI = activeIndex;
+    let bestDist = Infinity;
+
+    track.querySelectorAll(".tl-node").forEach((nEl) => {
+      const r = nEl.getBoundingClientRect();
+      const x = r.left + r.width / 2;
+      const dist = Math.abs(x - centerX);
+      const idx = parseInt(nEl.dataset.index, 10);
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestI = idx;
+      }
+    });
+
+    return bestI;
+  };
+
+  const ensureTrackWidth = () => {
+    const min = 1200;
+    const extra = Math.min(1200, EVENTS.length * 60);
+    track.style.minWidth = `${min + extra}px`;
+  };
+
+  let activeIndex = 0;
+
+  const setActive = (i, opts = { center: false, pushHash: true }) => {
+    const n = EVENTS.length;
+    activeIndex = ((i % n) + n) % n;
+
+    const ev = EVENTS[activeIndex];
+
+    track.querySelectorAll(".tl-node").forEach((nEl) => nEl.classList.remove("is-active"));
+    const node = track.querySelector(`.tl-node[data-index="${activeIndex}"]`);
+    if (node) node.classList.add("is-active");
+
+    if (tlTag) tlTag.textContent = ev.tag || "Hito";
+    if (tlYear) tlYear.textContent = ev.year;
+    if (tlTitle) tlTitle.textContent = ev.title;
+    if (tlDesc) tlDesc.textContent = ev.desc;
+
+    if (tlBar && tlMetaR) {
+      const prog = ((activeIndex + 1) / EVENTS.length) * 100;
+      tlBar.style.width = prog.toFixed(0) + "%";
+      tlMetaR.textContent =
+        String(activeIndex + 1).padStart(2, "0") + "/" + String(EVENTS.length).padStart(2, "0");
+    }
+
+    if (opts.pushHash) history.replaceState(null, "", "#" + ev.id);
+
+    if (opts.center && node) {
+      const target = getCenterScrollForNode(node);
+      animateScrollLeft(target, 560);
+    }
+  };
+
+  const build = () => {
+    ensureTrackWidth();
+
+    const frag = document.createDocumentFragment();
+    const localYearCounts = {};
+
+    EVENTS.forEach((ev, i) => {
+      const node = document.createElement("div");
+      node.className = "tl-node";
+      node.dataset.id = ev.id;
+      node.dataset.index = String(i);
+
+      const leftPct = pos01(ev) * 100;
+
+      const y = startYearOf(ev);
+      localYearCounts[y] = (localYearCounts[y] || 0) + 1;
+      const k = localYearCounts[y] - 1;
+      const offsets = [0, -14, 14, -28, 28, -42, 42];
+      const jitter = offsets[Math.min(k, offsets.length - 1)];
+
+      node.style.left = leftPct + "%";
+      node.style.transform = `translateX(calc(-50% + ${jitter}px)) translateY(${(i % 3) * 10}px)`;
+
+      const tooltip = document.createElement("div");
+      tooltip.className = "tl-tooltip";
+      tooltip.innerHTML = `
+        <div class="tl-tYear">${escapeHtml(ev.year)}</div>
+        <div class="tl-tTitle">${escapeHtml(ev.title)}</div>
+        <div class="tl-tDesc">${escapeHtml(ev.desc)}</div>
+      `;
+
+      const pin = document.createElement("div");
+      pin.className = "tl-pin";
+
+      const pill = document.createElement("button");
+      pill.className = "tl-pill";
+      pill.type = "button";
+      pill.textContent = ev.year;
+      pill.setAttribute("aria-label", `${ev.year}: ${ev.title}`);
+      pill.addEventListener("click", () => setActive(i, { center: true, pushHash: true }));
+
+      node.appendChild(tooltip);
+      node.appendChild(pin);
+      node.appendChild(pill);
+
+      frag.appendChild(node);
+    });
+
+    track.appendChild(frag);
+  };
+
+  prevBtn.addEventListener("click", () => setActive(activeIndex - 1, { center: true, pushHash: true }));
+  nextBtn.addEventListener("click", () => setActive(activeIndex + 1, { center: true, pushHash: true }));
+
+  trackWrap.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      setActive(activeIndex - 1, { center: true, pushHash: true });
+    }
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      setActive(activeIndex + 1, { center: true, pushHash: true });
+    }
+  });
+
+  let raf = null;
+  let snapTimer = null;
+  let isInertia = false;
+
+  const snapToClosest = () => {
+    const bestI = pickClosestIndexToCenter();
+    const node = track.querySelector(`.tl-node[data-index="${bestI}"]`);
+    if (node) animateScrollLeft(getCenterScrollForNode(node), 520);
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = null;
+      const bestI = pickClosestIndexToCenter();
+      if (bestI !== activeIndex) setActive(bestI, { center: false, pushHash: false });
+    });
+
+    if (isInertia) return;
+
+    if (snapTimer) clearTimeout(snapTimer);
+    snapTimer = setTimeout(snapToClosest, 140);
+  };
+
+  trackWrap.addEventListener("scroll", onScroll, { passive: true });
+
+  build();
+
+  // ===== MAPA FLUIDO: drag + inercia + micro-parallax (integrado) =====
+  let dragging = false;
+  let px = 0;
+  let vx = 0;
+  let rafIn = null;
+  let rafPar = null;
+
+  const pins = () => [...track.querySelectorAll(".tl-pin")];
+
+  const par = (v) => {
+    if (prefersReduced) return;
+    if (rafPar) return;
+    rafPar = requestAnimationFrame(() => {
+      rafPar = null;
+      const y = Math.max(-18, Math.min(18, v * 0.12));
+      pins().forEach((p) => (p.style.transform = `translateY(${y.toFixed(1)}px)`));
+    });
+  };
+
+  const stopPar = () => pins().forEach((p) => (p.style.transform = ""));
+
+  const stepIn = () => {
+    vx *= 0.92;
+    if (Math.abs(vx) < 0.15) {
+      rafIn = null;
+      isInertia = false;
+      stopPar();
+      snapToClosest();
+      return;
+    }
+    trackWrap.scrollLeft -= vx;
+    par(vx);
+    rafIn = requestAnimationFrame(stepIn);
+  };
+
+  trackWrap.style.touchAction = "pan-x";
+
+  trackWrap.addEventListener("pointerdown", (e) => {
+    dragging = true;
+    px = e.clientX;
+    vx = 0;
+    isInertia = true;
+    if (snapTimer) clearTimeout(snapTimer);
+    if (rafIn) {
+      cancelAnimationFrame(rafIn);
+      rafIn = null;
+    }
+    trackWrap.setPointerCapture(e.pointerId);
+  });
+
+  trackWrap.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - px;
+    px = e.clientX;
+    trackWrap.scrollLeft -= dx;
+    vx = dx;
+    par(vx);
+  });
+
+  const endDrag = () => {
+    dragging = false;
+    if (prefersReduced) {
+      isInertia = false;
+      stopPar();
+      snapToClosest();
+      return;
+    }
+    rafIn = requestAnimationFrame(stepIn);
+  };
+
+  trackWrap.addEventListener("pointerup", endDrag);
+  trackWrap.addEventListener("pointercancel", () => {
+    dragging = false;
+    isInertia = false;
+    stopPar();
+    snapToClosest();
+  });
+  // ================================================================
+
+  const hash = (location.hash || "").replace("#", "");
+  const idx = hash ? EVENTS.findIndex((e) => e.id === hash) : 0;
+  setActive(idx >= 0 ? idx : 0, { center: true, pushHash: false });
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      const any = entries.some((e) => e.isIntersecting);
+      if (!any) return;
+
+      const node = track.querySelector(`.tl-node[data-index="${activeIndex}"]`);
+      if (node) animateScrollLeft(getCenterScrollForNode(node), 520);
+    },
+    { threshold: [0.25] }
+  );
+  io.observe(root);
+})();
