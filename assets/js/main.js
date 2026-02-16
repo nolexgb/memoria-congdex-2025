@@ -22,9 +22,7 @@
   window.addEventListener("scroll", onScrollGlobal, { passive: true });
   onScrollGlobal();
 
-  if (back) {
-    back.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+  if (back) back.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   document.querySelectorAll("[data-count]").forEach((el) => {
     let done = false;
@@ -225,8 +223,7 @@
     });
 
     const updateRedes = (m) => {
-      const pretty =
-        m === "seguidores" ? "Seguidores" : m === "publicaciones" ? "Publicaciones" : "Interacciones";
+      const pretty = m === "seguidores" ? "Seguidores" : m === "publicaciones" ? "Publicaciones" : "Interacciones";
       redesChart.data.datasets[0].label = pretty;
       redesChart.data.datasets[0].data = redes[m];
       redesChart.update();
@@ -245,22 +242,8 @@
       data: {
         labels: generoActividades.map((d) => d.label),
         datasets: [
-          {
-            label: "Mujeres (%)",
-            data: generoActividades.map((d) => d.mujeres),
-            stack: "s",
-            borderWidth: 0,
-            borderRadius: 8,
-            backgroundColor: palette.g1
-          },
-          {
-            label: "Hombres (%)",
-            data: generoActividades.map((d) => d.hombres),
-            stack: "s",
-            borderWidth: 0,
-            borderRadius: 8,
-            backgroundColor: palette.g0
-          }
+          { label: "Mujeres (%)", data: generoActividades.map((d) => d.mujeres), stack: "s", borderWidth: 0, borderRadius: 8, backgroundColor: palette.g1 },
+          { label: "Hombres (%)", data: generoActividades.map((d) => d.hombres), stack: "s", borderWidth: 0, borderRadius: 8, backgroundColor: palette.g0 }
         ]
       },
       options: {
@@ -281,15 +264,7 @@
       type: "bar",
       data: {
         labels: consultasTemas.map((d) => d.label),
-        datasets: [
-          {
-            label: "Consultas",
-            data: consultasTemas.map((d) => d.total),
-            borderWidth: 0,
-            borderRadius: 10,
-            backgroundColor: palette.g2
-          }
-        ]
+        datasets: [{ label: "Consultas", data: consultasTemas.map((d) => d.total), borderWidth: 0, borderRadius: 10, backgroundColor: palette.g2 }]
       },
       options: {
         ...commonOptions,
@@ -307,22 +282,8 @@
       data: {
         labels: consultasTemas.map((d) => d.label),
         datasets: [
-          {
-            label: "Mujeres (%)",
-            data: consultasTemas.map((d) => d.mujeres),
-            stack: "g",
-            borderWidth: 0,
-            borderRadius: 8,
-            backgroundColor: palette.g1
-          },
-          {
-            label: "Hombres (%)",
-            data: consultasTemas.map((d) => d.hombres),
-            stack: "g",
-            borderWidth: 0,
-            borderRadius: 8,
-            backgroundColor: palette.g0
-          }
+          { label: "Mujeres (%)", data: consultasTemas.map((d) => d.mujeres), stack: "g", borderWidth: 0, borderRadius: 8, backgroundColor: palette.g1 },
+          { label: "Hombres (%)", data: consultasTemas.map((d) => d.hombres), stack: "g", borderWidth: 0, borderRadius: 8, backgroundColor: palette.g0 }
         ]
       },
       options: {
@@ -364,14 +325,21 @@
     const story = document.getElementById("kpiStory");
     if (!story) return;
 
+    const left = story.querySelector(".kpi2__left");
+    if (left) {
+      left.style.position = "relative";
+      left.style.top = "auto";
+      left.style.alignSelf = "start";
+    }
+
     const DATA = {
-      circulares: { chip: "Métricas web", label: "Circulares internas", value: 38, sub: "Alcance interno consolidado", prog: 0.62 },
-      aperturas: { chip: "Métricas web", label: "Aperturas registradas", value: 8439, type: "number", sub: "Interacción con envíos internos", prog: 0.78 },
-      promedio: { chip: "Métricas web", label: "Promedio aperturas", value: 60.19, type: "percent", decimals: 2, sub: "Porcentaje medio de apertura", prog: 0.6 },
-      publicaciones: { chip: "Métricas web", label: "Publicaciones web", value: 41, type: "number", sub: "Contenido publicado", prog: 0.58 },
-      eventos: { chip: "Métricas web", label: "Eventos web", value: 26, type: "number", sub: "Actividades y entradas online", prog: 0.52 },
-      empleo: { chip: "Métricas web", label: "Ofertas de empleo", value: 12, type: "number", sub: "Oportunidades publicadas", prog: 0.44 },
-      visitas: { chip: "Métricas web", label: "Visitas web", value: 12670, type: "number", sub: "Tráfico total del sitio", prog: 0.72 }
+      circulares: { chip: "", label: "Circulares internas", value: 38, sub: "Alcance interno consolidado", prog: .62 },
+      aperturas: { chip: "", label: "Aperturas registradas", value: 8439, type: "number", sub: "Interacción con envíos internos", prog: .78 },
+      promedio: { chip: "", label: "Promedio aperturas", value: 60.19, type: "percent", decimals: 2, sub: "Porcentaje medio de apertura", prog: .60 },
+      publicaciones: { chip: "", label: "Publicaciones web", value: 41, type: "number", sub: "Contenido publicado", prog: .58 },
+      eventos: { chip: "", label: "Eventos web", value: 26, type: "number", sub: "Actividades y entradas online", prog: .52 },
+      empleo: { chip: "", label: "Ofertas de empleo", value: 12, type: "number", sub: "Oportunidades publicadas", prog: .44 },
+      visitas: { chip: "", label: "Visitas web", value: 12670, type: "number", sub: "Tráfico total del sitio", prog: .72 }
     };
 
     const elChip = document.getElementById("kpiChip");
@@ -389,7 +357,6 @@
     if (!keys.length) return;
 
     const nf = new Intl.NumberFormat("es-ES");
-
     const formatValue = (d, v) => {
       if (d.type === "percent") {
         const dec = d.decimals ?? 2;
@@ -415,7 +382,6 @@
         elValue.textContent = formatValue(d, v);
         if (t < 1) requestAnimationFrame(frame);
       };
-
       requestAnimationFrame(frame);
     };
 
@@ -427,12 +393,18 @@
 
       cards.forEach((c) => c.classList.toggle("is-active", c.dataset.key === key));
 
-      elChip.textContent = d.chip ?? "Resumen";
+      elChip.textContent = d.chip || "";
+      if (!elChip.textContent.trim()) {
+        const chipWrap = elChip.closest(".chip");
+        if (chipWrap) chipWrap.style.display = "none";
+      }
+
       elLabel.textContent = d.label;
       elSub.textContent = d.sub;
 
       const idx = keys.indexOf(key) + 1;
-      elMetaR.textContent = String(idx).padStart(2, "0") + "/" + String(keys.length).padStart(2, "0");
+      elMetaR.textContent =
+        String(idx).padStart(2, "0") + "/" + String(keys.length).padStart(2, "0");
 
       const prog = Math.max(0, Math.min(1, d.prog ?? 0.5));
       elBar.style.width = (prog * 100).toFixed(0) + "%";
@@ -443,23 +415,10 @@
       currentKey = key;
     };
 
-    const scrollToStep = (stepEl) => {
-      const topOffset = 110;
-      const storyRect = story.getBoundingClientRect();
-      const storyTop = window.scrollY + storyRect.top;
-      const storyBottom = storyTop + storyRect.height;
-
-      const y = window.scrollY + stepEl.getBoundingClientRect().top - topOffset;
-      const target = Math.min(Math.max(y, storyTop + 8), storyBottom - window.innerHeight + 8);
-
-      window.scrollTo({ top: target, behavior: "smooth" });
-    };
-
     cards.forEach((card) => {
       card.addEventListener("click", () => {
-        const key = card.dataset.key;
-        setActive(key);
-        scrollToStep(card);
+        setActive(card.dataset.key);
+        card.scrollIntoView({ behavior: "smooth", block: "center" });
       });
     });
 
@@ -495,7 +454,8 @@
       const gifY = (p - 0.5) * 34;
       const gifR = (p - 0.5) * 1.6;
 
-      kpiCard.style.transform = `perspective(900px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(${transY}px)`;
+      kpiCard.style.transform =
+        `perspective(900px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(${transY}px)`;
       kpiCard.style.setProperty("--parY", `${gifY.toFixed(1)}px`);
       kpiCard.style.setProperty("--parR", `${gifR.toFixed(2)}deg`);
     };
@@ -516,6 +476,38 @@
 (() => {
   const root = document.getElementById("timeline");
   if (!root) return;
+
+  const killByText = (needle) => {
+    const els = [...root.querySelectorAll("*")];
+    els.forEach((el) => {
+      const t = (el.textContent || "").trim();
+      if (!t) return;
+      if (t.toLowerCase().includes(needle.toLowerCase())) el.remove();
+    });
+  };
+
+  killByText("Efecto");
+  killByText("Tip:");
+  killByText("tipo mapa");
+
+  const layout = root.querySelector(".layout") || root.querySelector(".tl-layout");
+  if (layout) {
+    layout.style.display = "grid";
+    layout.style.gridTemplateColumns = "1fr";
+    layout.style.gap = "18px";
+    layout.style.alignItems = "start";
+  }
+
+  const detail = root.querySelector(".detail");
+  if (detail) {
+    detail.style.position = "relative";
+    detail.style.top = "auto";
+  }
+
+  const timelinePanel = root.querySelector(".timeline");
+  if (timelinePanel) {
+    timelinePanel.style.width = "100%";
+  }
 
   const EVENTS = [
     { id:"1995a", year:"1995", tag:"Hito", title:"Constitución CONGDEX",
@@ -580,6 +572,8 @@
   const nextBtn = $("#tlNextBtn");
   const rangeHint = $("#tlRangeHint");
 
+  if (!track || !trackWrap || !prevBtn || !nextBtn) return;
+
   const startYearOf = (ev) => parseInt(String(ev.year).split("–")[0], 10);
   const endYearOf = (ev) => {
     const s = String(ev.year);
@@ -591,7 +585,7 @@
   const minYear = Math.min(...yearsStart);
   const maxYear = Math.max(...EVENTS.map(endYearOf));
 
-  rangeHint.textContent = `Rango: ${minYear}–${maxYear}`;
+  if (rangeHint) rangeHint.textContent = `Rango: ${minYear}–${maxYear}`;
 
   const pos01 = (ev) => (startYearOf(ev) - minYear) / (maxYear - minYear);
 
@@ -603,6 +597,15 @@
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#039;");
 
+  const yearCounts = {};
+  function yearJitterPx(ev) {
+    const y = startYearOf(ev);
+    yearCounts[y] = (yearCounts[y] || 0) + 1;
+    const k = yearCounts[y] - 1;
+    const offsets = [0, -14, 14, -28, 28, -42, 42];
+    return offsets[Math.min(k, offsets.length - 1)];
+  }
+
   function renderNodes() {
     const frag = document.createDocumentFragment();
 
@@ -612,7 +615,10 @@
       node.dataset.id = ev.id;
       node.dataset.index = String(i);
 
-      node.style.left = pos01(ev) * 100 + "%";
+      const leftPct = pos01(ev) * 100;
+      const jitter = yearJitterPx(ev);
+      node.style.left = leftPct + "%";
+      node.style.transform = `translateX(calc(-50% + ${jitter}px)) translateY(${(i % 3) * 10}px)`;
 
       const tooltip = document.createElement("div");
       tooltip.className = "tl-tooltip";
@@ -630,7 +636,6 @@
       pill.type = "button";
       pill.textContent = ev.year;
       pill.setAttribute("aria-label", `${ev.year}: ${ev.title}`);
-
       pill.addEventListener("click", () => setActive(i, { center: true }));
 
       node.appendChild(tooltip);
@@ -640,26 +645,33 @@
     });
 
     track.appendChild(frag);
+
+    track.style.minWidth = "1400px";
   }
 
   let activeIndex = 0;
 
   function setActive(i, opts = { center: false }) {
-    activeIndex = Math.max(0, Math.min(EVENTS.length - 1, i));
+    const n = EVENTS.length;
+    activeIndex = ((i % n) + n) % n;
+
     const ev = EVENTS[activeIndex];
 
-    track.querySelectorAll(".tl-node").forEach((n) => n.classList.remove("is-active"));
+    track.querySelectorAll(".tl-node").forEach((nEl) => nEl.classList.remove("is-active"));
     const node = track.querySelector(`.tl-node[data-index="${activeIndex}"]`);
     if (node) node.classList.add("is-active");
 
-    tlTag.textContent = ev.tag || "Hito";
-    tlYear.textContent = ev.year;
-    tlTitle.textContent = ev.title;
-    tlDesc.textContent = ev.desc;
+    if (tlTag) tlTag.textContent = ev.tag || "Hito";
+    if (tlYear) tlYear.textContent = ev.year;
+    if (tlTitle) tlTitle.textContent = ev.title;
+    if (tlDesc) tlDesc.textContent = ev.desc;
 
-    const prog = ((activeIndex + 1) / EVENTS.length) * 100;
-    tlBar.style.width = prog.toFixed(0) + "%";
-    tlMetaR.textContent = String(activeIndex + 1).padStart(2, "0") + "/" + String(EVENTS.length).padStart(2, "0");
+    if (tlBar && tlMetaR) {
+      const prog = ((activeIndex + 1) / EVENTS.length) * 100;
+      tlBar.style.width = prog.toFixed(0) + "%";
+      tlMetaR.textContent =
+        String(activeIndex + 1).padStart(2, "0") + "/" + String(EVENTS.length).padStart(2, "0");
+    }
 
     history.replaceState(null, "", "#" + ev.id);
 
@@ -667,7 +679,8 @@
       const wrapRect = trackWrap.getBoundingClientRect();
       const nodeRect = node.getBoundingClientRect();
       const current = trackWrap.scrollLeft;
-      const delta = nodeRect.left + nodeRect.width / 2 - (wrapRect.left + wrapRect.width / 2);
+      const delta =
+        (nodeRect.left + nodeRect.width / 2) - (wrapRect.left + wrapRect.width / 2);
       trackWrap.scrollLeft = current + delta;
     }
   }
@@ -689,11 +702,11 @@
         let bestI = activeIndex;
         let bestDist = Infinity;
 
-        track.querySelectorAll(".tl-node").forEach((n) => {
-          const r = n.getBoundingClientRect();
+        track.querySelectorAll(".tl-node").forEach((nEl) => {
+          const r = nEl.getBoundingClientRect();
           const x = r.left + r.width / 2;
           const dist = Math.abs(x - centerX);
-          const idx = parseInt(n.dataset.index, 10);
+          const idx = parseInt(nEl.dataset.index, 10);
           if (dist < bestDist) {
             bestDist = dist;
             bestI = idx;
