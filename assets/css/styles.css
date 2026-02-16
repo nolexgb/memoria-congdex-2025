@@ -776,4 +776,90 @@ h2{
   .tl-trackWrap{ scroll-behavior:auto; }
   .tl-pin,.tl-pill,.tl-tooltip{ transition:none; }
 }
+/* ===== TIMELINE: fondo cinematográfico tipo Habitat ===== */
+#timeline{
+  position: relative;
+  overflow: clip;
+  border-radius: 22px;
+  margin: clamp(18px, 3vw, 34px) auto;
+  padding: 0;
+  max-width: 1200px;
+  isolation: isolate;
+}
+
+/* Fondo (imagen) */
+#timeline::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    url("../img/timeline-bg.jpg") center / cover no-repeat;
+  transform: scale(var(--tlZoom, 1)) translateY(var(--tlY, 0px));
+  will-change: transform;
+  z-index: -2;
+  filter: saturate(1.05) contrast(1.05) brightness(.92);
+}
+
+/* Overlay cinematográfico */
+#timeline::after{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  background:
+    radial-gradient(900px 560px at 15% 10%, rgba(255,255,255,.12), rgba(255,255,255,0) 58%),
+    radial-gradient(900px 620px at 70% 120%, rgba(0,0,0,.40), rgba(0,0,0,0) 60%),
+    linear-gradient(180deg, rgba(8,18,14,.60), rgba(8,18,14,.30) 34%, rgba(8,18,14,.62));
+  z-index: -1;
+}
+
+/* Ajustes de texto sobre fondo */
+#timeline .tl-h2,
+#timeline .tl-sub{
+  color: rgba(255,255,255,.92);
+}
+
+#timeline .tl-sub{
+  color: rgba(255,255,255,.78);
+}
+
+/* Paneles sobre el fondo (glass limpio) */
+#timeline .tl-detail,
+#timeline .tl-timeline{
+  background: rgba(255,255,255,.72);
+  border: 1px solid rgba(255,255,255,.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Cabecera timeline */
+#timeline .tl-timeline__top{
+  background: rgba(255,255,255,.58);
+  border-bottom: 1px solid rgba(14,43,31,.10);
+}
+
+/* Mejor contraste del hint dentro del glass */
+#timeline .tl-hint{
+  color: rgba(14,43,31,.72);
+}
+
+/* Suaviza el borde exterior (como tarjeta editorial) */
+#timeline{
+  box-shadow: 0 24px 90px rgba(0,0,0,.18);
+  border: 1px solid rgba(255,255,255,.22);
+}
+
+/* Mobile: menos radio y margen */
+@media (max-width: 920px){
+  #timeline{
+    border-radius: 16px;
+    margin: 18px 12px;
+  }
+}
+
+/* Reduced motion: sin zoom animado */
+@media (prefers-reduced-motion: reduce){
+  #timeline::before{
+    transform: none !important;
+  }
+}
 
