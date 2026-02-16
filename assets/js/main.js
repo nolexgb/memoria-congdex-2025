@@ -331,14 +331,15 @@
     if (!story) return;
 
     const DATA = {
-      circulares:   { chip:"Comunicaciones", label:"Circulares internas", value:38,    sub:"Alcance interno consolidado", prog:.62 },
-      aperturas:    { chip:"Engagement",     label:"Aperturas registradas", value:8439, type:"number", sub:"Interacción con envíos internos", prog:.78 },
-      promedio:     { chip:"Engagement",     label:"Promedio aperturas", value:60.19, type:"percent", decimals:2, sub:"Porcentaje medio de apertura", prog:.60 },
-      publicaciones:{ chip:"Contenido",      label:"Publicaciones web", value:41,     type:"number", sub:"Contenido publicado", prog:.58 },
-      eventos:      { chip:"Activaciones",   label:"Eventos web", value:26,           type:"number", sub:"Actividades y entradas online", prog:.52 },
-      empleo:       { chip:"Talento",        label:"Ofertas de empleo", value:12,     type:"number", sub:"Oportunidades publicadas", prog:.44 },
-      visitas:      { chip:"Tráfico",        label:"Visitas web", value:12670,       type:"number", sub:"Tráfico total del sitio", prog:.72 }
-    };
+  circulares:   { chip:"Métricas web", label:"Circulares internas", value:38, sub:"Alcance interno consolidado", prog:.62 },
+  aperturas:    { chip:"Métricas web", label:"Aperturas registradas", value:8439, type:"number", sub:"Interacción con envíos internos", prog:.78 },
+  promedio:     { chip:"Métricas web", label:"Promedio aperturas", value:60.19, type:"percent", decimals:2, sub:"Porcentaje medio de apertura", prog:.60 },
+  publicaciones:{ chip:"Métricas web", label:"Publicaciones web", value:41, type:"number", sub:"Contenido publicado", prog:.58 },
+  eventos:      { chip:"Métricas web", label:"Eventos web", value:26, type:"number", sub:"Actividades y entradas online", prog:.52 },
+  empleo:       { chip:"Métricas web", label:"Ofertas de empleo", value:12, type:"number", sub:"Oportunidades publicadas", prog:.44 },
+  visitas:      { chip:"Métricas web", label:"Visitas web", value:12670, type:"number", sub:"Tráfico total del sitio", prog:.72 }
+};
+
 
     const elChip = document.getElementById("kpiChip");
     const elLabel = document.getElementById("kpiLabel");
