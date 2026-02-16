@@ -688,3 +688,32 @@
   const idx = hash ? EVENTS.findIndex((e) => e.id === hash) : 0;
   setActive(idx >= 0 ? idx : 0, { center: true });
 })();
+
+(() => {
+  const el = document.getElementById("timeline");
+  if (!el) return;
+
+  let raf = null;
+
+  const update = () => {
+    raf = null;
+    const r = el.getBoundingClientRect();
+    const vh = window.innerHeight;
+
+    const visible = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
+    const z = 1 + visible * 0.08;         // zoom 1.00 -> 1.08
+    const y = (0.5 - visible) * 22;       // parallax suave
+
+    el.style.setProperty("--tlZoom", z.toFixed(3));
+    el.style.setProperty("--tlY", `${y.toFixed(1)}px`);
+  };
+
+  const onScroll = () => {
+    if (raf) return;
+    raf = requestAnimationFrame(update);
+  };
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  update();
+})();
