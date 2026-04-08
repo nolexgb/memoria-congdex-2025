@@ -1,84 +1,581 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Propuesta interactiva | Junta directiva, entidades y proyectos</title>
-  <style>
-    .memoria-interactiva{
-      --mi-bg:#f4f7f8;
-      --mi-panel:#ffffff;
-      --mi-panel-2:#eef6f2;
-      --mi-text:#15323a;
-      --mi-muted:#5c7278;
-      --mi-primary:#2d9b61;
-      --mi-primary-dark:#217448;
-      --mi-secondary:#6f8fda;
-      --mi-accent:#f18b53;
-      --mi-line:#dce6e4;
-      --mi-shadow:0 12px 30px rgba(16,40,46,.08);
-      --mi-radius:22px;
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background:linear-gradient(180deg,#f7fbfa 0%, #eef4f6 100%);
-      color:var(--mi-text);
-    }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Memoria CONGDEX 2025</title>
 
-    .memoria-interactiva *, .memoria-interactiva *::before, .memoria-interactiva *::after{box-sizing:border-box}
-    .memoria-interactiva a{text-decoration:none}
-    .memoria-interactiva .mi-wrap{width:min(1240px, calc(100% - 32px));margin:auto}
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/print.css" media="print">
+  <link rel="preconnect" href="https://www.mattiasmackler.com" crossorigin>
+</head>
 
-    .memoria-interactiva .mi-hero{
-      position:relative;overflow:hidden;padding:72px 0 34px;
-      background:
-        radial-gradient(circle at 20% 20%, rgba(111,143,218,.18), transparent 24%),
-        radial-gradient(circle at 80% 10%, rgba(45,155,97,.14), transparent 20%),
-        linear-gradient(180deg, rgba(255,255,255,.96), rgba(245,249,249,.94));
-      border-bottom:1px solid rgba(21,50,58,.06);
-    }
-    .memoria-interactiva .mi-hero::after{
-      content:"";position:absolute;inset:auto -10% -60px -10%;height:140px;
-      background:radial-gradient(ellipse at center, rgba(45,155,97,.18), transparent 65%);pointer-events:none;
-    }
-    .memoria-interactiva .mi-eyebrow{
-      display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border-radius:999px;
-      background:#fff;border:1px solid rgba(21,50,58,.08);box-shadow:var(--mi-shadow);
-      color:var(--mi-primary-dark);font-weight:700;font-size:.9rem;
-    }
-    .memoria-interactiva h1{margin:18px 0 14px;font-size:clamp(2rem,4vw,4rem);line-height:1.02;max-width:850px;letter-spacing:-.04em}
-    .memoria-interactiva .mi-lead{max-width:880px;color:var(--mi-muted);font-size:1.05rem;line-height:1.7;margin:0 0 28px}
-    .memoria-interactiva .mi-hero-grid{display:grid;grid-template-columns:1.25fr .95fr;gap:28px;align-items:center}
-    .memoria-interactiva .mi-hero-card{
-      background:rgba(255,255,255,.88);border:1px solid rgba(21,50,58,.08);border-radius:28px;
-      padding:22px;box-shadow:var(--mi-shadow);backdrop-filter:blur(10px);
-    }
+<body>
+  <div class="progress"><div id="progressBar"></div></div>
 
-    .memoria-interactiva .mi-node-map{
-      position:relative;min-height:420px;border-radius:24px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.88), rgba(238,246,242,.84)),
-        repeating-linear-gradient(0deg, transparent 0 31px, rgba(45,155,97,.05) 31px 32px),
-        repeating-linear-gradient(90deg, transparent 0 31px, rgba(111,143,218,.05) 31px 32px);
-      overflow:hidden;
-    }
-    .memoria-interactiva .mi-node,
-    .memoria-interactiva .mi-center-node{
-      position:absolute;display:grid;place-items:center;text-align:center;border-radius:50%;cursor:pointer;
-      transition:transform .25s ease, box-shadow .25s ease, filter .25s ease;user-select:none;
-    }
-    .memoria-interactiva .mi-center-node{
-      inset:50% auto auto 50%;transform:translate(-50%, -50%);width:180px;height:180px;
-      background:linear-gradient(180deg, #fafffd, #daf0e1);border:6px solid rgba(45,155,97,.18);
-      box-shadow:0 18px 45px rgba(45,155,97,.18);z-index:3;font-weight:800;color:var(--mi-primary-dark);padding:24px;
-    }
-    .memoria-interactiva .mi-center-node small{display:block;color:var(--mi-muted);font-weight:600;margin-top:6px}
-    .memoria-interactiva .mi-node{width:118px;height:118px;padding:14px;color:#fff;font-weight:700;box-shadow:0 10px 22px rgba(21,50,58,.16);z-index:2}
-    .memoria-interactiva .mi-node.mi-blue{background:linear-gradient(180deg, #81a0eb, #6283d8)}
-    .memoria-interactiva .mi-node.mi-green{background:linear-gradient(180deg, #46b97b, #2a965d)}
-    .memoria-interactiva .mi-node.mi-dark{background:linear-gradient(180deg, #35695b, #23473d)}
-    .memoria-interactiva .mi-node.mi-orange{background:linear-gradient(180deg, #f4a26f, #e27d46)}
-    .memoria-interactiva .m
+  <header class="topbar">
+    <div class="container topbar__inner">
+      <a class="brand" href="#hero">Memoria CONGDEX 2025</a>
 
+      <nav class="nav" aria-label="Secciones">
+        <ul>
+          <li><a href="#prologo">Prólogo</a></li>
+          <li><a href="#resumen">Resumen</a></li>
+          <li><a href="#quienes-somos">Quiénes somos</a></li>
+          <li><a href="#cifras">Cifras</a></li>
+          <li><a href="#actividad">Actividad</a></li>
+          <li><a href="#impacto">Impacto</a></li>
+          <li><a href="#timeline">30 años</a></li>
+          <li><a href="#transparencia">Transparencia</a></li>
+          <li><a href="#alianzas">Alianzas</a></li>
+          <li><a href="#gracias">Gracias</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
+  <main>
+    <section class="hero reveal" id="hero" data-zoom>
+      <div class="hero__media" aria-hidden="true">
+        <div class="hero__img"></div>
+      </div>
 
+      <div class="hero__panel">
+        <div class="hero__panelInner">
+          <h1>Memoria CONGDEX 2025</h1>
+          <p>30 años de cooperación, red y defensa de lo común en Extremadura.</p>
+        </div>
+      </div>
+    </section>
 
+    <section id="prologo" class="chapter reveal">
+      <div class="container">
+        <h2>Prólogo</h2>
+
+        <aside class="prologo" aria-label="Prólogo">
+          <h3 class="prologo__title">La cooperación, ADN de Extremadura</h3>
+
+          <div class="prologo__cols">
+            <p><strong>En 1995 se constituyó la Coordinadora Extremeña de ONGD</strong>, coincidiendo con la creación del Consejo Asesor de Cooperación al Desarrollo y la publicación de las primeras ayudas oficiales para proyectos de desarrollo.</p>
+
+            <p>Este 2025 CONGDEX celebra tres décadas de trayectoria en la defensa de los derechos humanos, la justicia global y la cooperación internacional para el desarrollo, consolidándose como una red reconocida de organizaciones que trabajan en Extremadura y también en América, Asia y África.</p>
+
+            <p>Durante estos 30 años, la Coordinadora ha acompañado la construcción de la cooperación extremeña como política social, ha defendido la coherencia de políticas y ha impulsado el trabajo conjunto entre sociedad civil e instituciones.</p>
+
+            <p>La memoria reivindica la cooperación como parte de la identidad extremeña: una forma de estar en el mundo basada en la cercanía, el compromiso, la solidaridad y la resistencia frente a la guerra, el odio, el racismo y la injusticia.</p>
+
+            <p>Mirar más allá de lo propio, tender la mano y sostener una cultura de justicia social y equidad global forma parte del legado que CONGDEX quiere dejar a quienes vengan detrás.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="resumen" class="impact reveal" data-zoom>
+      <div class="impact__media" aria-hidden="true">
+        <div class="impact__img"></div>
+      </div>
+
+      <div class="impact__center">
+        <div class="impact__kicker">RESUMEN EJECUTIVO · MEMORIA 2025</div>
+        <div class="impact__big" data-count="52">0</div>
+        <div class="impact__sub">entidades forman parte actualmente de CONGDEX, entidad referente en Extremadura en la defensa de las políticas de cooperación para el desarrollo.</div>
+      </div>
+
+      <div class="impact__bar" role="group" aria-label="Grandes cifras">
+        <div class="impact__stat">
+          <div class="impact__value" data-count="121">0</div>
+          <div class="impact__label">Consultas técnicas</div>
+        </div>
+        <div class="impact__stat">
+          <div class="impact__value" data-count="12670">0</div>
+          <div class="impact__label">Visitas web</div>
+        </div>
+        <div class="impact__stat">
+          <div class="impact__value" data-count="8439">0</div>
+          <div class="impact__label">Aperturas registradas</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quienes-somos" class="chapter reveal">
+      <div class="container">
+        <h2>1. Quiénes somos, qué hacemos</h2>
+        <p>CONGDEX está constituida por una Asamblea General de socias, Junta Directiva, Equipo Técnico y grupos de trabajo. Reúne a 52 entidades en Extremadura y articula su acción en ámbitos como educación para la ciudadanía global, incidencia política, voluntariado, feminismos, migraciones, sostenibilidad y comunicación transformadora.</p>
+
+        <div class="kpis">
+          <div class="kpi">
+            <strong>52</strong>
+            <span>Entidades</span>
+          </div>
+          <div class="kpi">
+            <strong>17</strong>
+            <span>En Cáceres</span>
+          </div>
+          <div class="kpi">
+            <strong>35</strong>
+            <span>En Badajoz</span>
+          </div>
+          <div class="kpi">
+            <strong>3</strong>
+            <span>Personal técnico</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="junta-equipo" class="chapter reveal">
+      <div class="container">
+        <h2>1.1 Junta Directiva y Equipo Técnico</h2>
+
+        <div class="split">
+          <article class="card">
+            <div class="card__top">
+              <h3>Junta Directiva</h3>
+            </div>
+            <p><strong>Presidencia:</strong> Lidia Rodríguez · MZC</p>
+            <p><strong>Vicepresidencia:</strong> Gloria Angulo · Malvaluna</p>
+            <p><strong>Secretaría:</strong> Ana Prieto · Liga Educación</p>
+            <p><strong>Tesorería:</strong> José A. Murillo · Rurex</p>
+            <p><strong>Vocalías:</strong> Paula Alonso, Marta Sánchez, Maite de Tena, Pablo Díez y Silvia Tostado.</p>
+          </article>
+
+          <article class="card">
+            <div class="card__top">
+              <h3>Equipo Técnico</h3>
+            </div>
+            <p>Verónica Carpio Mesto · Técnica de proyectos</p>
+            <p>Nolan Gómez Barboza · Técnico de proyectos</p>
+            <p>Manuela Torrescusa Asensio · Técnica de administración</p>
+            <p>La estructura organizativa se completa con Asamblea, comisiones y grupos de trabajo que sostienen la actividad anual de la Coordinadora.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="entidades-grupos" class="chapter reveal">
+      <div class="container">
+        <h2>1.2 Entidades y grupos de trabajo</h2>
+
+        <div class="split">
+          <article class="card">
+            <div class="card__top">
+              <h3>Ámbitos de trabajo</h3>
+            </div>
+            <p>Sostenibilidad y consumo responsable</p>
+            <p>Comunicación transformadora</p>
+            <p>Feminismo, igualdad y diversidad</p>
+            <p>Educación para la ciudadanía global</p>
+            <p>Migraciones y movilidad humana</p>
+            <p>Interculturalidad</p>
+            <p>Voluntariado</p>
+          </article>
+
+          <article class="card">
+            <div class="card__top">
+              <h3>Grupos activos</h3>
+            </div>
+            <p><strong>Educación para la Ciudadanía Global:</strong> 28 entidades</p>
+            <p><strong>Incidencia Política:</strong> 11 entidades + Presidencia CONGDEX</p>
+            <p><strong>Voluntariado:</strong> 4 entidades</p>
+            <p><strong>Consejo Asesor:</strong> 7 entidades + Presidencia CONGDEX</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="proyectos" class="chapter reveal">
+      <div class="container">
+        <h2>1.3 Proyectos</h2>
+
+        <div class="split">
+          <article class="card">
+            <div class="card__top">
+              <h3>Mejora de las políticas extremeñas de cooperación internacional</h3>
+            </div>
+            <p>Proyecto financiado por AEXCID para avanzar hacia un modelo de desarrollo sostenible y de justicia social global.</p>
+          </article>
+
+          <article class="card">
+            <div class="card__top">
+              <h3>30 años de solidaridad: Construyendo un futuro justo</h3>
+            </div>
+            <p>Proyecto financiado por la Diputación de Cáceres para reforzar la memoria institucional, la proyección pública y la articulación social de CONGDEX en su 30 aniversario.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="cifras" class="cifras reveal">
+      <header class="cifras__head">
+        <h2>2. La Coordinadora en cifras</h2>
+        <p>Este apartado conserva toda la interactividad de gráficos, pestañas, descargas y panel KPI dinámico.</p>
+      </header>
+
+      <div class="cifras__grid">
+        <article class="card">
+          <div class="card__top">
+            <h3>2.1 Reuniones por Grupo de Trabajo</h3>
+            <button class="btn" type="button" data-dl="chartReuniones">Descargar</button>
+          </div>
+          <div class="chartBox">
+            <canvas id="chartReuniones"></canvas>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card__top">
+            <h3>2.2 Comunicación externa</h3>
+            <button class="btn" type="button" data-dl="chartRedes">Descargar</button>
+          </div>
+
+          <div class="tabs" role="tablist" aria-label="Métricas redes">
+            <button class="tab is-active" data-m="seguidores" role="tab" type="button">Seguidores</button>
+            <button class="tab" data-m="publicaciones" role="tab" type="button">Publicaciones</button>
+            <button class="tab" data-m="interacciones" role="tab" type="button">Interacciones</button>
+          </div>
+
+          <div class="chartBox">
+            <canvas id="chartRedes"></canvas>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card__top">
+            <h3>2.3 Participación por género</h3>
+            <button class="btn" type="button" data-dl="chartGenero">Descargar</button>
+          </div>
+          <div class="chartBox chartBox--tall">
+            <canvas id="chartGenero"></canvas>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card__top">
+            <h3>2.3 Asistencias técnicas</h3>
+            <button class="btn" type="button" data-dl="chartConsultasTemas">Descargar</button>
+          </div>
+
+          <div class="split">
+            <div>
+              <h4>Consultas por temática</h4>
+              <div class="chartBox">
+                <canvas id="chartConsultasTemas"></canvas>
+              </div>
+            </div>
+
+            <div>
+              <h4>Género por temática</h4>
+              <div class="chartBox">
+                <canvas id="chartConsultasGenero"></canvas>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <section class="kpi2 reveal" id="kpiStory" aria-label="Impacto digital scrollytelling">
+        <aside class="kpi2__left">
+          <div class="kpiCard" id="kpiCard">
+            <div class="kpiCard__media">
+              <img
+                src="https://www.mattiasmackler.com/wp-content/uploads/2016/04/StoryID_130-1-loop-Black-Tan_v2.gif"
+                alt="Loop visual"
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+
+            <div class="kpiCard__glass" aria-hidden="true"></div>
+
+            <div class="kpiCard__content">
+              <div class="chip"><span class="dot"></span><span id="kpiChip">Comunicación</span></div>
+              <div class="kpiCard__label" id="kpiLabel">Circulares internas</div>
+              <div class="kpiCard__value" id="kpiValue">38</div>
+              <div class="kpiCard__sub" id="kpiSub">Alcance interno consolidado</div>
+
+              <div class="meta">
+                <span>Progreso</span>
+                <div class="bar"><span id="kpiBar"></span></div>
+                <span id="kpiMetaR">01/07</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <div class="kpi2__right" id="steps">
+          <article class="stepCard is-active" data-key="circulares">
+            <h3>Circulares internas</h3>
+          </article>
+
+          <article class="stepCard" data-key="aperturas">
+            <h3>Aperturas registradas</h3>
+          </article>
+
+          <article class="stepCard" data-key="promedio">
+            <h3>Promedio aperturas</h3>
+          </article>
+
+          <article class="stepCard" data-key="publicaciones">
+            <h3>Publicaciones web</h3>
+          </article>
+
+          <article class="stepCard" data-key="eventos">
+            <h3>Eventos web</h3>
+          </article>
+
+          <article class="stepCard" data-key="empleo">
+            <h3>Ofertas de empleo</h3>
+          </article>
+
+          <article class="stepCard" data-key="visitas">
+            <h3>Visitas web</h3>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <section id="actividad" class="chapter reveal">
+      <div class="container">
+        <h2>3. Actividad CONGDEX 2025</h2>
+        <p>La actividad anual se articula en cinco líneas: desarrollo interno, alianzas y relaciones, incidencia, comunicación interna y externa, y ciudadanía global.</p>
+      </div>
+    </section>
+
+    <section id="desarrollo-interno" class="chapter reveal">
+      <div class="container">
+        <h2>3.1 Desarrollo interno</h2>
+
+        <div class="split">
+          <article class="card">
+            <div class="card__top">
+              <h3>Formaciones</h3>
+            </div>
+            <p>CONGDEX realizó una formación sobre Enfoque de Teoría del Cambio para fortalecer las capacidades técnicas del personal y voluntariado de las organizaciones extremeñas.</p>
+            <p>También celebró una formación sobre identificación de fondos europeos para proyectos de ECG y voluntariado, reforzando la capacidad de acceso a nuevas líneas de financiación.</p>
+          </article>
+
+          <article class="card">
+            <div class="card__top">
+              <h3>Transparencia y buen gobierno</h3>
+            </div>
+            <p>En diciembre de 2025, CONGDEX obtuvo el Certificado y Sello de Transparencia y Buen Gobierno de la Coordinadora estatal, consolidando su compromiso con la rendición de cuentas, la transparencia y la mejora continua.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="alianzas" class="chapter reveal">
+      <div class="container">
+        <h2>3.2 Alianzas y relaciones</h2>
+
+        <div class="split">
+          <article class="card">
+            <div class="card__top">
+              <h3>Trabajo en red</h3>
+            </div>
+            <p>En 2025, CONGDEX impulsó un Mapeo de Redes y Colectivos de Extremadura con información de 125 organizaciones activas en la región, como herramienta para fortalecer alianzas y ampliar el impacto colectivo.</p>
+          </article>
+
+          <article class="card">
+            <div class="card__top">
+              <h3>Coordinadora estatal y Red CCAA</h3>
+            </div>
+            <p>La Coordinadora participó en encuentros, talleres y espacios de planificación conjunta con la Coordinadora estatal y la Red de Coordinadoras Autonómicas, abordando sostenibilidad, marco estratégico, rendición de cuentas y respuestas frente al contexto adverso.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="incidencia" class="chapter reveal">
+      <div class="container">
+        <h2>3.3 Incidencia</h2>
+
+        <div class="split">
+          <article class="card">
+            <div class="card__top">
+              <h3>Comisión de Incidencia Política</h3>
+            </div>
+            <p>Durante 2025 la comisión desarrolló su plan anual de trabajo en torno al seguimiento de las políticas de cooperación extremeñas, el diálogo institucional y la construcción de narrativas para la incidencia en Extremadura.</p>
+            <p>Su trabajo incluyó seguimiento de la AOD extremeña, bases reguladoras, presupuestos, convocatorias y propuestas del sector.</p>
+          </article>
+
+          <article class="card">
+            <div class="card__top">
+              <h3>Interlocución institucional</h3>
+            </div>
+            <p>CONGDEX mantuvo reuniones con AEXCID, grupos parlamentarios, Diputación de Badajoz y Oficina de Cooperación Universitaria, además de otros espacios con actores políticos y administrativos relevantes para la cooperación extremeña.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="comunicacion" class="chapter reveal">
+      <div class="container">
+        <h2>3.4 Comunicación interna y externa</h2>
+
+        <div class="card">
+          <div class="card__top">
+            <h3>Estrategia de comunicación 2025–2028</h3>
+          </div>
+          <p>La comunicación es una línea estratégica de CONGDEX. Durante 2025 se reforzaron las herramientas de comunicación interna y externa, se avanzó en una nueva web más clara y operativa, y se desarrollaron campañas, infografías y contenidos vinculados a derechos humanos, cooperación, paz, feminismos, voluntariado y memoria institucional.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="ciudadania-global" class="chapter reveal">
+      <div class="container">
+        <h2>3.5 Ciudadanía global</h2>
+
+        <div class="split">
+          <article class="card">
+            <div class="card__top">
+              <h3>Grupo de Educación</h3>
+            </div>
+            <p>El Grupo de Educación estuvo compuesto por 28 entidades y se reunió en 11 ocasiones. Entre sus resultados destacan el protocolo de acogida para organizaciones, la estrategia de educación del grupo, la coordinación de proyectos y la incidencia normativa en educación para la ciudadanía global.</p>
+          </article>
+
+          <article class="card">
+            <div class="card__top">
+              <h3>Voluntariado y ECG</h3>
+            </div>
+            <p>El Grupo de Voluntariado estuvo formado por 4 entidades y se reunió 3 veces. Además, se celebró en Mérida un encuentro de intercambio de proyectos de ECG y voluntariado, y se impulsó un recorrido visual en formato visual thinking sobre la trayectoria del trabajo educativo en CONGDEX.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="impacto" class="impact reveal" data-zoom>
+      <div class="impact__media" aria-hidden="true">
+        <div class="impact__img"></div>
+      </div>
+
+      <div class="impact__center">
+        <div class="impact__kicker">IMPACTO 2025</div>
+        <div class="impact__big" data-count="30">0</div>
+        <div class="impact__sub">años sosteniendo una red extremeña de cooperación, ciudadanía global, incidencia y trabajo conjunto frente a los desafíos del presente.</div>
+      </div>
+
+      <div class="impact__bar" role="group" aria-label="Impacto 2025">
+        <div class="impact__stat">
+          <div class="impact__value" data-count="11">0</div>
+          <div class="impact__label">Reuniones grupo educación</div>
+        </div>
+        <div class="impact__stat">
+          <div class="impact__value" data-count="12">0</div>
+          <div class="impact__label">Reuniones institucionales</div>
+        </div>
+        <div class="impact__stat">
+          <div class="impact__value" data-count="125">0</div>
+          <div class="impact__label">Organizaciones en mapeo</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="timeline" class="tl-wrap reveal" aria-label="Línea de tiempo CONGDEX">
+      <div class="tl-header">
+        <div>
+          <h2 class="tl-h2">CONGDEX 1995–2028</h2>
+          <p class="tl-sub">Línea de tiempo interactiva de hitos, leyes, grupos y planificación estratégica.</p>
+        </div>
+      </div>
+
+      <div class="tl-layout">
+        <aside class="tl-detail" aria-live="polite">
+          <div class="tl-detail__loop">
+            <img
+              src="https://www.mattiasmackler.com/wp-content/uploads/2016/04/StoryID_130-1-loop-Black-Tan_v2.gif"
+              alt="Fondo en loop"
+              loading="eager"
+              decoding="async"
+            />
+          </div>
+
+          <div class="tl-detail__body">
+            <div class="tl-tag">
+              <span class="tl-dot"></span>
+              <span id="tlTag">Resumen</span>
+            </div>
+
+            <div class="tl-year" id="tlYear">1995</div>
+            <div class="tl-title" id="tlTitle">Constitución CONGDEX</div>
+            <div class="tl-desc" id="tlDesc"></div>
+
+            <div class="tl-meta">
+              <span>Progreso</span>
+              <div class="tl-bar"><span id="tlBar"></span></div>
+              <span id="tlMetaR">01/01</span>
+            </div>
+
+            <div class="tl-nav">
+              <button class="tl-btn" id="tlPrevBtn" type="button">← Anterior</button>
+              <button class="tl-btn" id="tlNextBtn" type="button">Siguiente →</button>
+            </div>
+          </div>
+        </aside>
+
+        <div class="tl-timeline" aria-label="Mapa de hitos">
+          <div class="tl-timeline__top">
+            <div class="tl-hint">Explora la evolución histórica de CONGDEX y la cooperación extremeña.</div>
+            <div class="tl-hint" id="tlRangeHint">Rango: 1995–2028</div>
+          </div>
+
+          <div class="tl-trackWrap" id="tlTrackWrap">
+            <div class="tl-track" id="tlTrack">
+              <div class="tl-line"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="transparencia" class="chapter reveal">
+      <div class="container">
+        <h2>Transparencia y sostenibilidad institucional</h2>
+
+        <div class="split">
+          <article class="card">
+            <div class="card__top">
+              <h3>Sello de Transparencia</h3>
+            </div>
+            <p>La obtención del Certificado y Sello de Transparencia y Buen Gobierno refuerza la legitimidad institucional de CONGDEX y su compromiso con una gestión abierta, comprensible y responsable.</p>
+          </article>
+
+          <article class="card">
+            <div class="card__top">
+              <h3>Rendición de cuentas</h3>
+            </div>
+            <p>La memoria 2025 refleja una apuesta clara por mejorar la comunicación de la información, hacerla accesible y comprensible, y sostener la transparencia como eje irrenunciable del trabajo colectivo.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="gracias" class="chapter reveal">
+      <div class="container">
+        <h2>Gracias</h2>
+
+        <div class="split">
+          <article class="card">
+            <div class="card__top">
+              <h3>Financiadores y apoyos</h3>
+            </div>
+            <p>AEXCID, Diputación de Cáceres, instituciones colaboradoras, entidades miembro, redes estatales y autonómicas, colectivos aliados y personas que hacen posible sostener el trabajo común de CONGDEX.</p>
+          </article>
+
+          <article class="card">
+            <div class="card__top">
+              <h3>Cierre</h3>
+            </div>
+            <p>Treinta años después, CONGDEX sigue siendo un espacio de articulación, incidencia, ciudadanía global y defensa de políticas públicas de cooperación para el desarrollo en Extremadura.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button id="backTop" aria-label="Volver arriba">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>
