@@ -480,7 +480,8 @@ h2::after{
   opacity: 0.9;
 }
 
-.memoriaHeader__title {
+.memoriaHeader__title span {
+  background: linear-gradient(135deg, #2e7d32, #43a047);
   margin: 0;
   max-width: 900px;
   font-size: clamp(3rem, 7vw, 6.5rem);
