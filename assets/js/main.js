@@ -226,3 +226,14 @@
   })();
 
 })();
+document.addEventListener("DOMContentLoaded", () => {
+  const menuToggle = document.getElementById("menuToggle");
+  const nav = document.querySelector(".memoriaHeader__nav");
+
+  if (menuToggle && nav) {
+    menuToggle.addEventListener("click", () => {
+      const open = nav.classList.toggle("is-open");
+      menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  }
+});
