@@ -6,12 +6,35 @@
   if (reveals.length) {
     const io = new IntersectionObserver((entries) => {
       entries.forEach((e) => e.isIntersecting && e.target.classList.add("visible"));
-    });
+    }, { threshold: 0.12 });
     reveals.forEach((r) => io.observe(r));
   }
 
   const progressBar = document.getElementById("progressBar");
   const back = document.getElementById("backTop");
+  const navLinks = [...document.querySelectorAll('.nav a[href^="#"]')];
+  const navTargets = navLinks
+    .map((a) => document.querySelector(a.getAttribute("href")))
+    .filter(Boolean);
+
+  const updateActiveNav = () => {
+    if (!navLinks.length || !navTargets.length) return;
+
+    const marker = window.innerHeight * 0.22;
+    let currentId = navTargets[0]?.id || "";
+
+    navTargets.forEach((sec) => {
+      const rect = sec.getBoundingClientRect();
+      if (rect.top <= marker) currentId = sec.id;
+    });
+
+    navLinks.forEach((a) => {
+      const is = a.getAttribute("href") === `#${currentId}`;
+      a.classList.toggle("is-active", is);
+      if (is) a.setAttribute("aria-current", "page");
+      else a.removeAttribute("aria-current");
+    });
+  };
 
   const onScrollGlobal = () => {
     const h = document.documentElement;
@@ -19,12 +42,16 @@
     const p = denom > 0 ? h.scrollTop / denom : 0;
     if (progressBar) progressBar.style.width = p * 100 + "%";
     if (back) back.style.display = window.scrollY > 500 ? "block" : "none";
+    updateActiveNav();
   };
 
   window.addEventListener("scroll", onScrollGlobal, { passive: true });
+  window.addEventListener("resize", onScrollGlobal);
   onScrollGlobal();
 
-  if (back) back.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+  if (back) {
+    back.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   document.querySelectorAll("[data-count]").forEach((el) => {
     let done = false;
@@ -45,7 +72,7 @@
           el.textContent = Math.floor(n).toLocaleString("es-ES");
         }, 20);
       }
-    }).observe(el);
+    }, { threshold: 0.3 }).observe(el);
   });
 
   document.querySelectorAll(".barFill").forEach((bar) => {
@@ -54,7 +81,7 @@
         bar.style.transition = "transform .7s";
         bar.style.transform = "scaleX(" + bar.dataset.value / 100 + ")";
       }
-    }).observe(bar);
+    }, { threshold: 0.35 }).observe(bar);
   });
 
   const zoomSections = [...document.querySelectorAll("[data-zoom]")];
@@ -172,15 +199,13 @@
       type: "doughnut",
       data: {
         labels: reuniones.map((d) => d.label),
-        datasets: [
-          {
-            data: reuniones.map((d) => d.value),
-            backgroundColor: [palette.g1, palette.g2, palette.g3, palette.g0, palette.g4],
-            borderWidth: 0,
-            hoverOffset: 8,
-            cutout: "62%"
-          }
-        ]
+        datasets: [{
+          data: reuniones.map((d) => d.value),
+          backgroundColor: [palette.g1, palette.g2, palette.g3, palette.g0, palette.g4],
+          borderWidth: 0,
+          hoverOffset: 8,
+          cutout: "62%"
+        }]
       },
       options: {
         ...commonOptions,
@@ -204,15 +229,13 @@
       type: "bar",
       data: {
         labels: redes.labels,
-        datasets: [
-          {
-            label: "Seguidores",
-            data: redes.seguidores,
-            backgroundColor: palette.g1,
-            borderWidth: 0,
-            borderRadius: 10
-          }
-        ]
+        datasets: [{
+          label: "Seguidores",
+          data: redes.seguidores,
+          backgroundColor: palette.g1,
+          borderWidth: 0,
+          borderRadius: 10
+        }]
       },
       options: {
         ...commonOptions,
@@ -225,7 +248,10 @@
     });
 
     const updateRedes = (m) => {
-      const pretty = m === "seguidores" ? "Seguidores" : m === "publicaciones" ? "Publicaciones" : "Interacciones";
+      const pretty =
+        m === "seguidores" ? "Seguidores" :
+        m === "publicaciones" ? "Publicaciones" :
+        "Interacciones";
       redesChart.data.datasets[0].label = pretty;
       redesChart.data.datasets[0].data = redes[m];
       redesChart.update();
@@ -239,13 +265,27 @@
       });
     });
 
-    new Chart(document.getElementById("chartGenero"), {
+    const generoChart = new Chart(document.getElementById("chartGenero"), {
       type: "bar",
       data: {
         labels: generoActividades.map((d) => d.label),
         datasets: [
-          { label: "Mujeres (%)", data: generoActividades.map((d) => d.mujeres), stack: "s", borderWidth: 0, borderRadius: 8, backgroundColor: palette.g1 },
-          { label: "Hombres (%)", data: generoActividades.map((d) => d.hombres), stack: "s", borderWidth: 0, borderRadius: 8, backgroundColor: palette.g0 }
+          {
+            label: "Mujeres (%)",
+            data: generoActividades.map((d) => d.mujeres),
+            stack: "s",
+            borderWidth: 0,
+            borderRadius: 8,
+            backgroundColor: palette.g1
+          },
+          {
+            label: "Hombres (%)",
+            data: generoActividades.map((d) => d.hombres),
+            stack: "s",
+            borderWidth: 0,
+            borderRadius: 8,
+            backgroundColor: palette.g0
+          }
         ]
       },
       options: {
@@ -266,7 +306,13 @@
       type: "bar",
       data: {
         labels: consultasTemas.map((d) => d.label),
-        datasets: [{ label: "Consultas", data: consultasTemas.map((d) => d.total), borderWidth: 0, borderRadius: 10, backgroundColor: palette.g2 }]
+        datasets: [{
+          label: "Consultas",
+          data: consultasTemas.map((d) => d.total),
+          borderWidth: 0,
+          borderRadius: 10,
+          backgroundColor: palette.g2
+        }]
       },
       options: {
         ...commonOptions,
@@ -279,13 +325,27 @@
       }
     });
 
-    new Chart(document.getElementById("chartConsultasGenero"), {
+    const consultasGeneroChart = new Chart(document.getElementById("chartConsultasGenero"), {
       type: "bar",
       data: {
         labels: consultasTemas.map((d) => d.label),
         datasets: [
-          { label: "Mujeres (%)", data: consultasTemas.map((d) => d.mujeres), stack: "g", borderWidth: 0, borderRadius: 8, backgroundColor: palette.g1 },
-          { label: "Hombres (%)", data: consultasTemas.map((d) => d.hombres), stack: "g", borderWidth: 0, borderRadius: 8, backgroundColor: palette.g0 }
+          {
+            label: "Mujeres (%)",
+            data: consultasTemas.map((d) => d.mujeres),
+            stack: "g",
+            borderWidth: 0,
+            borderRadius: 8,
+            backgroundColor: palette.g1
+          },
+          {
+            label: "Hombres (%)",
+            data: consultasTemas.map((d) => d.hombres),
+            stack: "g",
+            borderWidth: 0,
+            borderRadius: 8,
+            backgroundColor: palette.g0
+          }
         ]
       },
       options: {
@@ -305,7 +365,9 @@
     const chartMap = {
       chartReuniones: reunionesChart,
       chartRedes: redesChart,
-      chartConsultasTemas: consultasTemasChart
+      chartGenero: generoChart,
+      chartConsultasTemas: consultasTemasChart,
+      chartConsultasGenero: consultasGeneroChart
     };
 
     document.querySelectorAll("[data-dl]").forEach((btn) => {
@@ -342,6 +404,7 @@
     const elBar = document.getElementById("kpiBar");
     const elMetaR = document.getElementById("kpiMetaR");
     const kpiCard = document.getElementById("kpiCard");
+
     if (!elChip || !elLabel || !elValue || !elSub || !elBar || !elMetaR || !kpiCard) return;
 
     const cards = [...document.querySelectorAll(".stepCard")];
@@ -424,7 +487,8 @@
       elSub.textContent = d.sub;
 
       const idx = keys.indexOf(key) + 1;
-      elMetaR.textContent = String(idx).padStart(2, "0") + "/" + String(keys.length).padStart(2, "0");
+      elMetaR.textContent =
+        String(idx).padStart(2, "0") + "/" + String(keys.length).padStart(2, "0");
 
       const prog = Math.max(0, Math.min(1, d.prog ?? 0.5));
       elBar.style.width = (prog * 100).toFixed(0) + "%";
@@ -474,7 +538,8 @@
       const gifR = (p - 0.5) * 1.6;
 
       if (!prefersReduced) {
-        kpiCard.style.transform = `perspective(900px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(${transY}px)`;
+        kpiCard.style.transform =
+          `perspective(900px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(${transY}px)`;
         kpiCard.style.setProperty("--parY", `${gifY.toFixed(1)}px`);
         kpiCard.style.setProperty("--parR", `${gifR.toFixed(2)}deg`);
       } else {
@@ -775,7 +840,6 @@
 
   build();
 
-  // ===== MAPA FLUIDO: drag + inercia + micro-parallax (integrado) =====
   let dragging = false;
   let px = 0;
   let vx = 0;
@@ -852,7 +916,6 @@
     stopPar();
     snapToClosest();
   });
-  // ================================================================
 
   const hash = (location.hash || "").replace("#", "");
   const idx = hash ? EVENTS.findIndex((e) => e.id === hash) : 0;
