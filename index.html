@@ -15,36 +15,69 @@
 <body>
   <div class="progress"><div id="progressBar"></div></div>
 
-  <header class="topbar">
-    <div class="container topbar__inner">
-      <div class="brand">CONGDEX · Memoria 2025</div>
+<header class="memoriaHeader" id="hero">
+  <div class="memoriaHeader__topbar">
+    <div class="memoriaHeader__brand">
+      <div class="memoriaHeader__brandMark">
+        <img src="assets/img/logo-congdex.svg" alt="CONGDEX">
+      </div>
 
-      <nav class="nav" aria-label="Índice memoria">
-        <ul>
-          <li><a href="#hero">Inicio</a></li>
-          <li><a href="#prologo">Prólogo</a></li>
-          <li><a href="#cap1">1. Quiénes somos</a></li>
-          <li><a href="#cap2">2. Cifras</a></li>
-          <li><a href="#cap3">3. Actividad 2025</a></li>
-          <li><a href="#timeline">Trayectoria</a></li>
-        </ul>
-      </nav>
+      <div class="memoriaHeader__brandText">
+        <span class="memoriaHeader__eyebrow">Memoria anual</span>
+        <strong>CONGDEX 2025</strong>
+      </div>
     </div>
-  </header>
 
-  <main>
-    <section id="hero" class="hero" data-zoom>
-      <div class="hero__media">
-        <div class="hero__img"></div>
-      </div>
+    <nav class="memoriaHeader__nav" aria-label="Índice memoria">
+      <ul>
+        <li><a href="#hero">Inicio</a></li>
+        <li><a href="#prologo">Prólogo</a></li>
+        <li><a href="#cap1">Quiénes somos</a></li>
+        <li><a href="#cap2">Cifras</a></li>
+        <li><a href="#cap3">Actividad 2025</a></li>
+        <li><a href="#timeline">Trayectoria</a></li>
+      </ul>
+    </nav>
 
-      <div class="hero__panel">
-        <div class="hero__panelInner">
-          <h1>Memoria 2025</h1>
-          <p>30 años de cooperación, incidencia y ciudadanía global en Extremadura.</p>
-        </div>
-      </div>
-    </section>
+    <button class="memoriaHeader__toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <div class="memoriaHeader__media" data-zoom>
+    <div class="memoriaHeader__image"></div>
+    <div class="memoriaHeader__overlay"></div>
+  </div>
+
+  <div class="memoriaHeader__content container">
+    <p class="memoriaHeader__kicker">30 años de cooperación</p>
+
+    <h1 class="memoriaHeader__title">
+      La cooperación<br>
+      <span>como identidad colectiva</span>
+    </h1>
+
+    <p class="memoriaHeader__lead">
+      Un recorrido por la estructura, las cifras, la actividad y los hitos de CONGDEX
+      en su 30 aniversario.
+    </p>
+
+    <div class="memoriaHeader__actions">
+      <a href="#cap2" class="memoriaHeader__btn memoriaHeader__btn--primary">Ver cifras</a>
+      <a href="#timeline" class="memoriaHeader__btn memoriaHeader__btn--ghost">Explorar trayectoria</a>
+    </div>
+  </div>
+
+  <div class="memoriaHeader__scroll">
+    <a href="#prologo" aria-label="Bajar al contenido">
+      <span></span>
+    </a>
+  </div>
+</header>
+
+<main>
 
     <section id="prologo" class="chapter reveal">
       <div class="container">
