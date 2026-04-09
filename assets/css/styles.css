@@ -1389,4 +1389,127 @@ main {
   .mapEmbed {
     height: 420px;
   }
+  .mapStory {
+  display: grid;
+  grid-template-columns: 0.9fr 1.35fr;
+  gap: 1.4rem;
+  align-items: stretch;
+}
+
+.mapStory__intro,
+.mapStory__viewer {
+  height: 100%;
+}
+
+.card__top--map {
+  align-items: flex-start;
+}
+
+.mapStory__sub {
+  margin: 0.35rem 0 0;
+  color: var(--color-text-soft);
+  max-width: 56ch;
+}
+
+.mapStory__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.8rem 1rem;
+  border-radius: 999px;
+  background: var(--color-brand);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: transform var(--ease), background var(--ease), box-shadow var(--ease);
+  box-shadow: 0 12px 24px rgba(35, 159, 113, 0.18);
+}
+
+.mapStory__link:hover {
+  transform: translateY(-2px);
+  background: var(--color-brand-dark);
+}
+
+.mapStory__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1.2rem;
+}
+
+.mapTag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: var(--color-brand-4);
+  border: 1px solid rgba(35, 159, 113, 0.14);
+  color: var(--color-brand-dark);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.mapFrameWrap {
+  position: relative;
+  margin-top: 1rem;
+  min-height: 580px;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  background: #fff;
+  box-shadow: var(--shadow-md);
+  isolation: isolate;
+}
+
+.mapFrameGlow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(121, 207, 175, 0.18), transparent 28%),
+    radial-gradient(circle at 85% 20%, rgba(35, 159, 113, 0.12), transparent 24%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.mapFrame {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  min-height: 580px;
+  border: 0;
+  display: block;
+  background: #fff;
+}
+
+@media (max-width: 1100px) {
+  .mapStory {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .card__top--map {
+    flex-direction: column;
+  }
+
+  .mapStory__link {
+    width: 100%;
+  }
+
+  .mapFrameWrap,
+  .mapFrame {
+    min-height: 460px;
+  }
+}
+
+@media (max-width: 640px) {
+  .mapFrameWrap,
+  .mapFrame {
+    min-height: 380px;
+    border-radius: 20px;
+  }
 }
