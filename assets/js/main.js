@@ -147,4 +147,18 @@
   window.addEventListener("load", () => {
     document.body.classList.add("is-loaded");
   });
+  (() => {
+  const mapWrap = document.querySelector(".mapFrameWrap");
+  if (!mapWrap) return;
+
+  const io = new IntersectionObserver(
+    ([entry]) => {
+      if (!entry.isIntersecting) return;
+      mapWrap.classList.add("is-visible");
+      io.disconnect();
+    },
+    { threshold: 0.2 }
+  );
+
+  io.observe(mapWrap);
 })();
