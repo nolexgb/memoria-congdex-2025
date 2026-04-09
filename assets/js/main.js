@@ -311,6 +311,7 @@
         m === "seguidores" ? "Seguidores" :
         m === "publicaciones" ? "Publicaciones" :
         "Interacciones";
+
       redesChart.data.datasets[0].label = pretty;
       redesChart.data.datasets[0].data = redes[m];
       redesChart.update();
