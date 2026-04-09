@@ -1303,4 +1303,66 @@ main {
     animation: none !important;
     transition: none !important;
   }
+  .sectionIntro {
+  margin-bottom: 2rem;
+  max-width: 880px;
+}
+
+.sectionIntro__eyebrow {
+  display: inline-block;
+  margin-bottom: 0.8rem;
+  color: var(--color-brand);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.sectionIntro h2 {
+  margin-bottom: 0.9rem;
+}
+
+.sectionIntro p {
+  margin: 0;
+  color: var(--color-text-soft);
+  font-size: 1.05rem;
+}
+
+.sectionIntro--light .sectionIntro__eyebrow,
+.sectionIntro--light h2,
+.sectionIntro--light p {
+  color: inherit;
+}
+
+.subchapterIntro {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+}
+
+.subchapterIntro__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 54px;
+  height: 54px;
+  padding: 0 0.9rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--color-brand-dark), var(--color-brand));
+  color: #fff;
+  font-weight: 800;
+  box-shadow: var(--shadow-sm);
+}
+
+.subchapterIntro h2 {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .subchapterIntro {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
 }
