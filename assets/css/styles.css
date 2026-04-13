@@ -45,6 +45,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  min-width: 0;
 }
 
 html {
@@ -55,6 +56,7 @@ html,
 body {
   margin: 0;
   padding: 0;
+  overflow-x: clip;
 }
 
 body {
@@ -97,7 +99,7 @@ textarea {
 .progress {
   position: fixed;
   inset: 0 0 auto 0;
-  z-index: 200;
+  z-index: 300;
   height: 4px;
   background: rgba(17, 70, 50, 0.08);
 }
@@ -154,6 +156,7 @@ textarea {
   background: #fff;
   border: 1px solid rgba(17, 70, 50, 0.06);
   box-shadow: var(--shadow-sm);
+  flex: 0 0 auto;
 }
 
 .memoriaHeader__brandMark img {
@@ -397,8 +400,7 @@ main {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    radial-gradient(circle at 0% 0%, rgba(121, 207, 175, 0.04), transparent 24%);
+  background: radial-gradient(circle at 0% 0%, rgba(121, 207, 175, 0.04), transparent 24%);
   opacity: 0.8;
 }
 
@@ -535,6 +537,7 @@ main {
 
 .card h3,
 .card h4 {
+  margin: 0;
   color: var(--premium-dark);
 }
 
@@ -545,13 +548,14 @@ main {
 .card__top {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   gap: 1rem;
   margin-bottom: 1rem;
 }
 
 .split {
   display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.4rem;
 }
 
@@ -560,7 +564,7 @@ main {
    ========================= */
 .kpis {
   display: grid;
-  grid-template-columns: repeat(4,minmax(0,1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.1rem;
   margin-top: 2rem;
 }
@@ -596,7 +600,7 @@ main {
 
 .kpi strong {
   display: block;
-  font-size: clamp(2rem,4vw,3rem);
+  font-size: clamp(2rem, 4vw, 3rem);
   line-height: 1;
   color: var(--color-brand-dark);
   letter-spacing: -0.04em;
@@ -655,8 +659,8 @@ main {
   padding: 0.62rem 0.9rem;
   background: var(--color-brand-4);
   color: var(--color-brand-dark);
-  border: 1px solid rgba(35,159,113,.15);
-  box-shadow: inset 0 0 0 1px rgba(35,159,113,.08);
+  border: 1px solid rgba(35, 159, 113, 0.15);
+  box-shadow: inset 0 0 0 1px rgba(35, 159, 113, 0.08);
 }
 
 .tab.is-active {
@@ -695,11 +699,13 @@ main {
 .chartBox {
   position: relative;
   min-height: 360px;
+  height: 360px;
   margin-top: 1rem;
 }
 
 .chartBox--tall {
   min-height: 560px;
+  height: 560px;
 }
 
 .chartBox::after {
@@ -711,10 +717,12 @@ main {
   background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
 }
 
-.chartBox canvas {
+.chartBox > canvas {
+  position: absolute !important;
+  inset: 0;
   width: 100% !important;
   height: 100% !important;
-  display: block;
+  display: block !important;
 }
 
 /* =========================
@@ -794,6 +802,7 @@ main {
 .bar span {
   display: block;
   height: 100%;
+  width: 0;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--premium-dark), var(--premium-accent));
   box-shadow: 0 8px 20px rgba(35, 159, 113, 0.20);
@@ -842,6 +851,7 @@ main {
 .mapFrameWrap {
   position: relative;
   min-height: 600px;
+  height: 600px;
   border-radius: 28px;
   overflow: hidden;
   border: 1px solid rgba(17, 70, 50, 0.08);
@@ -861,11 +871,12 @@ main {
 }
 
 .mapFrame {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 1;
   width: 100%;
   height: 100%;
-  min-height: 600px;
+  min-height: 0;
   border: 0;
   background: #fff;
 }
@@ -1001,6 +1012,10 @@ main {
   box-shadow: 0 10px 22px rgba(0,0,0,0.12);
 }
 
+.tl-timeline {
+  min-width: 0;
+}
+
 .tl-timeline__top {
   display: flex;
   justify-content: space-between;
@@ -1011,6 +1026,7 @@ main {
 }
 
 .tl-trackWrap {
+  position: relative;
   overflow-x: auto;
   overflow-y: hidden;
   padding: 3.6rem 0 2rem;
@@ -1030,6 +1046,7 @@ main {
 .tl-track {
   position: relative;
   min-width: 1100px;
+  width: 1100px;
   height: 250px;
 }
 
@@ -1045,11 +1062,12 @@ main {
 }
 
 .tl-node {
-  position: absolute;
-  top: 0;
+  position: absolute !important;
+  top: 0 !important;
   width: 180px;
   transform: translateX(-50%);
   text-align: center;
+  z-index: 2;
 }
 
 .tl-pin {
@@ -1094,6 +1112,7 @@ main {
   background: #ffffff;
   border: 1px solid rgba(17, 70, 50, 0.08);
   box-shadow: 0 20px 40px rgba(17, 70, 50, 0.10);
+  text-align: left;
 }
 
 .tl-tYear {
@@ -1155,10 +1174,33 @@ main {
 }
 
 /* =========================
+   HARD FIXES VISUALES
+   ========================= */
+.tl-track > .tl-node,
+.tl-track > .tl-line {
+  box-sizing: border-box;
+}
+
+.tl-track * {
+  max-width: none;
+}
+
+main,
+section,
+.card,
+.prologo,
+.chartBox,
+.tl-trackWrap,
+.tl-track {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* =========================
    FOCUS
    ========================= */
 :focus-visible {
-  outline: 3px solid rgba(35,159,113,.35);
+  outline: 3px solid rgba(35,159,113,0.35);
   outline-offset: 3px;
 }
 
@@ -1167,7 +1209,7 @@ main {
    ========================= */
 @media (max-width: 1100px) {
   .kpis {
-    grid-template-columns: repeat(2,1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .cifras__grid,
@@ -1182,9 +1224,13 @@ main {
     position: static;
   }
 
-  .mapFrameWrap,
-  .mapFrame {
+  .mapFrameWrap {
     min-height: 520px;
+    height: 520px;
+  }
+
+  .mapFrame {
+    height: 100%;
   }
 }
 
@@ -1201,7 +1247,7 @@ main {
     display: none;
     background: #fff;
     padding: 1rem;
-    border-bottom: 1px solid rgba(17,70,50,.08);
+    border-bottom: 1px solid rgba(17, 70, 50, 0.08);
   }
 
   .memoriaHeader__nav.is-open {
@@ -1225,6 +1271,7 @@ main {
 
   .tl-track {
     min-width: 980px;
+    width: 980px;
   }
 }
 
@@ -1244,15 +1291,17 @@ main {
 
   .chartBox {
     min-height: 300px;
+    height: 300px;
   }
 
   .chartBox--tall {
     min-height: 420px;
+    height: 420px;
   }
 
-  .mapFrameWrap,
-  .mapFrame {
+  .mapFrameWrap {
     min-height: 440px;
+    height: 440px;
   }
 
   .tl-tooltip {
@@ -1261,6 +1310,7 @@ main {
 
   .tl-track {
     min-width: 900px;
+    width: 900px;
   }
 }
 
@@ -1306,13 +1356,14 @@ main {
     grid-template-columns: 1fr;
   }
 
-  .mapFrameWrap,
-  .mapFrame {
+  .mapFrameWrap {
     min-height: 380px;
+    height: 380px;
   }
 
   .tl-track {
     min-width: 860px;
+    width: 860px;
   }
 }
 
