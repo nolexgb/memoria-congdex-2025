@@ -5,19 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Memoria CONGDEX 2025</title>
 
-  <script>document.documentElement.classList.add('js');</script>
-  <link rel="stylesheet" href="assets/css/styles.css"/>
+  <!-- Evita problema de reveal si falla JS -->
+  <script>
+    document.documentElement.classList.add("js");
+  </script>
 
+  <!-- Cache busting -->
+  <link rel="stylesheet" href="assets/css/styles.css?v=7"/>
+
+  <!-- Librerías -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 
 <body>
-  <div class="progress"><div id="progressBar"></div></div>
 
+  <!-- Barra progreso -->
+  <div class="progress">
+    <div id="progressBar"></div>
+  </div>
+
+  <!-- =========================
+       HERO
+       ========================= -->
   <header class="memoriaHeader" id="hero">
+
     <div class="memoriaHeader__topbar">
+
       <div class="memoriaHeader__brand">
         <div class="memoriaHeader__brandMark">
           <img src="assets/img/logo-congdex.svg" alt="CONGDEX">
@@ -29,22 +44,27 @@
         </div>
       </div>
 
-      <nav class="memoriaHeader__nav" aria-label="Índice memoria">
+      <nav class="memoriaHeader__nav" aria-label="Índice">
         <ul>
           <li><a href="#hero">Inicio</a></li>
           <li><a href="#prologo">Prólogo</a></li>
           <li><a href="#cap1">Quiénes somos</a></li>
           <li><a href="#cap2">Cifras</a></li>
-          <li><a href="#cap3">Actividad 2025</a></li>
+          <li><a href="#cap3">Actividad</a></li>
           <li><a href="#timeline">Trayectoria</a></li>
         </ul>
       </nav>
 
-      <button class="memoriaHeader__toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false">
+      <button
+        class="memoriaHeader__toggle"
+        id="menuToggle"
+        aria-label="Abrir menú"
+        aria-expanded="false">
         <span></span>
         <span></span>
         <span></span>
       </button>
+
     </div>
 
     <div class="memoriaHeader__media" data-zoom>
@@ -53,7 +73,10 @@
     </div>
 
     <div class="memoriaHeader__content container">
-      <p class="memoriaHeader__kicker">30 años de cooperación</p>
+
+      <p class="memoriaHeader__kicker">
+        30 años de cooperación
+      </p>
 
       <h1 class="memoriaHeader__title">
         La cooperación<br>
@@ -61,301 +84,158 @@
       </h1>
 
       <p class="memoriaHeader__lead">
-        Un recorrido por la estructura, las cifras, la actividad y los hitos de CONGDEX
+        Un recorrido por la estructura, cifras, actividad e hitos de CONGDEX
         en su 30 aniversario.
       </p>
 
       <div class="memoriaHeader__actions">
-        <a href="#cap2" class="memoriaHeader__btn memoriaHeader__btn--primary">Ver cifras</a>
-        <a href="#timeline" class="memoriaHeader__btn memoriaHeader__btn--ghost">Explorar trayectoria</a>
+        <a href="#cap2" class="memoriaHeader__btn memoriaHeader__btn--primary">
+          Ver cifras
+        </a>
+
+        <a href="#timeline" class="memoriaHeader__btn memoriaHeader__btn--ghost">
+          Explorar trayectoria
+        </a>
       </div>
+
     </div>
 
     <div class="memoriaHeader__scroll">
-      <a href="#prologo" aria-label="Bajar al contenido">
+      <a href="#prologo" aria-label="Bajar">
         <span></span>
       </a>
     </div>
+
   </header>
 
+  <!-- =========================
+       MAIN
+       ========================= -->
   <main>
+
+    <!-- =========================
+         PROLOGO
+         ========================= -->
     <section id="prologo" class="chapter reveal">
       <div class="container">
+
         <div class="sectionIntro">
           <span class="sectionIntro__eyebrow">Apertura</span>
           <h2>Prólogo</h2>
           <p>
-            Una memoria para recorrer tres décadas de cooperación, incidencia y ciudadanía global
+            Tres décadas de cooperación, ciudadanía global y trabajo colectivo
             desde Extremadura.
           </p>
         </div>
 
         <aside class="prologo">
-          <h3 class="prologo__title">La cooperación, ADN de Extremadura</h3>
-          <div class="prologo__cols">
-            <p>
-              En 1995 se constituyó la Coordinadora Extremeña de ONGD. Ese mismo año se creó el
-              Consejo Asesor de Cooperación al Desarrollo y se publicaron las primeras ayudas oficiales
-              para proyectos de desarrollo.
-            </p>
-            <p>
-              Este 2025 celebramos tres décadas de trayectoria en la defensa de los derechos humanos,
-              la justicia global y la cooperación internacional para el desarrollo.
-            </p>
-            <p>
-              La cooperación forma parte de la identidad colectiva de Extremadura: una manera de mirar
-              el mundo desde la solidaridad, la cercanía y la construcción de lo común.
-            </p>
-            <p>
-              Esta memoria recoge estructura, datos, actividad, incidencia, alianzas y ciudadanía global
-              a lo largo del año 2025.
-            </p>
-          </div>
+          <p>
+            En 1995 se constituyó la Coordinadora Extremeña de ONGD.
+            Treinta años después, CONGDEX continúa defendiendo
+            los derechos humanos, la justicia global y la cooperación.
+          </p>
+
+          <p>
+            Esta memoria recoge estructura, cifras, actividad,
+            alianzas y recorrido histórico.
+          </p>
         </aside>
+
       </div>
     </section>
 
+    <!-- =========================
+         CAP 1
+         ========================= -->
     <section id="cap1" class="chapter reveal">
       <div class="container">
+
         <div class="sectionIntro">
           <span class="sectionIntro__eyebrow">Capítulo 1</span>
-          <h2>Quiénes somos, qué hacemos</h2>
+          <h2>Quiénes somos</h2>
           <p>
-            CONGDEX articula su trabajo a través de Junta Directiva, Equipo Técnico, Asamblea,
-            grupos y comisiones de trabajo. Este bloque se organiza en estructura, red de entidades
-            y proyectos.
+            Una red de entidades sociales comprometidas con la cooperación
+            internacional y la ciudadanía global.
           </p>
         </div>
 
         <div class="kpis">
+
           <div class="kpi">
             <strong data-count="52">52</strong>
-            <span>Entidades en red</span>
+            <span>Entidades miembro</span>
           </div>
-          <div class="kpi">
-            <strong data-count="17">17</strong>
-            <span>Entidades en Cáceres</span>
-          </div>
+
           <div class="kpi">
             <strong data-count="35">35</strong>
-            <span>Entidades en Badajoz</span>
+            <span>En Badajoz</span>
           </div>
+
+          <div class="kpi">
+            <strong data-count="17">17</strong>
+            <span>En Cáceres</span>
+          </div>
+
           <div class="kpi">
             <strong data-count="3">3</strong>
-            <span>Personas en equipo técnico</span>
+            <span>Equipo técnico</span>
           </div>
+
         </div>
+
       </div>
     </section>
 
-    <section id="cap1-1" class="chapter reveal">
-      <div class="container">
-        <div class="subchapterIntro">
-          <span class="subchapterIntro__num">1.1</span>
-          <h2>Junta Directiva, Equipo Técnico</h2>
-        </div>
-
-        <div class="split">
-          <article class="card">
-            <div class="card__top">
-              <h3>Equipo Técnico</h3>
-            </div>
-            <p>Verónica Carpio Mesto · Técnica de proyectos</p>
-            <p>Nolan Gómez Barboza · Técnico de proyectos</p>
-            <p>Manuela Torrescusa Asensio · Técnica de administración</p>
-          </article>
-
-          <article class="card">
-            <div class="card__top">
-              <h3>Junta Directiva</h3>
-            </div>
-            <p>Presidencia · Lidia Rodríguez</p>
-            <p>Vicepresidencia · Gloria Angulo</p>
-            <p>Secretaría · Ana Prieto</p>
-            <p>Tesorería · José A. Murillo</p>
-            <p>Vocalías · Representación de entidades miembro</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="cap1-2" class="chapter reveal">
-      <div class="container">
-        <div class="subchapterIntro">
-          <span class="subchapterIntro__num">1.2</span>
-          <h2>Entidades, grupos de trabajo</h2>
-        </div>
-
-        <div class="split">
-          <article class="card">
-            <div class="card__top">
-              <h3>Estructura organizativa</h3>
-            </div>
-            <p>Asamblea</p>
-            <p>Junta Directiva</p>
-            <p>Equipo Técnico</p>
-            <p>Grupos de trabajo</p>
-            <p>Comisiones de trabajo</p>
-          </article>
-
-          <article class="card">
-            <div class="card__top">
-              <h3>Ámbitos de trabajo</h3>
-            </div>
-            <p>Educación para la ciudadanía global</p>
-            <p>Incidencia política</p>
-            <p>Voluntariado</p>
-            <p>Comunicación transformadora</p>
-            <p>Cooperación e internacionalización</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="cap1-3" class="chapter reveal">
-      <div class="container">
-        <div class="subchapterIntro">
-          <span class="subchapterIntro__num">1.3</span>
-          <h2>Proyectos</h2>
-        </div>
-
-        <div class="split">
-          <article class="card">
-            <div class="card__top">
-              <h3>Mejora de las políticas extremeñas de cooperación internacional</h3>
-            </div>
-            <p>
-              Proyecto centrado en fortalecer el papel de la cooperación extremeña y avanzar hacia
-              un modelo de desarrollo sostenible y de justicia social global.
-            </p>
-          </article>
-
-          <article class="card">
-            <div class="card__top">
-              <h3>30 años de solidaridad: construyendo un futuro justo</h3>
-            </div>
-            <p>
-              Proyecto vinculado a la conmemoración del 30 aniversario de CONGDEX y a la puesta en valor
-              de su recorrido, impacto y proyección pública.
-            </p>
-          </article>
-        </div>
-      </div>
-    </section>
-
+    <!-- =========================
+         CAP 2
+         ========================= -->
     <section id="cap2" class="chapter reveal">
       <div class="container">
+
         <div class="sectionIntro">
           <span class="sectionIntro__eyebrow">Capítulo 2</span>
           <h2>La Coordinadora en cifras</h2>
           <p>
-            Este capítulo se divide en reuniones, formaciones y encuentros; comunicación; y participación
-            por género junto a asistencias técnicas.
+            Indicadores clave de actividad, comunicación y alcance.
           </p>
         </div>
+
       </div>
     </section>
 
-    <section id="cap2-1" class="cifras reveal">
-      <header class="cifras__head">
-        <span class="subchapterIntro__num">2.1</span>
-        <h2>Reuniones, formaciones, encuentros</h2>
-        <p>Visualización interactiva de reuniones y espacios de trabajo.</p>
-      </header>
+    <!-- KPI STORY -->
+    <section class="cifras reveal">
+      <div class="kpi2">
 
-      <div class="cifras__grid">
-        <article class="card">
-          <div class="card__top">
-            <h3>Reuniones por Grupo de Trabajo</h3>
-            <button class="btn" type="button" data-dl="chartReuniones">Descargar</button>
-          </div>
-          <div class="chartBox">
-            <canvas id="chartReuniones"></canvas>
-          </div>
-        </article>
-
-        <article class="card">
-          <div class="card__top">
-            <h3>Resumen del bloque</h3>
-          </div>
-          <p>Junta Directiva: 11 reuniones</p>
-          <p>Vocalías Consejo Asesor: 6 reuniones</p>
-          <p>Grupo de Educación: 11 reuniones</p>
-          <p>Comisión de Incidencia Política: 5 reuniones</p>
-          <p>Grupo Voluntariado: 3 reuniones</p>
-          <p>Formaciones y encuentros específicos a lo largo del año.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="cap2-2" class="cifras reveal">
-      <header class="cifras__head">
-        <span class="subchapterIntro__num">2.2</span>
-        <h2>Comunicación</h2>
-        <p>Métricas interactivas de redes, publicaciones e impacto digital.</p>
-      </header>
-
-      <div class="cifras__grid">
-        <article class="card">
-          <div class="card__top">
-            <h3>Comunicación externa</h3>
-            <button class="btn" type="button" data-dl="chartRedes">Descargar</button>
-          </div>
-
-          <div class="tabs" role="tablist" aria-label="Métricas redes">
-            <button class="tab is-active" data-m="seguidores" role="tab" type="button">Seguidores</button>
-            <button class="tab" data-m="publicaciones" role="tab" type="button">Publicaciones</button>
-            <button class="tab" data-m="interacciones" role="tab" type="button">Interacciones</button>
-          </div>
-
-          <div class="chartBox">
-            <canvas id="chartRedes"></canvas>
-          </div>
-        </article>
-
-        <article class="card">
-          <div class="card__top">
-            <h3>Indicadores digitales</h3>
-          </div>
-          <p>X / Twitter · 1.782 seguidores</p>
-          <p>Facebook · 2.529 seguidores</p>
-          <p>Instagram · 1.197 seguidores</p>
-          <p>YouTube · 88 seguidores</p>
-          <p>Web · 12.670 visitas · 11.420 visitantes</p>
-          <p>38 circulares internas y 8.439 aperturas registradas</p>
-        </article>
-      </div>
-
-      <section class="kpi2 reveal" id="kpiStory" aria-label="Impacto digital">
         <aside class="kpi2__left">
-          <div class="kpiCard" id="kpiCard">
-            <div class="kpiCard__media">
-              <img
-                src="assets/img/hero.jpg"
-                alt="Visual de apoyo"
-                loading="eager"
-                decoding="async"
-              />
+
+          <div class="card">
+
+            <h3 id="kpiLabel">Circulares internas</h3>
+
+            <div id="kpiValue"
+                 style="font-size:4rem;font-weight:900;color:#114632;margin-top:1rem;">
+              38
             </div>
 
-            <div class="kpiCard__glass" aria-hidden="true"></div>
+            <p id="kpiSub">
+              Alcance interno consolidado
+            </p>
 
-            <div class="kpiCard__content">
-              <div class="chip"><span class="dot"></span><span id="kpiChip">Comunicación</span></div>
-              <div class="kpiCard__label" id="kpiLabel">Circulares internas</div>
-              <div class="kpiCard__value" id="kpiValue">38</div>
-              <div class="kpiCard__sub" id="kpiSub">Alcance interno consolidado</div>
-
-              <div class="meta">
-                <span>Progreso</span>
-                <div class="bar"><span id="kpiBar"></span></div>
-                <span id="kpiMetaR">01/07</span>
+            <div style="margin-top:1.5rem;">
+              <div class="bar">
+                <span id="kpiBar" style="width:14%"></span>
               </div>
+
+              <small id="kpiMetaR">01/07</small>
             </div>
+
           </div>
+
         </aside>
 
         <div class="kpi2__right" id="steps">
+
           <article class="stepCard is-active" data-key="circulares">
             <h3>Circulares internas</h3>
           </article>
@@ -377,246 +257,154 @@
           </article>
 
           <article class="stepCard" data-key="empleo">
-            <h3>Ofertas de empleo</h3>
+            <h3>Ofertas empleo</h3>
           </article>
 
           <article class="stepCard" data-key="visitas">
             <h3>Visitas web</h3>
           </article>
+
         </div>
-      </section>
-    </section>
 
-    <section id="cap2-3" class="cifras reveal">
-      <header class="cifras__head">
-        <span class="subchapterIntro__num">2.3</span>
-        <h2>Participación por género, asistencias técnicas</h2>
-        <p>Gráficas interactivas sobre participación y consultas técnicas.</p>
-      </header>
-
-      <div class="cifras__grid">
-        <article class="card">
-          <div class="card__top">
-            <h3>Participación por género</h3>
-            <button class="btn" type="button" data-dl="chartGenero">Descargar</button>
-          </div>
-          <div class="chartBox chartBox--tall">
-            <canvas id="chartGenero"></canvas>
-          </div>
-        </article>
-
-        <article class="card">
-          <div class="card__top">
-            <h3>Asistencias técnicas</h3>
-            <button class="btn" type="button" data-dl="chartConsultasTemas">Descargar</button>
-          </div>
-
-          <div class="split">
-            <div>
-              <h4>Consultas por temática</h4>
-              <div class="chartBox">
-                <canvas id="chartConsultasTemas"></canvas>
-              </div>
-            </div>
-
-            <div>
-              <h4>Género por temática</h4>
-              <div class="chartBox">
-                <canvas id="chartConsultasGenero"></canvas>
-              </div>
-            </div>
-          </div>
-        </article>
       </div>
     </section>
 
+    <!-- =========================
+         CAP 3
+         ========================= -->
     <section id="cap3" class="chapter reveal">
       <div class="container">
+
         <div class="sectionIntro">
           <span class="sectionIntro__eyebrow">Capítulo 3</span>
           <h2>Actividad CONGDEX 2025</h2>
           <p>
-            La actividad del año se estructura en cinco apartados: desarrollo interno; alianzas y relaciones;
-            incidencia; comunicación interna y externa; y ciudadanía global.
+            Desarrollo interno, alianzas, incidencia, comunicación
+            y ciudadanía global.
           </p>
         </div>
+
       </div>
     </section>
 
-    <section id="cap3-1" class="chapter reveal">
+    <!-- MAPA -->
+    <section class="chapter reveal">
       <div class="container">
-        <div class="subchapterIntro">
-          <span class="subchapterIntro__num">3.1</span>
-          <h2>Desarrollo interno</h2>
-        </div>
-        <div class="card">
-          <p>
-            Fortalecimiento organizativo, formación interna, mejora de procesos, coordinación técnica
-            y consolidación de capacidades dentro de la red.
-          </p>
-        </div>
-      </div>
-    </section>
 
-   <section id="cap3-2" class="chapter reveal">
-  <div class="container">
-    <div class="subchapterIntro">
-      <span class="subchapterIntro__num">3.2</span>
-      <h2>Alianzas y relaciones</h2>
-    </div>
+        <div class="mapStory">
 
-    <div class="mapStory">
-      <aside class="mapStory__intro card">
-        <div class="card__top">
-          <h3>Trabajo en red</h3>
-        </div>
-        <p>
-          CONGDEX articula relaciones con entidades miembro, redes autonómicas,
-          Coordinadora estatal, administraciones públicas, universidades y otros
-          espacios de cooperación e incidencia.
-        </p>
-        <p>
-          Este mapa territorial ofrece una lectura sintética del ecosistema de
-          alianzas y del alcance geográfico del trabajo colectivo.
-        </p>
+          <aside class="card mapStory__intro">
+            <h3>Trabajo en red</h3>
 
-        <div class="mapStory__legend">
-          <span class="mapTag">Extremadura</span>
-          <span class="mapTag">España</span>
-          <span class="mapTag">América Latina</span>
-          <span class="mapTag">África</span>
-        </div>
-      </aside>
-
-      <div class="mapStory__viewer card">
-        <div class="card__top card__top--map">
-          <div>
-            <h3>Mapa de alianzas y alcance</h3>
-            <p class="mapStory__sub">
-              Visualización interactiva del trabajo en red y la proyección territorial.
+            <p>
+              Relaciones con entidades miembro, administraciones,
+              universidades y redes estatales.
             </p>
+
+            <div class="mapStory__legend">
+              <span class="mapTag">Extremadura</span>
+              <span class="mapTag">España</span>
+              <span class="mapTag">Internacional</span>
+            </div>
+          </aside>
+
+          <div class="card mapStory__viewer">
+
+            <div class="card__top">
+
+              <div>
+                <h3>Mapa interactivo</h3>
+                <p class="mapStory__sub">
+                  Alcance territorial y alianzas.
+                </p>
+              </div>
+
+              <a
+                href="https://congdex.github.io/mapacongdex/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="memoriaHeader__btn memoriaHeader__btn--primary">
+                Abrir mapa
+              </a>
+
+            </div>
+
+            <div class="mapFrameWrap">
+              <iframe
+                class="mapFrame"
+                src="https://congdex.github.io/mapacongdex/"
+                loading="lazy"
+                title="Mapa CONGDEX">
+              </iframe>
+            </div>
+
           </div>
 
-          <a
-            class="mapStory__link"
-            href="https://congdex.github.io/mapacongdex/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Abrir mapa completo
-          </a>
         </div>
 
-        <div class="mapFrameWrap">
-          <div class="mapFrameGlow" aria-hidden="true"></div>
-          <iframe
-            class="mapFrame"
-            src="https://congdex.github.io/mapacongdex/"
-            title="Mapa CONGDEX"
-            loading="lazy"
-            allowfullscreen>
-          </iframe>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-    <section id="cap3-3" class="chapter reveal">
-      <div class="container">
-        <div class="subchapterIntro">
-          <span class="subchapterIntro__num">3.3</span>
-          <h2>Incidencia</h2>
-        </div>
-        <div class="card">
-          <p>
-            Seguimiento normativo, propuestas, reuniones institucionales y defensa de políticas públicas
-            vinculadas a la cooperación y la ciudadanía global.
-          </p>
-        </div>
       </div>
     </section>
 
-    <section id="cap3-4" class="chapter reveal">
-      <div class="container">
-        <div class="subchapterIntro">
-          <span class="subchapterIntro__num">3.4</span>
-          <h2>Comunicación interna y externa</h2>
-        </div>
-        <div class="card">
-          <p>
-            Campañas, contenidos, redes, materiales de comunicación y difusión del trabajo de CONGDEX
-            a lo largo del año.
-          </p>
-        </div>
-      </div>
-    </section>
+    <!-- =========================
+         TIMELINE
+         ========================= -->
+    <section id="timeline" class="tl-wrap reveal">
 
-    <section id="cap3-5" class="chapter reveal">
-      <div class="container">
-        <div class="subchapterIntro">
-          <span class="subchapterIntro__num">3.5</span>
-          <h2>Ciudadanía global</h2>
-        </div>
-        <div class="card">
-          <p>
-            Procesos educativos, intercambio, visual thinking, coordinación en red y fortalecimiento
-            de iniciativas vinculadas a la ciudadanía global y el voluntariado.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section id="timeline" class="tl-wrap reveal" aria-label="Línea de tiempo CONGDEX">
       <div class="tl-header">
-        <div class="sectionIntro sectionIntro--light">
+
+        <div class="sectionIntro">
           <span class="sectionIntro__eyebrow">Cierre</span>
           <h2 class="tl-h2">Trayectoria</h2>
-          <p class="tl-sub">Hitos históricos de CONGDEX y de la cooperación extremeña.</p>
+          <p>
+            Hitos históricos de CONGDEX y de la cooperación extremeña.
+          </p>
         </div>
+
       </div>
 
       <div class="tl-layout">
-        <aside class="tl-detail" aria-live="polite">
+
+        <aside class="tl-detail">
           <div class="tl-detail__body">
-            <div class="tl-tag">
-              <span class="tl-dot"></span>
-              <span id="tlTag">Resumen</span>
+
+            <div id="tlYear" style="font-size:3rem;font-weight:900;">
+              1995
             </div>
 
-            <div class="tl-year" id="tlYear">1995</div>
-            <div class="tl-title" id="tlTitle">Constitución CONGDEX</div>
-            <div class="tl-desc" id="tlDesc"></div>
+            <h3 id="tlTitle">
+              Constitución de CONGDEX
+            </h3>
 
-            <div class="tl-meta">
-              <div class="tl-bar"><span id="tlBar"></span></div>
-              <div id="tlMetaR">01/01</div>
-            </div>
+            <p id="tlDesc">
+              Nace la Coordinadora Extremeña de ONGD.
+            </p>
 
-            <div class="tl-nav">
-              <button id="tlPrevBtn" class="tl-btn" type="button">←</button>
-              <button id="tlNextBtn" class="tl-btn" type="button">→</button>
-            </div>
           </div>
         </aside>
 
-        <div class="tl-timeline">
-          <div class="tl-timeline__top">
-            <div class="tl-hint">Navega por los hitos de la memoria.</div>
-            <div class="tl-hint" id="tlRangeHint">Rango: 1995–2028</div>
-          </div>
+        <div class="card">
 
-          <div class="tl-trackWrap" id="tlTrackWrap">
-            <div class="tl-track" id="tlTrack">
-              <div class="tl-line"></div>
-            </div>
-          </div>
+          <p>
+            1995 · Constitución<br>
+            2000 · Consolidación de red<br>
+            2010 · Nuevas agendas globales<br>
+            2020 · Transformación digital<br>
+            2025 · 30 aniversario
+          </p>
+
         </div>
+
       </div>
+
     </section>
+
   </main>
 
+  <!-- BACKTOP -->
   <button id="backTop" aria-label="Volver arriba">↑</button>
 
-  <script src="assets/js/main.js"></script>
+  <!-- JS -->
+  <script src="assets/js/main.js?v=7"></script>
+
 </body>
 </html>
