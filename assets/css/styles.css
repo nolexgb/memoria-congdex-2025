@@ -669,4 +669,40 @@ main {
     animation: none !important;
     transition: none !important;
   }
+  /* =========================
+   FIX DE EMERGENCIA VISIBILIDAD
+   ========================= */
+main,
+section,
+.chapter,
+.cifras,
+.tl-wrap,
+.container,
+.card,
+.prologo,
+.kpi,
+.kpi2,
+.mapStory,
+.mapStory__intro,
+.mapStory__viewer,
+.cifras__head,
+.cifras__grid,
+.split,
+.tl-layout,
+.tl-header {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.reveal,
+.js .reveal,
+.js .reveal.visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+main * {
+  visibility: visible;
+}
 }
