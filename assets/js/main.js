@@ -1,4 +1,6 @@
 (() => {
+  document.documentElement.classList.add("js");
+
   const prefersReduced =
     window.matchMedia &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -16,7 +18,14 @@
   if (menuToggle && nav) {
     menuToggle.addEventListener("click", () => {
       const open = nav.classList.toggle("is-open");
-      menuToggle.setAttribute("aria-expanded", open);
+      menuToggle.setAttribute("aria-expanded", String(open));
+    });
+
+    qsa('a[href^="#"]', nav).forEach((link) => {
+      link.addEventListener("click", () => {
+        nav.classList.remove("is-open");
+        menuToggle.setAttribute("aria-expanded", "false");
+      });
     });
   }
 
@@ -25,23 +34,41 @@
      ========================= */
   qsa('a[href^="#"]').forEach((link) => {
     link.addEventListener("click", (e) => {
-      const target = qs(link.getAttribute("href"));
+      const href = link.getAttribute("href");
+      if (!href || href === "#") return;
+
+      const target = qs(href);
       if (!target) return;
 
       e.preventDefault();
-      target.scrollIntoView({ behavior: "smooth" });
+      target.scrollIntoView({
+        behavior: prefersReduced ? "auto" : "smooth",
+        block: "start"
+      });
     });
   });
 
   /* =========================
      REVEAL
      ========================= */
-  qsa(".reveal").forEach((el) => {
-    new IntersectionObserver(
-      ([e]) => e.isIntersecting && el.classList.add("visible"),
-      { threshold: 0.2 }
-    ).observe(el);
-  });
+  const revealEls = qsa(".reveal");
+
+  if ("IntersectionObserver" in window) {
+    const revealObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.18 }
+    );
+
+    revealEls.forEach((el) => revealObserver.observe(el));
+  } else {
+    revealEls.forEach((el) => el.classList.add("visible"));
+  }
 
   /* =========================
      PROGRESS + BACKTOP
@@ -53,105 +80,253 @@
 
   const updateScroll = () => {
     const h = document.documentElement;
-    const p = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    const maxScroll = h.scrollHeight - h.clientHeight;
+    const p = maxScroll > 0 ? h.scrollTop / maxScroll : 0;
 
-    if (bar) bar.style.width = `${p * 100}%`;
-    if (back) back.style.display = window.scrollY > 500 ? "block" : "none";
+    if (bar) {
+      bar.style.width = `${p * 100}%`;
+    }
+
+    if (back) {
+      back.style.display = window.scrollY > 500 ? "block" : "none";
+    }
 
     ticking = false;
   };
 
-  window.addEventListener("scroll", () => {
-    if (!ticking) {
-      requestAnimationFrame(updateScroll);
-      ticking = true;
-    }
-  });
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!ticking) {
+        requestAnimationFrame(updateScroll);
+        ticking = true;
+      }
+    },
+    { passive: true }
+  );
+
+  updateScroll();
 
   if (back) {
-    back.addEventListener("click", () =>
-      window.scrollTo({ top: 0, behavior: "smooth" })
-    );
+    back.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: prefersReduced ? "auto" : "smooth"
+      });
+    });
   }
 
   /* =========================
      COUNTERS
      ========================= */
-  qsa("[data-count]").forEach((el) => {
-    new IntersectionObserver(
-      ([e]) => {
-        if (!e.isIntersecting) return;
+  const counterEls = qsa("[data-count]");
 
-        let i = 0;
-        const target = +el.dataset.count;
+  const animateCounter = (el) => {
+    const target = Number(el.dataset.count || 0);
+    if (!Number.isFinite(target)) return;
 
-        const step = () => {
-          i += target / 30;
-          if (i >= target) i = target;
-          el.textContent = Math.floor(i);
-          if (i < target) requestAnimationFrame(step);
-        };
+    const duration = prefersReduced ? 0 : 1000;
+    const start = performance.now();
 
-        step();
+    const step = (now) => {
+      if (duration === 0) {
+        el.textContent = String(target);
+        return;
+      }
+
+      const progress = Math.min((now - start) / duration, 1);
+      const value = Math.floor(progress * target);
+      el.textContent = String(value);
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        el.textContent = String(target);
+      }
+    };
+
+    requestAnimationFrame(step);
+  };
+
+  if ("IntersectionObserver" in window) {
+    const counterObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          animateCounter(entry.target);
+          observer.unobserve(entry.target);
+        });
       },
       { threshold: 0.4 }
-    ).observe(el);
-  });
+    );
+
+    counterEls.forEach((el) => counterObserver.observe(el));
+  } else {
+    counterEls.forEach((el) => animateCounter(el));
+  }
 
   /* =========================
      HERO PARALLAX
      ========================= */
-  const hero = qs("[data-zoom]");
+  const heroZoom = qs("[data-zoom]");
+  const heroImage = qs(".memoriaHeader__image");
 
-  if (hero) {
-    window.addEventListener("scroll", () => {
-      const rect = hero.getBoundingClientRect();
-      const img = qs(".memoriaHeader__image");
-
-      if (!img) return;
-
+  if (heroZoom && heroImage && !prefersReduced) {
+    const updateHeroParallax = () => {
+      const rect = heroZoom.getBoundingClientRect();
       const p = clamp(1 - rect.top / window.innerHeight, 0, 1);
-      img.style.transform = `scale(${1.05 + p * 0.1})`;
-    });
+      heroImage.style.transform = `scale(${1.02 + p * 0.08})`;
+    };
+
+    window.addEventListener(
+      "scroll",
+      () => requestAnimationFrame(updateHeroParallax),
+      { passive: true }
+    );
+
+    updateHeroParallax();
   }
 
   /* =========================
      KPI STORY
      ========================= */
   const steps = qsa(".stepCard");
-  const value = qs("#kpiValue");
+  const kpiValue = qs("#kpiValue");
+  const kpiLabel = qs("#kpiLabel");
+  const kpiSub = qs("#kpiSub");
+  const kpiChip = qs("#kpiChip");
+  const kpiBar = qs("#kpiBar");
+  const kpiMetaR = qs("#kpiMetaR");
 
-  const data = {
-    circulares: 38,
-    aperturas: 8439,
-    promedio: "60,19%",
-    publicaciones: 41,
-    eventos: 26,
-    empleo: 12,
-    visitas: 12670
+  const kpiData = [
+    {
+      key: "circulares",
+      label: "Circulares internas",
+      value: "38",
+      sub: "Alcance interno consolidado",
+      chip: "Comunicación",
+      progress: 14,
+      meta: "01/07"
+    },
+    {
+      key: "aperturas",
+      label: "Aperturas registradas",
+      value: "8439",
+      sub: "Impacto acumulado en envíos internos",
+      chip: "Comunicación",
+      progress: 28,
+      meta: "02/07"
+    },
+    {
+      key: "promedio",
+      label: "Promedio de aperturas",
+      value: "60,19%",
+      sub: "Promedio de apertura sobre el total de circulares",
+      chip: "Comunicación",
+      progress: 42,
+      meta: "03/07"
+    },
+    {
+      key: "publicaciones",
+      label: "Publicaciones web",
+      value: "41",
+      sub: "Contenidos publicados durante el año",
+      chip: "Web",
+      progress: 57,
+      meta: "04/07"
+    },
+    {
+      key: "eventos",
+      label: "Eventos web",
+      value: "26",
+      sub: "Eventos difundidos desde la web",
+      chip: "Web",
+      progress: 71,
+      meta: "05/07"
+    },
+    {
+      key: "empleo",
+      label: "Ofertas de empleo",
+      value: "12",
+      sub: "Recursos informativos para la red y el sector",
+      chip: "Web",
+      progress: 85,
+      meta: "06/07"
+    },
+    {
+      key: "visitas",
+      label: "Visitas web",
+      value: "12670",
+      sub: "Tráfico anual registrado en la página web",
+      chip: "Analítica",
+      progress: 100,
+      meta: "07/07"
+    }
+  ];
+
+  const updateKpi = (key) => {
+    const item = kpiData.find((d) => d.key === key);
+    if (!item) return;
+
+    if (kpiValue) {
+      kpiValue.classList.add("switching");
+      kpiValue.textContent = item.value;
+      window.setTimeout(() => kpiValue.classList.remove("switching"), 180);
+    }
+
+    if (kpiLabel) kpiLabel.textContent = item.label;
+    if (kpiSub) kpiSub.textContent = item.sub;
+    if (kpiChip) kpiChip.textContent = item.chip;
+    if (kpiBar) kpiBar.style.width = `${item.progress}%`;
+    if (kpiMetaR) kpiMetaR.textContent = item.meta;
   };
 
-  steps.forEach((s) => {
-    s.addEventListener("click", () => {
-      steps.forEach((el) => el.classList.remove("is-active"));
-      s.classList.add("is-active");
-
-      const key = s.dataset.key;
-      if (value) value.textContent = data[key];
+  if (steps.length) {
+    steps.forEach((step) => {
+      step.addEventListener("click", () => {
+        steps.forEach((el) => el.classList.remove("is-active"));
+        step.classList.add("is-active");
+        updateKpi(step.dataset.key);
+      });
     });
-  });
+
+    const active = qs(".stepCard.is-active") || steps[0];
+    if (active) updateKpi(active.dataset.key);
+  }
 
   /* =========================
-     LOAD ANIMATION
+     MAP FRAME REVEAL
      ========================= */
-   window.addEventListener("load", () => {
-    document.body.classList.add("is-loaded");
-  });
+  const mapWrap = qs(".mapFrameWrap");
 
-  const mapWrap = document.querySelector(".mapFrameWrap");
   if (mapWrap) {
-    const io = new IntersectionObserver(
-      ([entry]) => {
+    if ("IntersectionObserver" in window) {
+      const mapObserver = new IntersectionObserver(
+        (entries, observer) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            mapWrap.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.2 }
+      );
+
+      mapObserver.observe(mapWrap);
+    } else {
+      mapWrap.classList.add("is-visible");
+    }
+  }
+
+  /* =========================
+     LOAD
+     ========================= */
+  window.addEventListener("load", () => {
+    document.body.classList.add("is-loaded");
+    revealEls.forEach((el) => el.classList.add("visible"));
+    updateScroll();
+  });
+})();([entry]) => {
         if (!entry.isIntersecting) return;
         mapWrap.classList.add("is-visible");
         io.disconnect();
