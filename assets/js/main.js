@@ -1,6 +1,4 @@
 (() => {
-  document.documentElement.classList.add("js");
-
   const prefersReduced =
     window.matchMedia &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -8,6 +6,8 @@
   const qs = (s, r = document) => r.querySelector(s);
   const qsa = (s, r = document) => [...r.querySelectorAll(s)];
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+  document.documentElement.classList.add("js");
 
   /* =========================
      MENU
@@ -19,13 +19,6 @@
     menuToggle.addEventListener("click", () => {
       const open = nav.classList.toggle("is-open");
       menuToggle.setAttribute("aria-expanded", String(open));
-    });
-
-    qsa('a[href^="#"]', nav).forEach((link) => {
-      link.addEventListener("click", () => {
-        nav.classList.remove("is-open");
-        menuToggle.setAttribute("aria-expanded", "false");
-      });
     });
   }
 
@@ -45,65 +38,43 @@
         behavior: prefersReduced ? "auto" : "smooth",
         block: "start"
       });
+
+      if (nav && nav.classList.contains("is-open")) {
+        nav.classList.remove("is-open");
+        if (menuToggle) menuToggle.setAttribute("aria-expanded", "false");
+      }
     });
   });
 
   /* =========================
-     REVEAL
+     REVEAL SAFE
      ========================= */
-  const revealEls = qsa(".reveal");
-
-  if ("IntersectionObserver" in window) {
-    const revealObserver = new IntersectionObserver(
-      (entries, observer) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("visible");
-          observer.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.18 }
-    );
-
-    revealEls.forEach((el) => revealObserver.observe(el));
-  } else {
-    revealEls.forEach((el) => el.classList.add("visible"));
-  }
+  qsa(".reveal").forEach((el) => el.classList.add("visible"));
 
   /* =========================
      PROGRESS + BACKTOP
      ========================= */
   const bar = qs("#progressBar");
   const back = qs("#backTop");
-
   let ticking = false;
 
   const updateScroll = () => {
     const h = document.documentElement;
-    const maxScroll = h.scrollHeight - h.clientHeight;
-    const p = maxScroll > 0 ? h.scrollTop / maxScroll : 0;
+    const max = h.scrollHeight - h.clientHeight;
+    const p = max > 0 ? h.scrollTop / max : 0;
 
-    if (bar) {
-      bar.style.width = `${p * 100}%`;
-    }
-
-    if (back) {
-      back.style.display = window.scrollY > 500 ? "block" : "none";
-    }
+    if (bar) bar.style.width = `${p * 100}%`;
+    if (back) back.style.display = window.scrollY > 500 ? "block" : "none";
 
     ticking = false;
   };
 
-  window.addEventListener(
-    "scroll",
-    () => {
-      if (!ticking) {
-        requestAnimationFrame(updateScroll);
-        ticking = true;
-      }
-    },
-    { passive: true }
-  );
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      requestAnimationFrame(updateScroll);
+      ticking = true;
+    }
+  });
 
   updateScroll();
 
@@ -119,72 +90,24 @@
   /* =========================
      COUNTERS
      ========================= */
-  const counterEls = qsa("[data-count]");
-
-  const animateCounter = (el) => {
+  qsa("[data-count]").forEach((el) => {
     const target = Number(el.dataset.count || 0);
     if (!Number.isFinite(target)) return;
-
-    const duration = prefersReduced ? 0 : 1000;
-    const start = performance.now();
-
-    const step = (now) => {
-      if (duration === 0) {
-        el.textContent = String(target);
-        return;
-      }
-
-      const progress = Math.min((now - start) / duration, 1);
-      const value = Math.floor(progress * target);
-      el.textContent = String(value);
-
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      } else {
-        el.textContent = String(target);
-      }
-    };
-
-    requestAnimationFrame(step);
-  };
-
-  if ("IntersectionObserver" in window) {
-    const counterObserver = new IntersectionObserver(
-      (entries, observer) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          animateCounter(entry.target);
-          observer.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.4 }
-    );
-
-    counterEls.forEach((el) => counterObserver.observe(el));
-  } else {
-    counterEls.forEach((el) => animateCounter(el));
-  }
+    el.textContent = String(target);
+  });
 
   /* =========================
      HERO PARALLAX
      ========================= */
   const heroZoom = qs("[data-zoom]");
-  const heroImage = qs(".memoriaHeader__image");
+  const heroImg = qs(".memoriaHeader__image");
 
-  if (heroZoom && heroImage && !prefersReduced) {
-    const updateHeroParallax = () => {
+  if (heroZoom && heroImg && !prefersReduced) {
+    window.addEventListener("scroll", () => {
       const rect = heroZoom.getBoundingClientRect();
       const p = clamp(1 - rect.top / window.innerHeight, 0, 1);
-      heroImage.style.transform = `scale(${1.02 + p * 0.08})`;
-    };
-
-    window.addEventListener(
-      "scroll",
-      () => requestAnimationFrame(updateHeroParallax),
-      { passive: true }
-    );
-
-    updateHeroParallax();
+      heroImg.style.transform = `scale(${1.02 + p * 0.08})`;
+    });
   }
 
   /* =========================
@@ -194,146 +117,104 @@
   const kpiValue = qs("#kpiValue");
   const kpiLabel = qs("#kpiLabel");
   const kpiSub = qs("#kpiSub");
-  const kpiChip = qs("#kpiChip");
   const kpiBar = qs("#kpiBar");
   const kpiMetaR = qs("#kpiMetaR");
+  const kpiChip = qs("#kpiChip");
 
-  const kpiData = [
-    {
-      key: "circulares",
-      label: "Circulares internas",
+  const kpiData = {
+    circulares: {
       value: "38",
+      label: "Circulares internas",
       sub: "Alcance interno consolidado",
-      chip: "Comunicación",
       progress: 14,
-      meta: "01/07"
+      meta: "01/07",
+      chip: "Comunicación"
     },
-    {
-      key: "aperturas",
+    aperturas: {
+      value: "8.439",
       label: "Aperturas registradas",
-      value: "8439",
-      sub: "Impacto acumulado en envíos internos",
-      chip: "Comunicación",
+      sub: "Seguimiento del rendimiento de envíos",
       progress: 28,
-      meta: "02/07"
+      meta: "02/07",
+      chip: "Comunicación"
     },
-    {
-      key: "promedio",
-      label: "Promedio de aperturas",
+    promedio: {
       value: "60,19%",
-      sub: "Promedio de apertura sobre el total de circulares",
-      chip: "Comunicación",
+      label: "Promedio aperturas",
+      sub: "Tasa media de apertura de circulares",
       progress: 42,
-      meta: "03/07"
+      meta: "03/07",
+      chip: "Comunicación"
     },
-    {
-      key: "publicaciones",
-      label: "Publicaciones web",
+    publicaciones: {
       value: "41",
+      label: "Publicaciones web",
       sub: "Contenidos publicados durante el año",
-      chip: "Web",
       progress: 57,
-      meta: "04/07"
+      meta: "04/07",
+      chip: "Web"
     },
-    {
-      key: "eventos",
-      label: "Eventos web",
+    eventos: {
       value: "26",
-      sub: "Eventos difundidos desde la web",
-      chip: "Web",
+      label: "Eventos web",
+      sub: "Actividad difundida en la web",
       progress: 71,
-      meta: "05/07"
+      meta: "05/07",
+      chip: "Web"
     },
-    {
-      key: "empleo",
-      label: "Ofertas de empleo",
+    empleo: {
       value: "12",
-      sub: "Recursos informativos para la red y el sector",
-      chip: "Web",
+      label: "Ofertas de empleo",
+      sub: "Difusión de oportunidades y convocatorias",
       progress: 85,
-      meta: "06/07"
+      meta: "06/07",
+      chip: "Web"
     },
-    {
-      key: "visitas",
+    visitas: {
+      value: "12.670",
       label: "Visitas web",
-      value: "12670",
-      sub: "Tráfico anual registrado en la página web",
-      chip: "Analítica",
+      sub: "Tráfico total registrado en la web",
       progress: 100,
-      meta: "07/07"
+      meta: "07/07",
+      chip: "Impacto digital"
     }
-  ];
-
-  const updateKpi = (key) => {
-    const item = kpiData.find((d) => d.key === key);
-    if (!item) return;
-
-    if (kpiValue) {
-      kpiValue.classList.add("switching");
-      kpiValue.textContent = item.value;
-      window.setTimeout(() => kpiValue.classList.remove("switching"), 180);
-    }
-
-    if (kpiLabel) kpiLabel.textContent = item.label;
-    if (kpiSub) kpiSub.textContent = item.sub;
-    if (kpiChip) kpiChip.textContent = item.chip;
-    if (kpiBar) kpiBar.style.width = `${item.progress}%`;
-    if (kpiMetaR) kpiMetaR.textContent = item.meta;
   };
 
-  if (steps.length) {
-    steps.forEach((step) => {
-      step.addEventListener("click", () => {
-        steps.forEach((el) => el.classList.remove("is-active"));
-        step.classList.add("is-active");
-        updateKpi(step.dataset.key);
-      });
-    });
+  function setKpi(key) {
+    const item = kpiData[key];
+    if (!item) return;
 
-    const active = qs(".stepCard.is-active") || steps[0];
-    if (active) updateKpi(active.dataset.key);
+    if (kpiValue) kpiValue.textContent = item.value;
+    if (kpiLabel) kpiLabel.textContent = item.label;
+    if (kpiSub) kpiSub.textContent = item.sub;
+    if (kpiBar) kpiBar.style.width = `${item.progress}%`;
+    if (kpiMetaR) kpiMetaR.textContent = item.meta;
+    if (kpiChip) kpiChip.textContent = item.chip;
   }
+
+  steps.forEach((step) => {
+    step.addEventListener("click", () => {
+      steps.forEach((el) => el.classList.remove("is-active"));
+      step.classList.add("is-active");
+      setKpi(step.dataset.key);
+    });
+  });
+
+  const activeStep = qs(".stepCard.is-active");
+  if (activeStep?.dataset.key) setKpi(activeStep.dataset.key);
 
   /* =========================
-     MAP FRAME REVEAL
+     MAPA
      ========================= */
   const mapWrap = qs(".mapFrameWrap");
-
-  if (mapWrap) {
-    if ("IntersectionObserver" in window) {
-      const mapObserver = new IntersectionObserver(
-        (entries, observer) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-            mapWrap.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          });
-        },
-        { threshold: 0.2 }
-      );
-
-      mapObserver.observe(mapWrap);
-    } else {
-      mapWrap.classList.add("is-visible");
-    }
-  }
+  if (mapWrap) mapWrap.classList.add("is-visible");
 
   /* =========================
      LOAD
      ========================= */
   window.addEventListener("load", () => {
     document.body.classList.add("is-loaded");
-    revealEls.forEach((el) => el.classList.add("visible"));
+    qsa(".reveal").forEach((el) => el.classList.add("visible"));
     updateScroll();
   });
-})();([entry]) => {
-        if (!entry.isIntersecting) return;
-        mapWrap.classList.add("is-visible");
-        io.disconnect();
-      },
-      { threshold: 0.2 }
-    );
-
-    io.observe(mapWrap);
-  }
 })();
