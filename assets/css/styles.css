@@ -705,4 +705,264 @@ section,
 main * {
   visibility: visible;
 }
+  /* ==================================================
+   FIX TOTAL TIMELINE + CHARTS + KPI
+   ================================================== */
+
+/* ---------- charts ---------- */
+.chartBox{
+  position:relative;
+  min-height:360px;
+}
+
+.chartBox--tall{
+  min-height:520px;
+}
+
+.chartBox canvas{
+  width:100% !important;
+  height:100% !important;
+  display:block;
+}
+
+/* ---------- KPI STORY ---------- */
+.kpi2{
+  display:grid;
+  grid-template-columns:420px 1fr;
+  gap:1.5rem;
+}
+
+.stepCard{
+  padding:1rem 1.1rem;
+  border-radius:18px;
+  background:#fff;
+  border:1px solid rgba(17,70,50,.08);
+  margin-bottom:.8rem;
+  cursor:pointer;
+  transition:.25s;
+}
+
+.stepCard:hover{
+  transform:translateY(-2px);
+}
+
+.stepCard.is-active{
+  border-color:#239f71;
+  box-shadow:0 10px 30px rgba(35,159,113,.12);
+}
+
+.bar{
+  width:100%;
+  height:10px;
+  border-radius:999px;
+  background:#eaf5ef;
+  overflow:hidden;
+}
+
+.bar span{
+  display:block;
+  height:100%;
+  background:linear-gradient(90deg,#114632,#239f71);
+  border-radius:999px;
+}
+
+/* ---------- timeline ---------- */
+.tl-layout{
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:2rem;
+  align-items:start;
+}
+
+.tl-detail__body{
+  background:#16593f;
+  color:#fff;
+  border-radius:26px;
+  padding:1.5rem;
+  position:sticky;
+  top:120px;
+}
+
+.tl-tag{
+  font-size:.82rem;
+  opacity:.8;
+  margin-bottom:1rem;
+}
+
+.tl-year{
+  font-size:3.2rem;
+  font-weight:900;
+  line-height:1;
+}
+
+.tl-title{
+  font-size:1.35rem;
+  font-weight:800;
+  margin-top:.8rem;
+}
+
+.tl-desc{
+  margin-top:.8rem;
+  line-height:1.55;
+  opacity:.95;
+}
+
+.tl-meta{
+  margin-top:1.4rem;
+}
+
+.tl-bar{
+  height:8px;
+  border-radius:999px;
+  background:rgba(255,255,255,.18);
+  overflow:hidden;
+}
+
+.tl-bar span{
+  display:block;
+  height:100%;
+  width:0;
+  background:#79cfaf;
+}
+
+.tl-nav{
+  display:flex;
+  gap:.6rem;
+  margin-top:1.2rem;
+}
+
+.tl-btn{
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:12px;
+  background:#fff;
+  color:#114632;
+  font-size:1.1rem;
+  font-weight:800;
+  cursor:pointer;
+}
+
+/* ---------- track ---------- */
+.tl-trackWrap{
+  overflow-x:auto;
+  padding:3rem 0 2rem;
+}
+
+.tl-track{
+  position:relative;
+  min-width:1100px;
+  height:220px;
+}
+
+.tl-line{
+  position:absolute;
+  left:0;
+  right:0;
+  top:108px;
+  height:4px;
+  border-radius:999px;
+  background:linear-gradient(90deg,#114632,#239f71);
+}
+
+/* ---------- nodes ---------- */
+.tl-node{
+  position:absolute;
+  top:0;
+  transform:translateX(-50%);
+  width:160px;
+}
+
+.tl-pill{
+  position:absolute;
+  top:126px;
+  left:50%;
+  transform:translateX(-50%);
+  border:0;
+  border-radius:999px;
+  background:#fff;
+  padding:.45rem .8rem;
+  font-weight:800;
+  color:#114632;
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  cursor:pointer;
+}
+
+.tl-pin{
+  position:absolute;
+  top:92px;
+  left:50%;
+  width:18px;
+  height:18px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:#239f71;
+  border:4px solid #fff;
+  box-shadow:0 8px 18px rgba(35,159,113,.2);
+}
+
+.tl-tooltip{
+  position:absolute;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:220px;
+  background:#fff;
+  border-radius:18px;
+  padding:1rem;
+  box-shadow:0 16px 35px rgba(0,0,0,.08);
+  border:1px solid rgba(17,70,50,.08);
+}
+
+.tl-tYear{
+  font-size:.8rem;
+  font-weight:800;
+  color:#239f71;
+}
+
+.tl-tTitle{
+  font-weight:800;
+  margin-top:.35rem;
+}
+
+.tl-tDesc{
+  margin-top:.4rem;
+  font-size:.92rem;
+  color:#5f7369;
+  line-height:1.45;
+}
+
+.tl-node.is-active .tl-pin{
+  background:#114632;
+}
+
+.tl-node.is-active .tl-pill{
+  background:#239f71;
+  color:#fff;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width:1100px){
+
+  .kpi2,
+  .tl-layout{
+    grid-template-columns:1fr;
+  }
+
+  .tl-detail__body{
+    position:relative;
+    top:auto;
+  }
+}
+
+@media (max-width:768px){
+
+  .tl-track{
+    min-width:900px;
+  }
+
+  .chartBox{
+    min-height:300px;
+  }
+
 }
