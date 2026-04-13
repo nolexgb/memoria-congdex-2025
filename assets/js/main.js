@@ -60,7 +60,7 @@
           observer.unobserve(entry.target);
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.12 }
     );
 
     revealItems.forEach((el) => revealObserver.observe(el));
@@ -71,32 +71,37 @@
   /* =========================
      PROGRESS + BACKTOP
      ========================= */
-  const bar = qs("#progressBar");
-  const back = qs("#backTop");
-  let ticking = false;
+  const progressBar = qs("#progressBar");
+  const backTop = qs("#backTop");
+  let scrollTicking = false;
 
-  const updateScroll = () => {
-    const h = document.documentElement;
-    const max = h.scrollHeight - h.clientHeight;
-    const p = max > 0 ? h.scrollTop / max : 0;
+  const updateScrollUi = () => {
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - doc.clientHeight;
+    const progress = max > 0 ? doc.scrollTop / max : 0;
 
-    if (bar) bar.style.width = `${p * 100}%`;
-    if (back) back.style.display = window.scrollY > 500 ? "block" : "none";
+    if (progressBar) {
+      progressBar.style.width = `${progress * 100}%`;
+    }
 
-    ticking = false;
+    if (backTop) {
+      backTop.style.display = window.scrollY > 500 ? "block" : "none";
+    }
+
+    scrollTicking = false;
   };
 
   window.addEventListener("scroll", () => {
-    if (!ticking) {
-      requestAnimationFrame(updateScroll);
-      ticking = true;
+    if (!scrollTicking) {
+      requestAnimationFrame(updateScrollUi);
+      scrollTicking = true;
     }
   });
 
-  updateScroll();
+  updateScrollUi();
 
-  if (back) {
-    back.addEventListener("click", () => {
+  if (backTop) {
+    backTop.addEventListener("click", () => {
       window.scrollTo({
         top: 0,
         behavior: prefersReduced ? "auto" : "smooth"
@@ -117,10 +122,21 @@
 
           const el = entry.target;
           const target = Number(el.dataset.count || 0);
-          const duration = 1000;
+
+          if (!Number.isFinite(target)) {
+            observer.unobserve(el);
+            return;
+          }
+
+          const duration = prefersReduced ? 0 : 1000;
           const startTime = performance.now();
 
           const animate = (now) => {
+            if (duration === 0) {
+              el.textContent = String(target);
+              return;
+            }
+
             const progress = Math.min((now - startTime) / duration, 1);
             const value = Math.floor(progress * target);
             el.textContent = String(value);
@@ -153,17 +169,29 @@
   const heroImg = qs(".memoriaHeader__image");
 
   if (heroZoom && heroImg && !prefersReduced) {
-    window.addEventListener("scroll", () => {
+    let heroTicking = false;
+
+    const updateHero = () => {
       const rect = heroZoom.getBoundingClientRect();
       const p = clamp(1 - rect.top / window.innerHeight, 0, 1);
-      heroImg.style.transform = `scale(${1.02 + p * 0.08})`;
+      heroImg.style.transform = `scale(${1.04 + p * 0.08})`;
+      heroTicking = false;
+    };
+
+    window.addEventListener("scroll", () => {
+      if (!heroTicking) {
+        requestAnimationFrame(updateHero);
+        heroTicking = true;
+      }
     });
+
+    updateHero();
   }
 
   /* =========================
      KPI STORY
      ========================= */
-  const steps = qsa(".stepCard");
+  const stepCards = qsa(".stepCard");
   const kpiValue = qs("#kpiValue");
   const kpiLabel = qs("#kpiLabel");
   const kpiSub = qs("#kpiSub");
@@ -237,75 +265,96 @@
     if (kpiValue) kpiValue.textContent = item.value;
     if (kpiLabel) kpiLabel.textContent = item.label;
     if (kpiSub) kpiSub.textContent = item.sub;
-    if (kpiBar) kpiBar.style.width = `${item.progress}%`;
     if (kpiMetaR) kpiMetaR.textContent = item.meta;
     if (kpiChip) kpiChip.textContent = item.chip;
+
+    if (kpiBar) {
+      requestAnimationFrame(() => {
+        kpiBar.style.width = `${item.progress}%`;
+      });
+    }
   };
 
-  if (steps.length) {
-    steps.forEach((step) => {
-      step.addEventListener("click", () => {
-        steps.forEach((el) => el.classList.remove("is-active"));
-        step.classList.add("is-active");
-        setKpi(step.dataset.key);
+  if (stepCards.length) {
+    stepCards.forEach((card) => {
+      card.addEventListener("click", () => {
+        stepCards.forEach((item) => item.classList.remove("is-active"));
+        card.classList.add("is-active");
+        setKpi(card.dataset.key);
       });
     });
 
-    const active = qs(".stepCard.is-active");
-    if (active?.dataset.key) setKpi(active.dataset.key);
+    const activeCard = qs(".stepCard.is-active");
+    if (activeCard?.dataset.key) {
+      setKpi(activeCard.dataset.key);
+    }
   }
 
   /* =========================
      CHARTS
      ========================= */
   const chartInstances = {};
+  const hasChartJs = typeof window.Chart !== "undefined";
 
-  const chartFontColor = "#163126";
-  const gridColor = "rgba(17, 70, 50, 0.08)";
+  const destroyChart = (id) => {
+    if (chartInstances[id]) {
+      chartInstances[id].destroy();
+      delete chartInstances[id];
+    }
+  };
 
-  const baseOptions = {
+  const makeChart = (id, config) => {
+    if (!hasChartJs) return null;
+
+    const canvas = qs(`#${id}`);
+    if (!canvas) return null;
+
+    destroyChart(id);
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+
+    chartInstances[id] = new Chart(ctx, config);
+    return chartInstances[id];
+  };
+
+  if (hasChartJs) {
+    Chart.defaults.color = "#163126";
+    Chart.defaults.font.family = 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+    Chart.defaults.borderColor = "rgba(17, 70, 50, 0.08)";
+    Chart.defaults.plugins.legend.labels.boxWidth = 12;
+  }
+
+  const baseScales = {
+    x: {
+      ticks: { color: "#163126" },
+      grid: { color: "rgba(17, 70, 50, 0.08)" }
+    },
+    y: {
+      beginAtZero: true,
+      ticks: { color: "#163126" },
+      grid: { color: "rgba(17, 70, 50, 0.08)" }
+    }
+  };
+
+  const baseChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     animation: prefersReduced ? false : { duration: 900 },
     plugins: {
       legend: {
         labels: {
-          color: chartFontColor,
-          font: { family: "Inter, sans-serif", size: 12 }
+          color: "#163126"
         }
       },
       tooltip: {
         enabled: true
       }
     },
-    scales: {
-      x: {
-        ticks: { color: chartFontColor },
-        grid: { color: gridColor }
-      },
-      y: {
-        ticks: { color: chartFontColor },
-        grid: { color: gridColor },
-        beginAtZero: true
-      }
-    }
+    scales: baseScales
   };
 
-  const makeChart = (id, config) => {
-    const canvas = qs(`#${id}`);
-    if (!canvas || typeof Chart === "undefined") return null;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return null;
-
-    if (chartInstances[id]) {
-      chartInstances[id].destroy();
-    }
-
-    chartInstances[id] = new Chart(ctx, config);
-    return chartInstances[id];
-  };
-
+  /* 2.1 Reuniones */
   makeChart("chartReuniones", {
     type: "bar",
     data: {
@@ -316,14 +365,26 @@
         "Incidencia Política",
         "Voluntariado"
       ],
-      datasets: [{
-        label: "Número de reuniones",
-        data: [11, 6, 11, 5, 3]
-      }]
+      datasets: [
+        {
+          label: "Reuniones",
+          data: [11, 6, 11, 5, 3],
+          backgroundColor: [
+            "#114632",
+            "#239f71",
+            "#79cfaf",
+            "#2d7f60",
+            "#8fd8bc"
+          ],
+          borderRadius: 10,
+          borderSkipped: false
+        }
+      ]
     },
-    options: baseOptions
+    options: baseChartOptions
   });
 
+  /* 2.2 Comunicación */
   const redesData = {
     seguidores: {
       labels: ["X / Twitter", "Facebook", "Instagram", "YouTube"],
@@ -343,19 +404,37 @@
   };
 
   const renderRedesChart = (metric = "seguidores") => {
-    const d = redesData[metric];
-    if (!d) return;
+    const item = redesData[metric];
+    if (!item) return;
 
     makeChart("chartRedes", {
       type: "bar",
       data: {
-        labels: d.labels,
-        datasets: [{
-          label: d.label,
-          data: d.values
-        }]
+        labels: item.labels,
+        datasets: [
+          {
+            label: item.label,
+            data: item.values,
+            backgroundColor: [
+              "#114632",
+              "#239f71",
+              "#79cfaf",
+              "#bfecdd"
+            ],
+            borderRadius: 10,
+            borderSkipped: false
+          }
+        ]
       },
-      options: baseOptions
+      options: {
+        ...baseChartOptions,
+        scales: {
+          ...baseScales,
+          y: {
+            ...baseScales.y
+          }
+        }
+      }
     });
   };
 
@@ -369,25 +448,35 @@
     });
   });
 
+  /* 2.3 Participación */
   makeChart("chartGenero", {
     type: "bar",
     data: {
       labels: ["Mujeres", "Hombres", "No consta"],
-      datasets: [{
-        label: "Participación",
-        data: [68, 29, 3]
-      }]
+      datasets: [
+        {
+          label: "Participación",
+          data: [68, 29, 3],
+          backgroundColor: ["#239f71", "#114632", "#79cfaf"],
+          borderRadius: 10,
+          borderSkipped: false
+        }
+      ]
     },
-    options: baseOptions
+    options: baseChartOptions
   });
 
   makeChart("chartConsultasTemas", {
     type: "doughnut",
     data: {
       labels: ["Subvenciones", "Justificación", "Comunicación", "Incidencia", "Voluntariado"],
-      datasets: [{
-        data: [12, 9, 6, 4, 3]
-      }]
+      datasets: [
+        {
+          data: [12, 9, 6, 4, 3],
+          backgroundColor: ["#114632", "#239f71", "#79cfaf", "#bfecdd", "#2d7f60"],
+          borderWidth: 0
+        }
+      ]
     },
     options: {
       responsive: true,
@@ -396,10 +485,7 @@
       plugins: {
         legend: {
           position: "bottom",
-          labels: {
-            color: chartFontColor,
-            font: { family: "Inter, sans-serif", size: 12 }
-          }
+          labels: { color: "#163126" }
         }
       }
     }
@@ -412,20 +498,24 @@
       datasets: [
         {
           label: "Mujeres",
-          data: [8, 6, 4, 3, 2]
+          data: [8, 6, 4, 3, 2],
+          backgroundColor: "#239f71",
+          borderRadius: 8,
+          borderSkipped: false
         },
         {
           label: "Hombres",
-          data: [4, 3, 2, 1, 1]
+          data: [4, 3, 2, 1, 1],
+          backgroundColor: "#114632",
+          borderRadius: 8,
+          borderSkipped: false
         }
       ]
     },
-    options: baseOptions
+    options: baseChartOptions
   });
 
-  /* =========================
-     DOWNLOAD CHART
-     ========================= */
+  /* Descarga charts */
   qsa("[data-dl]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = btn.dataset.dl;
@@ -488,6 +578,7 @@
   ];
 
   const tlTrack = qs("#tlTrack");
+  const tlTrackWrap = qs("#tlTrackWrap");
   const tlYear = qs("#tlYear");
   const tlTitle = qs("#tlTitle");
   const tlDesc = qs("#tlDesc");
@@ -497,9 +588,10 @@
   const tlPrevBtn = qs("#tlPrevBtn");
   const tlNextBtn = qs("#tlNextBtn");
   const tlRangeHint = qs("#tlRangeHint");
-  const tlTrackWrap = qs("#tlTrackWrap");
 
-  if (tlTrack && timelineData.length) {
+  if (tlTrack && tlTrackWrap && timelineData.length) {
+    tlTrack.querySelectorAll(".tl-node").forEach((node) => node.remove());
+
     const startYear = timelineData[0].year;
     const endYear = timelineData[timelineData.length - 1].year;
 
@@ -507,38 +599,48 @@
       tlRangeHint.textContent = `Rango: ${startYear}–${endYear}`;
     }
 
-    const trackWidth = Math.max(900, timelineData.length * 200);
-    tlTrack.style.width = `${trackWidth}px`;
+    const baseWidth = Math.max(1100, timelineData.length * 180);
+    tlTrack.style.width = `${baseWidth}px`;
 
     let currentIndex = 0;
 
-    const renderTimelineNodes = () => {
-      timelineData.forEach((item, index) => {
-        const node = document.createElement("div");
-        node.className = `tl-node${index === 0 ? " is-active" : ""}`;
+    const createNode = (item, index) => {
+      const node = document.createElement("div");
+      node.className = `tl-node${index === 0 ? " is-active" : ""}`;
 
-        const left = timelineData.length === 1
+      const leftPct =
+        timelineData.length === 1
           ? 50
           : (index / (timelineData.length - 1)) * 100;
 
-        node.style.left = `${left}%`;
+      node.style.left = `${leftPct}%`;
 
-        node.innerHTML = `
-          <div class="tl-tooltip">
-            <div class="tl-tYear">${item.year}</div>
-            <div class="tl-tTitle">${item.title}</div>
-            <div class="tl-tDesc">${item.desc}</div>
-          </div>
-          <div class="tl-pin"></div>
-          <button class="tl-pill" type="button">${item.year}</button>
-        `;
+      node.innerHTML = `
+        <div class="tl-tooltip">
+          <div class="tl-tYear">${item.year}</div>
+          <div class="tl-tTitle">${item.title}</div>
+          <div class="tl-tDesc">${item.desc}</div>
+        </div>
+        <div class="tl-pin"></div>
+        <button class="tl-pill" type="button">${item.year}</button>
+      `;
 
-        node.addEventListener("click", () => setTimeline(index));
-        node.querySelector(".tl-pill")?.addEventListener("click", () => setTimeline(index));
+      const pill = node.querySelector(".tl-pill");
 
-        tlTrack.appendChild(node);
+      node.addEventListener("click", () => setTimeline(index));
+      pill?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        setTimeline(index);
       });
+
+      return node;
     };
+
+    timelineData.forEach((item, index) => {
+      tlTrack.appendChild(createNode(item, index));
+    });
+
+    const getNodes = () => qsa(".tl-node", tlTrack);
 
     const setTimeline = (index) => {
       currentIndex = clamp(index, 0, timelineData.length - 1);
@@ -555,33 +657,39 @@
         tlBar.style.width = `${((currentIndex + 1) / timelineData.length) * 100}%`;
       }
 
-      qsa(".tl-node", tlTrack).forEach((node, i) => {
+      getNodes().forEach((node, i) => {
         node.classList.toggle("is-active", i === currentIndex);
       });
 
-      const activeNode = qsa(".tl-node", tlTrack)[currentIndex];
-      if (activeNode && tlTrackWrap) {
+      const activeNode = getNodes()[currentIndex];
+      if (activeNode) {
         const wrapRect = tlTrackWrap.getBoundingClientRect();
         const nodeRect = activeNode.getBoundingClientRect();
-        const delta = nodeRect.left - wrapRect.left - wrapRect.width / 2 + nodeRect.width / 2;
-        tlTrackWrap.scrollBy({
-          left: delta,
+        const currentScroll = tlTrackWrap.scrollLeft;
+        const delta =
+          nodeRect.left -
+          wrapRect.left -
+          wrapRect.width / 2 +
+          nodeRect.width / 2;
+
+        tlTrackWrap.scrollTo({
+          left: currentScroll + delta,
           behavior: prefersReduced ? "auto" : "smooth"
         });
       }
     };
 
-    renderTimelineNodes();
-    setTimeline(0);
-
     tlPrevBtn?.addEventListener("click", () => setTimeline(currentIndex - 1));
     tlNextBtn?.addEventListener("click", () => setTimeline(currentIndex + 1));
+
+    setTimeline(0);
   }
 
   /* =========================
      MAPA
      ========================= */
   const mapWrap = qs(".mapFrameWrap");
+
   if (mapWrap) {
     if ("IntersectionObserver" in window) {
       const mapObserver = new IntersectionObserver(
@@ -594,6 +702,7 @@
         },
         { threshold: 0.2 }
       );
+
       mapObserver.observe(mapWrap);
     } else {
       mapWrap.classList.add("is-visible");
@@ -601,10 +710,29 @@
   }
 
   /* =========================
+     RESIZE FIX CHARTS
+     ========================= */
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      Object.values(chartInstances).forEach((chart) => {
+        if (chart && typeof chart.resize === "function") {
+          chart.resize();
+        }
+      });
+    }, 120);
+  });
+
+  /* =========================
      LOAD
      ========================= */
   window.addEventListener("load", () => {
     document.body.classList.add("is-loaded");
-    updateScroll();
+    updateScrollUi();
+
+    qsa(".reveal").forEach((el) => {
+      el.classList.add("visible");
+    });
   });
 })();
