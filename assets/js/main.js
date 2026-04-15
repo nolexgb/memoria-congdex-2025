@@ -9,9 +9,9 @@
 
   document.documentElement.classList.add("js");
 
-  /* =========================
-     MENU
-     ========================= */
+  /* =========================================
+     MENU MOBILE
+  ========================================= */
   const menuToggle = qs("#menuToggle");
   const nav = qs(".memoriaHeader__nav");
 
@@ -22,9 +22,9 @@
     });
   }
 
-  /* =========================
-     SMOOTH NAV
-     ========================= */
+  /* =========================================
+     SMOOTH LINKS
+  ========================================= */
   qsa('a[href^="#"]').forEach((link) => {
     link.addEventListener("click", (e) => {
       const href = link.getAttribute("href");
@@ -47,54 +47,58 @@
     });
   });
 
-  /* =========================
-     REVEAL
-     ========================= */
-  const reveals = qsa(".reveal");
+  /* =========================================
+     REVEAL ON SCROLL
+  ========================================= */
+  const revealItems = qsa(".reveal");
 
   if ("IntersectionObserver" in window) {
-    const io = new IntersectionObserver(
-      (entries, observer) => {
+    const revealObserver = new IntersectionObserver(
+      (entries, obs) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           entry.target.classList.add("visible");
-          observer.unobserve(entry.target);
+          obs.unobserve(entry.target);
         });
       },
-      { threshold: 0.12 }
+      { threshold: 0.15 }
     );
 
-    reveals.forEach((el) => io.observe(el));
+    revealItems.forEach((el) => revealObserver.observe(el));
   } else {
-    reveals.forEach((el) => el.classList.add("visible"));
+    revealItems.forEach((el) => el.classList.add("visible"));
   }
 
-  /* =========================
-     PROGRESS + BACKTOP
-     ========================= */
+  /* =========================================
+     PROGRESS BAR + BACKTOP
+  ========================================= */
   const progressBar = qs("#progressBar");
   const backTop = qs("#backTop");
+
   let ticking = false;
 
-  const updateScrollUi = () => {
+  const updateScrollUI = () => {
     const doc = document.documentElement;
     const max = doc.scrollHeight - doc.clientHeight;
-    const p = max > 0 ? doc.scrollTop / max : 0;
+    const progress = max > 0 ? doc.scrollTop / max : 0;
 
-    if (progressBar) progressBar.style.width = `${p * 100}%`;
-    if (backTop) backTop.style.display = window.scrollY > 500 ? "block" : "none";
+    if (progressBar) progressBar.style.width = `${progress * 100}%`;
+
+    if (backTop) {
+      backTop.style.display = window.scrollY > 500 ? "grid" : "none";
+    }
 
     ticking = false;
   };
 
   window.addEventListener("scroll", () => {
     if (!ticking) {
-      requestAnimationFrame(updateScrollUi);
+      requestAnimationFrame(updateScrollUI);
       ticking = true;
     }
   });
 
-  updateScrollUi();
+  updateScrollUI();
 
   if (backTop) {
     backTop.addEventListener("click", () => {
@@ -105,58 +109,9 @@
     });
   }
 
-  /* =========================
-     COUNTERS
-     ========================= */
-  qsa("[data-count]").forEach((el) => {
-    const target = Number(el.dataset.count || 0);
-
-    if (!Number.isFinite(target)) return;
-
-    const animate = () => {
-      if (prefersReduced) {
-        el.textContent = target;
-        return;
-      }
-
-      const start = performance.now();
-      const duration = 1100;
-
-      const tick = (now) => {
-        const progress = Math.min((now - start) / duration, 1);
-        el.textContent = Math.floor(target * progress);
-
-        if (progress < 1) {
-          requestAnimationFrame(tick);
-        } else {
-          el.textContent = target;
-        }
-      };
-
-      requestAnimationFrame(tick);
-    };
-
-    if ("IntersectionObserver" in window) {
-      const io = new IntersectionObserver(
-        (entries, observer) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-            animate();
-            observer.unobserve(el);
-          });
-        },
-        { threshold: 0.35 }
-      );
-
-      io.observe(el);
-    } else {
-      animate();
-    }
-  });
-
-  /* =========================
+  /* =========================================
      HERO PARALLAX
-     ========================= */
+  ========================================= */
   const hero = qs("[data-zoom]");
   const heroImg = qs(".memoriaHeader__image");
 
@@ -180,9 +135,58 @@
     updateHero();
   }
 
-  /* =========================
+  /* =========================================
+     COUNTERS
+  ========================================= */
+  qsa("[data-count]").forEach((el) => {
+    const target = Number(el.dataset.count || 0);
+
+    if (!Number.isFinite(target)) return;
+
+    const runCounter = () => {
+      if (prefersReduced) {
+        el.textContent = target;
+        return;
+      }
+
+      const start = performance.now();
+      const duration = 1200;
+
+      const animate = (now) => {
+        const progress = Math.min((now - start) / duration, 1);
+        el.textContent = Math.floor(target * progress);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          el.textContent = target;
+        }
+      };
+
+      requestAnimationFrame(animate);
+    };
+
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            runCounter();
+            obs.unobserve(el);
+          });
+        },
+        { threshold: 0.35 }
+      );
+
+      io.observe(el);
+    } else {
+      runCounter();
+    }
+  });
+
+  /* =========================================
      KPI STORY
-     ========================= */
+  ========================================= */
   const stepCards = qsa(".stepCard");
   const kpiValue = qs("#kpiValue");
   const kpiLabel = qs("#kpiLabel");
@@ -191,48 +195,98 @@
   const kpiMetaR = qs("#kpiMetaR");
   const kpiChip = qs("#kpiChip");
 
-  const kpis = {
-    circulares: ["38", "Circulares internas", "Comunicación interna", 14, "01/07", "Comunicación"],
-    aperturas: ["8.439", "Aperturas registradas", "Seguimiento campañas", 28, "02/07", "Comunicación"],
-    promedio: ["60,19%", "Promedio aperturas", "Rendimiento medio", 42, "03/07", "Comunicación"],
-    publicaciones: ["41", "Publicaciones web", "Contenido web anual", 57, "04/07", "Web"],
-    eventos: ["26", "Eventos web", "Agenda publicada", 71, "05/07", "Web"],
-    empleo: ["12", "Ofertas empleo", "Difusión oportunidades", 85, "06/07", "Web"],
-    visitas: ["12.670", "Visitas web", "Impacto digital total", 100, "07/07", "Impacto"]
+  const KPI = {
+    circulares: {
+      value: "38",
+      label: "Circulares internas",
+      sub: "Comunicación interna anual",
+      progress: 14,
+      meta: "01/07",
+      chip: "Comunicación"
+    },
+    aperturas: {
+      value: "8.439",
+      label: "Aperturas registradas",
+      sub: "Seguimiento de envíos",
+      progress: 28,
+      meta: "02/07",
+      chip: "Comunicación"
+    },
+    promedio: {
+      value: "60,19%",
+      label: "Promedio aperturas",
+      sub: "Tasa media anual",
+      progress: 42,
+      meta: "03/07",
+      chip: "Rendimiento"
+    },
+    publicaciones: {
+      value: "41",
+      label: "Publicaciones web",
+      sub: "Noticias y contenidos",
+      progress: 57,
+      meta: "04/07",
+      chip: "Web"
+    },
+    eventos: {
+      value: "26",
+      label: "Eventos web",
+      sub: "Agenda difundida",
+      progress: 71,
+      meta: "05/07",
+      chip: "Web"
+    },
+    empleo: {
+      value: "12",
+      label: "Ofertas de empleo",
+      sub: "Oportunidades publicadas",
+      progress: 85,
+      meta: "06/07",
+      chip: "Servicios"
+    },
+    visitas: {
+      value: "12.670",
+      label: "Visitas web",
+      sub: "Impacto digital total",
+      progress: 100,
+      meta: "07/07",
+      chip: "Impacto"
+    }
   };
 
-  const setKpi = (key) => {
-    const d = kpis[key];
+  const setKPI = (key) => {
+    const d = KPI[key];
     if (!d) return;
 
-    if (kpiValue) kpiValue.textContent = d[0];
-    if (kpiLabel) kpiLabel.textContent = d[1];
-    if (kpiSub) kpiSub.textContent = d[2];
-    if (kpiBar) kpiBar.style.width = `${d[3]}%`;
-    if (kpiMetaR) kpiMetaR.textContent = d[4];
-    if (kpiChip) kpiChip.textContent = d[5];
+    if (kpiValue) kpiValue.textContent = d.value;
+    if (kpiLabel) kpiLabel.textContent = d.label;
+    if (kpiSub) kpiSub.textContent = d.sub;
+    if (kpiMetaR) kpiMetaR.textContent = d.meta;
+    if (kpiChip) kpiChip.textContent = d.chip;
+    if (kpiBar) kpiBar.style.width = `${d.progress}%`;
   };
 
-  stepCards.forEach((card) => {
-    card.addEventListener("click", () => {
-      stepCards.forEach((x) => x.classList.remove("is-active"));
-      card.classList.add("is-active");
-      setKpi(card.dataset.key);
+  if (stepCards.length) {
+    stepCards.forEach((card) => {
+      card.addEventListener("click", () => {
+        stepCards.forEach((x) => x.classList.remove("is-active"));
+        card.classList.add("is-active");
+        setKPI(card.dataset.key);
+      });
     });
-  });
 
-  const active = qs(".stepCard.is-active");
-  if (active) setKpi(active.dataset.key);
+    const active = qs(".stepCard.is-active");
+    if (active) setKPI(active.dataset.key);
+  }
 
-  /* =========================
+  /* =========================================
      CHARTS
-     ========================= */
+  ========================================= */
   const hasChart = typeof Chart !== "undefined";
   const charts = {};
 
-  const makeChart = (id, config) => {
+  const createChart = (id, config) => {
     if (!hasChart) return;
-
     const canvas = qs(`#${id}`);
     if (!canvas) return;
 
@@ -243,80 +297,179 @@
 
   if (hasChart) {
     Chart.defaults.color = "#163126";
-    Chart.defaults.font.family = "Inter, sans-serif";
+    Chart.defaults.font.family =
+      'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
     Chart.defaults.borderColor = "rgba(17,70,50,.08)";
   }
 
-  const baseOpts = {
+  const baseOptions = {
     responsive: true,
     maintainAspectRatio: false,
     animation: prefersReduced ? false : { duration: 900 }
   };
 
-  makeChart("chartReuniones", {
+  createChart("chartReuniones", {
     type: "bar",
     data: {
-      labels: ["Junta", "Consejo", "Educación", "Incidencia", "Voluntariado"],
-      datasets: [{
-        data: [11, 6, 11, 5, 3],
-        backgroundColor: ["#114632","#239f71","#79cfaf","#2d7f60","#bfeedd"],
-        borderRadius: 10
-      }]
+      labels: [
+        "Junta",
+        "Consejo",
+        "Educación",
+        "Incidencia",
+        "Voluntariado"
+      ],
+      datasets: [
+        {
+          data: [11, 6, 11, 5, 3],
+          backgroundColor: [
+            "#114632",
+            "#239f71",
+            "#79cfaf",
+            "#2d7f60",
+            "#bfecdd"
+          ],
+          borderRadius: 10
+        }
+      ]
     },
-    options: baseOpts
+    options: baseOptions
   });
 
-  makeChart("chartGenero", {
+  const redes = {
+    seguidores: {
+      labels: ["X", "Facebook", "Instagram", "YouTube"],
+      data: [1782, 2529, 1197, 88]
+    },
+    publicaciones: {
+      labels: ["Web", "Eventos", "Empleo", "Circulares"],
+      data: [41, 26, 12, 38]
+    },
+    interacciones: {
+      labels: ["Aperturas", "Visitas", "Visitantes", "% Medio"],
+      data: [8439, 12670, 11420, 60.19]
+    }
+  };
+
+  const renderRedes = (key = "seguidores") => {
+    const item = redes[key];
+
+    createChart("chartRedes", {
+      type: "bar",
+      data: {
+        labels: item.labels,
+        datasets: [
+          {
+            data: item.data,
+            backgroundColor: [
+              "#114632",
+              "#239f71",
+              "#79cfaf",
+              "#bfecdd"
+            ],
+            borderRadius: 10
+          }
+        ]
+      },
+      options: baseOptions
+    });
+  };
+
+  renderRedes();
+
+  qsa(".tab[data-m]").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      qsa(".tab[data-m]").forEach((x) =>
+        x.classList.remove("is-active")
+      );
+
+      tab.classList.add("is-active");
+      renderRedes(tab.dataset.m);
+    });
+  });
+
+  createChart("chartGenero", {
     type: "bar",
     data: {
-      labels: ["Mujeres","Hombres","No consta"],
-      datasets: [{
-        data: [68,29,3],
-        backgroundColor: ["#239f71","#114632","#79cfaf"],
-        borderRadius: 10
-      }]
+      labels: ["Mujeres", "Hombres", "No consta"],
+      datasets: [
+        {
+          data: [68, 29, 3],
+          backgroundColor: ["#239f71", "#114632", "#79cfaf"],
+          borderRadius: 10
+        }
+      ]
     },
-    options: baseOpts
+    options: baseOptions
   });
 
-  makeChart("chartConsultasTemas", {
+  createChart("chartConsultasTemas", {
     type: "doughnut",
     data: {
-      labels: ["Subvenciones","Justificación","Comunicación","Incidencia","Voluntariado"],
-      datasets: [{
-        data: [12,9,6,4,3],
-        backgroundColor: ["#114632","#239f71","#79cfaf","#bfecdd","#2d7f60"],
-        borderWidth: 0
-      }]
+      labels: [
+        "Subvenciones",
+        "Justificación",
+        "Comunicación",
+        "Incidencia",
+        "Voluntariado"
+      ],
+      datasets: [
+        {
+          data: [12, 9, 6, 4, 3],
+          backgroundColor: [
+            "#114632",
+            "#239f71",
+            "#79cfaf",
+            "#bfecdd",
+            "#2d7f60"
+          ],
+          borderWidth: 0
+        }
+      ]
     },
-    options: baseOpts
+    options: baseOptions
   });
 
-  makeChart("chartConsultasGenero", {
+  createChart("chartConsultasGenero", {
     type: "bar",
     data: {
-      labels: ["Subv.","Just.","Com.","Inc.","Vol."],
+      labels: ["Subv.", "Just.", "Com.", "Inc.", "Vol."],
       datasets: [
         {
           label: "Mujeres",
-          data: [8,6,4,3,2],
+          data: [8, 6, 4, 3, 2],
           backgroundColor: "#239f71",
           borderRadius: 8
         },
         {
           label: "Hombres",
-          data: [4,3,2,1,1],
+          data: [4, 3, 2, 1, 1],
           backgroundColor: "#114632",
           borderRadius: 8
         }
       ]
     },
-    options: baseOpts
+    options: baseOptions
   });
 
-  /* =========================
-     TIMELINE NUEVO DEFINITIVO
-     ========================= */
+  /* =========================================
+     DOWNLOAD CHART
+  ========================================= */
+  qsa("[data-dl]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.dl;
+      const canvas = qs(`#${id}`);
+      if (!canvas) return;
+
+      const a = document.createElement("a");
+      a.href = canvas.toDataURL("image/png", 1);
+      a.download = `${id}.png`;
+      a.click();
+    });
+  });
+
+  /* =========================================
+     TIMELINE PREMIUM
+  ========================================= */
   const tlTrack = qs("#tlTrack");
   const tlWrap = qs("#tlTrackWrap");
 
@@ -326,18 +479,54 @@
   const tlTag = qs("#tlTag");
   const tlBar = qs("#tlBar");
   const tlMeta = qs("#tlMetaR");
+  const tlRangeHint = qs("#tlRangeHint");
 
   const prev = qs("#tlPrevBtn");
   const next = qs("#tlNextBtn");
 
-  const data = [
-    [1995,"Constitución CONGDEX","Nace la Coordinadora Extremeña de ONGD.","Resumen"],
-    [1998,"Primeros marcos","Se fortalece la interlocución institucional.","Institucional"],
-    [2005,"Consolidación de red","Aumenta la capacidad de coordinación.","Red"],
-    [2010,"Ciudadanía global","Impulso a educación transformadora.","Ciudadanía"],
-    [2015,"Nuevas agendas","ODS, sostenibilidad y justicia global.","Agenda"],
-    [2020,"Transformación digital","Trabajo híbrido y comunicación online.","Digital"],
-    [2025,"30 aniversario","Tres décadas de cooperación extremeña.","Aniversario"]
+  const timeline = [
+    {
+      year: 1995,
+      title: "Constitución CONGDEX",
+      desc: "Nace la Coordinadora Extremeña de ONGD.",
+      tag: "Resumen"
+    },
+    {
+      year: 1998,
+      title: "Primeros marcos",
+      desc: "Se fortalece la interlocución institucional.",
+      tag: "Institucional"
+    },
+    {
+      year: 2005,
+      title: "Consolidación de red",
+      desc: "Aumenta la coordinación entre entidades.",
+      tag: "Red"
+    },
+    {
+      year: 2010,
+      title: "Ciudadanía global",
+      desc: "Impulso a educación transformadora.",
+      tag: "Ciudadanía"
+    },
+    {
+      year: 2015,
+      title: "Nuevas agendas",
+      desc: "ODS, sostenibilidad y justicia global.",
+      tag: "Agenda"
+    },
+    {
+      year: 2020,
+      title: "Transformación digital",
+      desc: "Trabajo híbrido y comunicación online.",
+      tag: "Digital"
+    },
+    {
+      year: 2025,
+      title: "30 aniversario",
+      desc: "Tres décadas de cooperación extremeña.",
+      tag: "Aniversario"
+    }
   ];
 
   if (tlTrack && tlWrap) {
@@ -345,47 +534,62 @@
 
     let current = 0;
 
-    const draw = () => {
-      data.forEach((item, i) => {
+    if (tlRangeHint) {
+      tlRangeHint.textContent = `Rango: ${timeline[0].year}–${timeline[timeline.length - 1].year}`;
+    }
+
+    const drawNodes = () => {
+      timeline.forEach((item, i) => {
         const node = document.createElement("div");
         node.className = "tl-node";
-        if (i === current) node.classList.add("is-active");
 
-        const left = (i / (data.length - 1)) * 100;
+        const left =
+          timeline.length === 1
+            ? 50
+            : (i / (timeline.length - 1)) * 100;
+
         node.style.left = `${left}%`;
 
         node.innerHTML = `
           <div class="tl-tooltip">
-            <div class="tl-tYear">${item[0]}</div>
-            <div class="tl-tTitle">${item[1]}</div>
-            <div class="tl-tDesc">${item[2]}</div>
+            <div class="tl-tYear">${item.year}</div>
+            <div class="tl-tTitle">${item.title}</div>
+            <div class="tl-tDesc">${item.desc}</div>
           </div>
           <div class="tl-pin"></div>
-          <button class="tl-pill" type="button">${item[0]}</button>
+          <button class="tl-pill" type="button">${item.year}</button>
         `;
 
-        node.addEventListener("click", () => set(i));
+        node.addEventListener("click", () => setTimeline(i));
         tlTrack.appendChild(node);
       });
     };
 
-    const set = (i) => {
-      current = clamp(i, 0, data.length - 1);
+    const setTimeline = (index) => {
+      current = clamp(index, 0, timeline.length - 1);
 
-      qsa(".tl-node", tlTrack).forEach((n, idx) => {
-        n.classList.toggle("is-active", idx === current);
+      qsa(".tl-node", tlTrack).forEach((n, i) => {
+        n.classList.toggle("is-active", i === current);
       });
 
-      const item = data[current];
+      const item = timeline[current];
 
-      if (tlYear) tlYear.textContent = item[0];
-      if (tlTitle) tlTitle.textContent = item[1];
-      if (tlDesc) tlDesc.textContent = item[2];
-      if (tlTag) tlTag.textContent = item[3];
-      if (tlMeta) tlMeta.textContent =
-        `${String(current + 1).padStart(2,"0")}/${String(data.length).padStart(2,"0")}`;
+      if (tlYear) tlYear.textContent = item.year;
+      if (tlTitle) tlTitle.textContent = item.title;
+      if (tlDesc) tlDesc.textContent = item.desc;
+      if (tlTag) tlTag.textContent = item.tag;
 
-      if (tlBar) tlBar.style.width = `${((current + 1) / data.length) * 100}%`;
+      if (tlMeta) {
+        tlMeta.textContent =
+          `${String(current + 1).padStart(2, "0")}/${String(
+            timeline.length
+          ).padStart(2, "0")}`;
+      }
+
+      if (tlBar) {
+        tlBar.style.width =
+          `${((current + 1) / timeline.length) * 100}%`;
+      }
 
       const active = qsa(".tl-node", tlTrack)[current];
 
@@ -406,18 +610,23 @@
       }
     };
 
-    draw();
-    set(0);
+    drawNodes();
+    setTimeline(0);
 
-    prev?.addEventListener("click", () => set(current - 1));
-    next?.addEventListener("click", () => set(current + 1));
+    prev?.addEventListener("click", () =>
+      setTimeline(current - 1)
+    );
+
+    next?.addEventListener("click", () =>
+      setTimeline(current + 1)
+    );
   }
 
-  /* =========================
+  /* =========================================
      LOAD
-     ========================= */
+  ========================================= */
   window.addEventListener("load", () => {
     document.body.classList.add("is-loaded");
-    reveals.forEach((el) => el.classList.add("visible"));
+    revealItems.forEach((el) => el.classList.add("visible"));
   });
 })();
