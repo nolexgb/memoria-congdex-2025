@@ -681,4 +681,13 @@
     document.body.classList.add("is-loaded");
     revealItems.forEach((el) => el.classList.add("visible"));
   });
+  /* ========= INFOGRAFÍA INTERACTIVA ========= */
+
+const orgData = { ... }
+
+const infoBox = document.getElementById("orgInfoBox");
+
+document.querySelectorAll(".orgNode,.orgCenter").forEach(el=>{
+ ...
+});
 })();
