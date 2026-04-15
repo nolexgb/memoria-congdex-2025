@@ -213,7 +213,7 @@
       chip: "Comunicación"
     },
     promedio: {
-      value: "60,19%",
+      value: "69,19%",
       label: "Promedio aperturas",
       sub: "Tasa media anual",
       progress: 42,
@@ -223,7 +223,7 @@
     publicaciones: {
       value: "41",
       label: "Publicaciones web",
-      sub: "Noticias y contenidos",
+      sub: "Noticias y contenidos web",
       progress: 57,
       meta: "04/07",
       chip: "Web"
@@ -231,7 +231,7 @@
     eventos: {
       value: "26",
       label: "Eventos web",
-      sub: "Agenda difundida",
+      sub: "Agenda publicada en la web",
       progress: 71,
       meta: "05/07",
       chip: "Web"
@@ -291,7 +291,6 @@
     if (!canvas) return;
 
     if (charts[id]) charts[id].destroy();
-
     charts[id] = new Chart(canvas.getContext("2d"), config);
   };
 
@@ -308,18 +307,20 @@
     animation: prefersReduced ? false : { duration: 900 }
   };
 
+  /* 2.1 REUNIONES */
   createChart("chartReuniones", {
     type: "bar",
     data: {
       labels: [
-        "Junta",
-        "Consejo",
-        "Educación",
-        "Incidencia",
+        "Junta Directiva",
+        "Vocalías Consejo Asesor",
+        "Grupo Educación",
+        "Incidencia Política",
         "Voluntariado"
       ],
       datasets: [
         {
+          label: "Reuniones",
           data: [11, 6, 11, 5, 3],
           backgroundColor: [
             "#114632",
@@ -332,21 +333,30 @@
         }
       ]
     },
-    options: baseOptions
+    options: {
+      ...baseOptions,
+      plugins: {
+        legend: { display: false }
+      }
+    }
   });
 
+  /* 2.2 COMUNICACIÓN */
   const redes = {
     seguidores: {
-      labels: ["X", "Facebook", "Instagram", "YouTube"],
-      data: [1782, 2529, 1197, 88]
+      labels: ["X/Twitter", "Facebook", "Instagram", "YouTube"],
+      data: [1782, 2529, 1197, 88],
+      title: "Seguidores"
     },
     publicaciones: {
-      labels: ["Web", "Eventos", "Empleo", "Circulares"],
-      data: [41, 26, 12, 38]
+      labels: ["X/Twitter", "Facebook", "Instagram", "YouTube"],
+      data: [200, 187, 310, 4],
+      title: "Publicaciones / vídeos"
     },
     interacciones: {
-      labels: ["Aperturas", "Visitas", "Visitantes", "% Medio"],
-      data: [8439, 12670, 11420, 60.19]
+      labels: ["X Likes", "Facebook Interacciones", "Instagram Interacciones", "YouTube Reproducciones"],
+      data: [459, 3041, 1980, 493],
+      title: "Interacciones"
     }
   };
 
@@ -359,18 +369,19 @@
         labels: item.labels,
         datasets: [
           {
+            label: item.title,
             data: item.data,
-            backgroundColor: [
-              "#114632",
-              "#239f71",
-              "#79cfaf",
-              "#bfecdd"
-            ],
+            backgroundColor: ["#114632", "#239f71", "#79cfaf", "#bfecdd"],
             borderRadius: 10
           }
         ]
       },
-      options: baseOptions
+      options: {
+        ...baseOptions,
+        plugins: {
+          legend: { display: false }
+        }
+      }
     });
   };
 
@@ -378,49 +389,74 @@
 
   qsa(".tab[data-m]").forEach((tab) => {
     tab.addEventListener("click", () => {
-      qsa(".tab[data-m]").forEach((x) =>
-        x.classList.remove("is-active")
-      );
-
+      qsa(".tab[data-m]").forEach((x) => x.classList.remove("is-active"));
       tab.classList.add("is-active");
       renderRedes(tab.dataset.m);
     });
   });
 
+  /* 2.3 PARTICIPACIÓN POR GÉNERO */
   createChart("chartGenero", {
     type: "bar",
     data: {
-      labels: ["Mujeres", "Hombres", "No consta"],
+      labels: [
+        "Asamblea",
+        "Extra ONGS",
+        "Junta Directiva",
+        "Vocalías Consejo",
+        "Grupo Educación",
+        "Incidencia Política"
+      ],
       datasets: [
         {
-          data: [68, 29, 3],
-          backgroundColor: ["#239f71", "#114632", "#79cfaf"],
-          borderRadius: 10
+          label: "% Mujeres",
+          data: [75.63, 76.06, 66.56, 68.02, 74.02, 65.0],
+          backgroundColor: "#239f71",
+          borderRadius: 8
+        },
+        {
+          label: "% Hombres",
+          data: [24.47, 23.94, 33.44, 31.98, 25.98, 35.0],
+          backgroundColor: "#114632",
+          borderRadius: 8
         }
       ]
     },
-    options: baseOptions
+    options: {
+      ...baseOptions,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100
+        }
+      }
+    }
   });
 
+  /* ASISTENCIAS TÉCNICAS POR TEMA */
   createChart("chartConsultasTemas", {
     type: "doughnut",
     data: {
       labels: [
-        "Subvenciones",
-        "Justificación",
-        "Comunicación",
-        "Incidencia",
-        "Voluntariado"
+        "Normativas",
+        "Cuestiones administrativas",
+        "Inf. ciudadana / otras ONGS",
+        "Instituciones",
+        "Red coord. autonómicas",
+        "Acogida ONGS CONGDEX",
+        "Otras"
       ],
       datasets: [
         {
-          data: [12, 9, 6, 4, 3],
+          data: [63, 6, 13, 10, 3, 13, 13],
           backgroundColor: [
             "#114632",
             "#239f71",
             "#79cfaf",
             "#bfecdd",
-            "#2d7f60"
+            "#2d7f60",
+            "#7dbfa8",
+            "#9edec7"
           ],
           borderWidth: 0
         }
@@ -429,28 +465,44 @@
     options: baseOptions
   });
 
+  /* GÉNERO EN ASISTENCIAS TÉCNICAS */
   createChart("chartConsultasGenero", {
     type: "bar",
     data: {
-      labels: ["Subv.", "Just.", "Com.", "Inc.", "Vol."],
+      labels: [
+        "Normativas",
+        "Adm.",
+        "Inf./ONGS",
+        "Instituciones",
+        "Red CCAA",
+        "Acogida ONGS",
+        "Otras"
+      ],
       datasets: [
         {
-          label: "Mujeres",
-          data: [8, 6, 4, 3, 2],
+          label: "% Mujeres",
+          data: [90.48, 66.67, 69.23, 70.0, 100.0, 100.0, 84.62],
           backgroundColor: "#239f71",
           borderRadius: 8
         },
         {
-          label: "Hombres",
-          data: [4, 3, 2, 1, 1],
+          label: "% Hombres",
+          data: [9.52, 33.33, 30.77, 30.0, 0.0, 0.0, 15.38],
           backgroundColor: "#114632",
           borderRadius: 8
         }
       ]
     },
-    options: baseOptions
+    options: {
+      ...baseOptions,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100
+        }
+      }
+    }
   });
-
   /* =========================================
      DOWNLOAD CHART
   ========================================= */
