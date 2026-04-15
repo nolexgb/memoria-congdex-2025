@@ -474,7 +474,7 @@ main{
 }
 
 /* =========================
-   CIFRAS GRID
+   GRID BLOQUES
 ========================= */
 .cifras__head,
 .cifras__grid,
@@ -505,6 +505,12 @@ main{
   inset:0;
   width:100% !important;
   height:100% !important;
+}
+
+.split{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:1rem;
 }
 
 /* =========================
@@ -582,7 +588,7 @@ main{
 }
 
 /* =========================
-   MAP
+   MAPA
 ========================= */
 .mapStory{
   display:grid;
@@ -603,10 +609,6 @@ main{
   background:#edf8f2;
   border:1px solid rgba(35,159,113,.12);
   font-weight:700;
-}
-
-.mapStory__sub{
-  color:var(--muted);
 }
 
 .mapFrameWrap{
@@ -772,7 +774,6 @@ main{
   width:220px;
   transform:translateX(-50%);
   z-index:2;
-  text-align:center;
 }
 
 .tl-tooltip{
@@ -785,28 +786,6 @@ main{
   background:#fff;
   border-radius:18px;
   box-shadow:0 14px 30px rgba(0,0,0,.08);
-  text-align:left;
-}
-
-.tl-tYear{
-  font-size:.78rem;
-  font-weight:850;
-  color:var(--brand);
-  letter-spacing:.08em;
-  text-transform:uppercase;
-}
-
-.tl-tTitle{
-  margin-top:.35rem;
-  font-weight:850;
-  color:var(--brand-dark);
-}
-
-.tl-tDesc{
-  margin-top:.45rem;
-  font-size:.92rem;
-  color:var(--muted);
-  line-height:1.45;
 }
 
 .tl-pin{
@@ -838,10 +817,6 @@ main{
 .tl-node.is-active .tl-pill{
   background:linear-gradient(135deg,var(--brand-dark),var(--brand));
   color:#fff;
-}
-
-.tl-node.is-active .tl-pin{
-  background:var(--brand-dark);
 }
 
 /* =========================
@@ -980,19 +955,5 @@ main{
 
   .mapFrameWrap{
     height:380px;
-  }
-}
-
-@media (prefers-reduced-motion:reduce){
-
-  html{
-    scroll-behavior:auto;
-  }
-
-  *,
-  *::before,
-  *::after{
-    animation:none !important;
-    transition:none !important;
   }
 }
